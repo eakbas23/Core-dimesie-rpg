@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Core Dimensie RPG</title>
   <style>
     body {
@@ -72,7 +72,7 @@
     };
 
     function logMsg(msg) {
-      log.innerHTML += <p>${msg}</p>;
+      log.innerHTML += `<p>${msg}</p>`;
       log.scrollTop = log.scrollHeight;
     }
 
@@ -94,48 +94,43 @@
         return;
       }
 
-      switch(world) {
-        case 'tech':
-          logMsg("Je betreedt Tech Village. Kies je aanpak:");
-          setTimeout(() => {
-            const choice = confirm("Wil je 'Hack drones' (OK) of 'Brute force' (Annuleren)?");
-            if (choice) {
-              logMsg("Je kiest voor Hacken. Je infiltreert het netwerk...");
-            } else {
-              logMsg("Je kiest brute kracht. Je stormt door de stad...");
-            }
-            completeWorld(world);
-          }, 800);
-          break;
-
-        case 'beast':
-          logMsg("Je vindt een gewonde beest. bEAr23 vraagt:");
-          setTimeout(() => {
-            const moral = confirm("Help het beest (OK) of vang het voor kracht (Annuleren)?");
-            if (moral) {
-              logMsg("Je helpt het beest. Je ontvangt dank en een verborgen shard.");
-              state.shards += 1;
-            } else {
-              logMsg("Je vangt het beest. Je krijgt brute kracht, maar bEAr23 kijkt teleurgesteld...");
-            }
-            completeWorld(world);
-          }, 800);
-          break;
-
-        default:
-          logMsg(Je betreedt ${world}...);
-          setTimeout(() => {
-            logMsg(Je overwint de uitdagingen van ${world} en ontvangt een shard.);
+      if (world === 'tech') {
+        logMsg("Je betreedt Tech Village. Kies je aanpak:");
+        setTimeout(() => {
+          const choice = confirm("Wil je 'Hack drones' (OK) of 'Brute force' (Annuleren)?");
+          if (choice) {
+            logMsg("Je kiest voor Hacken. Je infiltreert het netwerk...");
+          } else {
+            logMsg("Je kiest brute kracht. Je stormt door de stad...");
+          }
+          completeWorld(world);
+        }, 800);
+      } else if (world === 'beast') {
+        logMsg("Je vindt een gewonde beest. bEAr23 vraagt:");
+        setTimeout(() => {
+          const moral = confirm("Help het beest (OK) of vang het voor kracht (Annuleren)?");
+          if (moral) {
+            logMsg("Je helpt het beest. Je ontvangt dank en een verborgen shard.");
             state.shards += 1;
-            completeWorld(world);
-          }, 1000);
+          } else {
+            logMsg("Je vangt het beest. Je krijgt brute kracht, maar bEAr23 kijkt teleurgesteld...");
+          }
+          completeWorld(world);
+        }, 800);
+      } else {
+        logMsg(`Je betreedt ${world}...`);
+        setTimeout(() => {
+          logMsg(`Je overwint de uitdagingen van ${world} en ontvangt een shard.`);
+          state.shards += 1;
+          completeWorld(world);
+        }, 1000);
       }
     }
 
     function completeWorld(world) {
       state.completed.push(world);
       updateProgress();
-      logMsg(Wereld ${world} voltooid! Shards: ${state.shards});
+      logMsg(`Wereld ${world} voltooid! Shards: ${state.shards}`);
     }
 
     function openShop() {
