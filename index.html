@@ -2,27 +2,155 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8">
-  <title>Test RPG</title>
+  <title>Core Dimensie RPG</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #0f1220, #1f2a44);
+      color: #f0f0f0;
+      font-family: 'Orbitron', sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #5ad1ff;
+      font-size: 2em;
+    }
+    button {
+      background-color: #ffcc66;
+      color: #0f1220;
+      border: none;
+      padding: 12px 20px;
+      margin: 8px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #log {
+      background: #1a1a2e;
+      border: 1px solid #5ad1ff;
+      padding: 10px;
+      margin-top: 20px;
+      height: 220px;
+      overflow-y: auto;
+    }
+    #progress {
+      width: 100%;
+      height: 20px;
+      background: #333;
+      margin-top: 10px;
+    }
+    #bar {
+      height: 100%;
+      width: 0%;
+      background: #5ad1ff;
+    }
+  </style>
 </head>
 <body>
-  <h1>Test RPG</h1>
-  <button onclick="startGame()">Start avontuur</button>
-  <button onclick="startWorld('tech')">Tech Village</button>
+  <h1>Core Dimensie RPG</h1>
+  <p>Welkom, strijder. Speel het avontuur van <strong>Kaizen23</strong>, <strong>Mmz23</strong> en <strong>bEAr23</strong>. Verzamel shards en versla <em>OVERcore</em> voordat hij alle dimensies corrumpeert.</p>
+  <button onclick="startGame()">🚀 Start avontuur</button>
+  <div id="worlds" style="display:none;">
+    <button onclick="startWorld('shard')">Shard Nexus</button>
+    <button onclick="startWorld('sky')">Sky Metropol</button>
+    <button onclick="startWorld('ice')">Ice-Fire World</button>
+    <button onclick="startWorld('thunder')">Thunder Arena</button>
+    <button onclick="startWorld('beast')">Beast Realm</button>
+    <button onclick="startWorld('tech')">Tech Village</button>
+    <button onclick="openShop()">🛒 Shop</button>
+  </div>
+  <div id="progress"><div id="bar"></div></div>
   <div id="log"></div>
 
   <script>
     const log = document.getElementById("log");
+    const bar = document.getElementById("bar");
+    const worlds = document.getElementById("worlds");
+    let state = {
+      shards: 0,
+      completed: []
+    };
 
     function logMsg(msg) {
-      log.innerHTML += "<p>" + msg + "</p>";
+      log.innerHTML += `<p>${msg}</p>`;
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function updateProgress() {
+      const percent = (state.completed.length / 6) * 100;
+      bar.style.width = percent + "%";
     }
 
     function startGame() {
-      logMsg("Avontuur gestart!");
+      log.innerHTML = "";
+      logMsg("🧠 bEAr23: 'Welkom strijder. OVERcore is actief. Kies een wereld en verzamel shards!'");
+      worlds.style.display = "block";
+      updateProgress();
     }
 
     function startWorld(world) {
-      logMsg("Je betreedt " + world + "!");
+      if (state.completed.includes(world)) {
+        logMsg("⚠️ Kaizen23: 'We zijn hier al geweest.'");
+        return;
+      }
+
+      switch(world) {
+        case 'tech':
+          logMsg("💻 Mmz23: 'Tech Village is vol drones. Hoe pakken we dit aan?'");
+          setTimeout(() => {
+            const choice = confirm("Hack drones (OK) of brute force (Annuleren)?");
+            if (choice) {
+              logMsg("🧠 bEAr23: 'Slimme zet. Je infiltreert het netwerk...'");
+            } else {
+              logMsg("💥 Kaizen23: 'We stormen naar binnen!'");
+            }
+            completeWorld(world);
+          }, 800);
+          break;
+
+        case 'beast':
+          logMsg("🐾 Je vindt een gewonde beest. bEAr23 fluistert:");
+          setTimeout(() => {
+            const moral = confirm("Help het beest (OK) of vang het voor kracht (Annuleren)?");
+            if (moral) {
+              logMsg("❤️ Mmz23: 'We helpen hem. Hij geeft ons een verborgen shard.'");
+              state.shards += 1;
+            } else {
+              logMsg("💪 Kaizen23: 'We nemen zijn kracht. bEAr23 kijkt stil toe...'");
+            }
+            completeWorld(world);
+          }, 800);
+          break;
+
+        default:
+          logMsg(`🌍 Je betreedt ${world}...`);
+          setTimeout(() => {
+            logMsg(`⚔️ Kaizen23: 'We hebben de uitdagingen van ${world} overwonnen!'`);
+            logMsg("✨ Je ontvangt een shard.");
+            state.shards += 1;
+            completeWorld(world);
+          }, 1000);
+      }
+    }
+
+    function completeWorld(world) {
+      state.completed.push(world);
+      updateProgress();
+      logMsg(`✅ Wereld ${world} voltooid! Totale shards: ${state.shards}`);
+    }
+
+    function openShop() {
+      if (state.shards >= 3) {
+        const buy = confirm("Storm Amplifier kopen voor 3 shards?");
+        if (buy) {
+          state.shards -= 3;
+          logMsg("🛒 bEAr23: 'Je hebt Storm Amplifier gekocht!'");
+        } else {
+          logMsg("🚪 Mmz23: 'We verlaten de shop.'");
+        }
+      } else {
+        logMsg("❌ Kaizen23: 'We hebben niet genoeg shards.'");
+      }
     }
   </script>
 </body>
