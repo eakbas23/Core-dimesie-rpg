@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Core Dimensie RPG</title>
+  <style>
+    :root {
+      --bg:#0f1220; --card:#171a2b; --text:#eaf0ff; --accent:#5ad1ff; --gold:#ffcc66;
+    }
+    body {
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:'Orbitron', system-ui, sans-serif;
+    }
+    .hero { padding:32px 20px; text-align:center; border-bottom:1px solid #222642; }
+    .hero h1 { margin:0 0 8px; font-size:28px; }
+    .hero p { margin:0; opacity:.85; }
+    .container { max-width:980px; margin:24px auto; padding:0 20px; }
+    .game-card { background:var(--card); border:1px solid #222642; border-radius:14px; padding:16px; }
+    .toolbar { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+    .btn { background:#1f2340; color:var(--text); border:1px solid #2a315a; padding:8px 12px; border-radius:10px; cursor:pointer; }
+    .btn.primary { background:var(--accent); color:#07131a; border-color:#4bb3d9; font-weight:600; }
+    .progress { height:8px; background:#1b213c; border-radius:999px; overflow:hidden; margin:10px 0 16px; }
+    .progress > div { height:8px; background:linear-gradient(90deg, var(--accent), var(--gold)); width:0%; transition:width .4s ease; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+    .world { background:#1b1f36; border:1px solid #2a315a; border-radius:12px; padding:12px; }
+    .world h3 { margin:0 0 6px; font-size:18px; }
+    .log { margin-top:14px; background:#101427; border:1px dashed #2a315a; border-radius:10px; padding:10px; min-height:60px; }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <h1>Core Dimensie RPG</h1>
+    <p>Speel het avontuur van Kaizen23, Mmz23 en bEAr23. Verzamel shards en versla OVERcore.</p>
+    <button class="btn primary" id="startBtn">Start avontuur</button>
+  </div>
+
+  <div class="container">
+    <div class="game-card">
+      <div class="toolbar">
+        <button class="btn" data-world="tech">Tech Village</button>
+        <button class="btn" data-world="beast">Beast Realm</button>
+        <button class="btn" data-world="thunder">Thunder Arena</button>
+        <button class="btn" data-world="icefire">Ice-Fire World</button>
+        <button class="btn" data-world="sky">Sky Metropol</button>
+        <button class="btn" data-world="nexus">Shard Nexus</button>
+      </div>
+
+      <div class="progress"><div id="progressFill"></div></div>
+      <div class="grid" id="worldGrid"></div>
+      <div class="log" id="eventLog">Klaar om te starten…</div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      started:false,
+      shards:0,
+      worldsCompleted:{ tech:false, beast:false, thunder:false, icefire:false, sky:false, nexus:false }
+    };
+
+    const worlds = {
+      tech:{ name:"Tech Village", quest:"Hack drones of brute force door de stad", boss:"Cipher Warden", reward:"Shard 1 + Energie-module (E23)" },
+      beast:{ name:"Beast Realm", quest:"Bevrijd verdwaalde beesten / Resonator", boss:"Feral Regent", reward:"Shard 2 + Beast Resonator" },
+      thunder:{ name:"Thunder Arena", quest:"Stormproef: bliksem-patronen herkennen", boss:"Auron & Lyra Volt", reward:"Shard 3 + Storm Amplifier" },
+      icefire:{ name:"Ice-Fire World", quest:"Balanssteen herstellen (vuur/ijs)", boss:"PyroFrost Sentry", reward:"Shard 4 + Stabilizer" },
+      sky:{ name:"Sky Metropol", quest:"Windbrug herstellen", boss:"Aero Magistrate", reward:"Shard 5 + Wind Amplifier" },
+      nexus:{ name:"Shard Nexus", quest:"Resonance Puzzle · Echo Trial · Time Fracture", boss:"OVERcore", reward:"Shard 6 + Finale keuze" },
+    };
+
+    const grid = document.getElementById('worldGrid');
+    const log = document.getElementById('eventLog');
+    const progressFill = document.getElementById('progressFill');
+
+    function renderGrid() {
+      grid.innerHTML = '';
+      Object.entries(worlds).forEach(([key, w]) => {
+        const done = state.worldsCompleted[key];
+        const el = document.createElement('div');
+        el.className = 'world';
+        el.innerHTML = `
+          <h3>${w.name} ${done ? "✅" : ""}</h3>
+          <div><strong>Opdracht:</strong> ${w.quest}</div>
+          <div><strong>Mini-baas:</strong> ${w.boss}</div>
+          <div><strong>Beloning:</strong> ${w.reward}</div>
+          <div style="margin-top:8px"><button class="btn primary" onclick="startWorld('${key}')">${done ? "Herspeel" : "Start"}</button></div>
+        `;
+        grid.appendChild(el);
+      });
+      progressFill.style.width = ${(state.shards/6)*100}%;
+    }
+
+    function logMsg(msg) { log.textContent = msg; }
+
+    function startWorld(key) {
+      const w = worlds[key];
+      logMsg(Je betreedt ${w.name}. ${w.quest}. Mini-baas: ${w.boss}.);
+      setTimeout(() => completeWorld(key), 800);
+    }
+
+    function completeWorld(key) {
+      if (!state.worldsCompleted[key]) {
+        state.worldsCompleted[key] = true;
+        state.shards = Math.min(6, state.shards + 1);
+        logMsg(Overwinning! Beloning ontvangen: ${worlds[key].reward}. Totaal shards: ${state.shards}/6.);
+        renderGrid();
+      } else {
+        logMsg(${worlds[key].name} herspeeld. Kies je pad en bouw nieuwe stats op.);
+      }
+    }
+
+    document.getElementById('startBtn').addEventListener('click', () => {
+      state.started = true;
+      logMsg('Avontuur gestart. Kies een wereld om te beginnen.');
+      renderGrid();
+    });
+
+    renderGrid();
+  </script>
+</body>
+</html>
