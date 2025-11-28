@@ -30,7 +30,7 @@
       border: 1px solid #5ad1ff;
       padding: 10px;
       margin-top: 20px;
-      height: 220px;
+      height: 240px;
       overflow-y: auto;
     }
     #progress {
@@ -48,7 +48,7 @@
 </head>
 <body>
   <h1>Core Dimensie RPG</h1>
-  <p>Welkom, strijder. Speel het avontuur van <strong>Kaizen23</strong>, <strong>Mmz23</strong> en <strong>bEAr23</strong>. Verzamel shards en versla <em>OVERcore</em> voordat hij alle dimensies corrumpeert.</p>
+  <p>Welkom strijder. De dimensies zijn in gevaar. <strong>Kaizen23</strong>, <strong>Mmz23</strong> en <strong>bEAr23</strong> hebben jouw hulp nodig om <em>OVERcore</em> te stoppen. Kies je pad, verzamel shards en bepaal het lot van alle werelden.</p>
   <button onclick="startGame()">🚀 Start avontuur</button>
   <div id="worlds" style="display:none;">
     <button onclick="startWorld('shard')">Shard Nexus</button>
@@ -83,33 +83,39 @@
 
     function startGame() {
       log.innerHTML = "";
-      logMsg("🧠 bEAr23: 'Welkom strijder. OVERcore is actief. Kies een wereld en verzamel shards!'");
+      logMsg("🌌 bEAr23: 'De dimensies trillen. OVERcore is wakker. We moeten hem stoppen voordat hij alles corrumpeert.'");
+      logMsg("🧠 Mmz23: 'We hebben zes werelden. Elk bevat een shard. We moeten ze allemaal vinden.'");
+      logMsg("💥 Kaizen23: 'Laat me los. Ik ben klaar voor actie.'");
       worlds.style.display = "block";
       updateProgress();
     }
 
     function startWorld(world) {
       if (state.completed.includes(world)) {
-        logMsg("⚠️ Kaizen23: 'We zijn hier al geweest.'");
+        logMsg("⚠️ bEAr23: 'Deze wereld is al gezuiverd.'");
         return;
       }
 
       switch(world) {
         case 'tech':
-          logMsg("💻 Mmz23: 'Tech Village is vol drones. Hoe pakken we dit aan?'");
+          logMsg("💻 bEAr23: 'Tech Village... waar drones dromen en algoritmes regeren.'");
+          logMsg("🧠 Mmz23: 'Ik kan het netwerk hacken. Stil en slim.'");
+          logMsg("💥 Kaizen23: 'Of we slaan alles kort en stormen naar binnen.'");
           setTimeout(() => {
-            const choice = confirm("Hack drones (OK) of brute force (Annuleren)?");
+            const choice = confirm("Hacken (OK) of brute kracht (Annuleren)?");
             if (choice) {
-              logMsg("🧠 bEAr23: 'Slimme zet. Je infiltreert het netwerk...'");
+              logMsg("🔓 Mmz23 infiltreert het systeem. Drones vallen stil. Je vindt een verborgen shard.");
             } else {
-              logMsg("💥 Kaizen23: 'We stormen naar binnen!'");
+              logMsg("⚔️ Kaizen23 breekt door de poort. Je verslaat de mech-wachters en grijpt een shard.");
             }
             completeWorld(world);
-          }, 800);
+          }, 1000);
           break;
 
         case 'beast':
-          logMsg("🐾 Je vindt een gewonde beest. bEAr23 fluistert:");
+          logMsg("🐾 bEAr23: 'Beast Realm... een plek waar instinct sterker is dan rede.'");
+          logMsg("🧠 Mmz23: 'Een gewonde beest. We kunnen hem helpen.'");
+          logMsg("💥 Kaizen23: 'Of we nemen zijn kracht. We hebben geen tijd voor sentiment.'");
           setTimeout(() => {
             const moral = confirm("Help het beest (OK) of vang het voor kracht (Annuleren)?");
             if (moral) {
@@ -119,11 +125,11 @@
               logMsg("💪 Kaizen23: 'We nemen zijn kracht. bEAr23 kijkt stil toe...'");
             }
             completeWorld(world);
-          }, 800);
+          }, 1000);
           break;
 
         default:
-          logMsg(`🌍 Je betreedt ${world}...`);
+          logMsg(`🌍 bEAr23: 'Je betreedt ${world}. De energie hier is instabiel.'`);
           setTimeout(() => {
             logMsg(`⚔️ Kaizen23: 'We hebben de uitdagingen van ${world} overwonnen!'`);
             logMsg("✨ Je ontvangt een shard.");
@@ -144,12 +150,12 @@
         const buy = confirm("Storm Amplifier kopen voor 3 shards?");
         if (buy) {
           state.shards -= 3;
-          logMsg("🛒 bEAr23: 'Je hebt Storm Amplifier gekocht!'");
+          logMsg("🛒 bEAr23: 'Je hebt Storm Amplifier gekocht. Je energie pulseert.'");
         } else {
-          logMsg("🚪 Mmz23: 'We verlaten de shop.'");
+          logMsg("🚪 Mmz23: 'We verlaten de shop. Tijd om verder te gaan.'");
         }
       } else {
-        logMsg("❌ Kaizen23: 'We hebben niet genoeg shards.'");
+        logMsg("❌ Kaizen23: 'We hebben niet genoeg shards. Tijd om te vechten.'");
       }
     }
   </script>
