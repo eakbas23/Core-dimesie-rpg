@@ -42,13 +42,28 @@
             box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
             padding: 20px;
             background-color: var(--color-mid-bg);
-            opacity: 0; /* Standaard onzichtbaar */
+            opacity: 0;
             transition: opacity 1s ease-in-out;
         }
+
+        /* FIX VOOR SCROLLEN OP MOBIEL */
+        #narrative-text {
+            min-height: 200px;
+            max-height: 450px;
+            border: 1px solid var(--color-core-white);
+            padding: 20px;
+            overflow-y: scroll; /* Gebruik 'scroll' in plaats van 'auto' */
+            -webkit-overflow-scrolling: touch; /* Cruciaal voor iOS scrollen */
+            line-height: 1.6;
+            white-space: pre-wrap;
+            /* Zorg ervoor dat het vak een vaste hoogte heeft in de layout */
+            box-sizing: border-box; 
+        }
+
+        /* De rest van de styling (niet hier weergegeven) blijft hetzelfde. */
         
-        /* ---------------------------------- */
-        /* INTRO SCREEN STYLING */
-        /* ---------------------------------- */
+        /* ... (De rest van de CSS blijft hetzelfde als in het vorige antwoord) ... */
+
         #intro-screen {
             position: fixed;
             top: 0;
@@ -79,8 +94,6 @@
         .intro-line.active {
             opacity: 1;
         }
-        
-        /* OVERIGE GAME STYLING (ongewijzigd) */
         
         /* Stats Panel */
         #stats-panel {
@@ -135,17 +148,6 @@
             gap: 20px;
         }
         
-        /* FIX VOOR SCROLLEN */
-        #narrative-text {
-            min-height: 200px; /* iets lager, zodat de scrollbar sneller verschijnt */
-            max-height: 450px; /* iets hoger, zodat er meer tekst past */
-            border: 1px solid var(--color-core-white);
-            padding: 20px;
-            overflow-y: auto; /* Zorgt voor de scrollbar wanneer nodig */
-            line-height: 1.6;
-            white-space: pre-wrap;
-        }
-
         #choices-container {
             display: flex;
             flex-direction: column;
@@ -255,6 +257,7 @@
         WELCOME, OUTSIDER. THE GLITCH IS REAL.
     </div>
 </div>
+
 <div id="game-container">
     <div id="stats-panel">
         <div id="header">
@@ -325,9 +328,11 @@
 
 <script>
     // =======================================================
-    // 1. GAME STATE INITIALISATIE
+    // 1. GAME STATE INITIALISATIE & SCENES
     // =======================================================
 
+    // De gameState en scenes objecten zijn ongewijzigd gebleven
+    // ... (gameState object)
     let gameState = {
         // Personage Stats
         characters: {
@@ -368,11 +373,8 @@
             }
         }
     };
-
-    // =======================================================
-    // 2. NARRATIEVE INHOUD (SCENES)
-    // =======================================================
-
+    
+    // ... (scenes object)
     const scenes = {
         // --- START & CENTRAL HUB (UITGEBREIDE INTRO) ---
         
@@ -399,8 +401,6 @@
                 { text: "Vraag Mmz23 wat 'OverCore' is", next: "centralHub_talkMmz" }
             ]
         },
-        
-        // Nieuwe, geleidelijke dialoogscènes
         
         centralHub_talkBear: {
             text: `
@@ -434,7 +434,6 @@
             ]
         },
 
-        // OUDE SCÈNE (nu de 2e stap in de flow)
         centralHub_choice1: {
             text: `
                 De CentralHub heeft vier actieve portalen. Het eerste portaal, **TechRune**, licht op en is de verplichte startlocatie.
@@ -1081,9 +1080,9 @@
             ]
         }
     };
-
+    
     // =======================================================
-    // 3. LOGICA EN RENDERING
+    // 3. LOGICA EN RENDERING (GECORRIGEERD)
     // =======================================================
 
     const narrativeTextElement = document.getElementById('narrative-text');
@@ -1179,17 +1178,24 @@
         if (gameState.inventory.corelinkArmband) {
             statsElements.armbandStatus.innerHTML = `Status: <span style="color:${getComputedStyle(document.documentElement).getPropertyValue('--color-core-blue')};">CoreLink-Armband Gevonden</span>`;
             
+            // Knoppen voor acties dynamisch maken en event listeners toevoegen
             statsElements.outsiderActions.innerHTML = `
-                <button class="outsider-action-button" onclick="handleOutsiderAction('supportPulse')" ${Outsider.supportPulse <= 0 ? 'disabled' : ''}>
+                <button id="pulse-btn" class="outsider-action-button" data-action="supportPulse" ${Outsider.supportPulse <= 0 ? 'disabled' : ''}>
                     PULSE (${Outsider.supportPulse})
                 </button>
-                <button class="outsider-action-button" onclick="handleOutsiderAction('debugPing')" ${Outsider.debugPing <= 0 ? 'disabled' : ''}>
+                <button id="ping-btn" class="outsider-action-button" data-action="debugPing" ${Outsider.debugPing <= 0 ? 'disabled' : ''}>
                     PING (${Outsider.debugPing})
                 </button>
-                <button class="outsider-action-button" onclick="handleOutsiderAction('glitchRewind')" ${Outsider.glitchRewind <= 0 ? 'disabled' : ''}>
+                <button id="rewind-btn" class="outsider-action-button" data-action="glitchRewind" ${Outsider.glitchRewind <= 0 ? 'disabled' : ''}>
                     REWIND (${Outsider.glitchRewind})
                 </button>
             `;
+            
+            // FIX: Koppel event listeners onmiddellijk na het maken van de knoppen
+            document.getElementById('pulse-btn').addEventListener('click', () => handleOutsiderAction('supportPulse'));
+            document.getElementById('ping-btn').addEventListener('click', () => handleOutsiderAction('debugPing'));
+            document.getElementById('rewind-btn').addEventListener('click', () => handleOutsiderAction('glitchRewind'));
+
         } else {
              statsElements.armbandStatus.innerHTML = `Status: Geen CoreLink-Armband`;
              statsElements.outsiderActions.innerHTML = `<p style="text-align:center; font-size:0.8em; color:#666;">Zoek de Armband in TechRune om acties vrij te spelen.</p>`;
@@ -1224,6 +1230,7 @@
 
         // Update tekst
         narrativeTextElement.innerHTML = scene.text;
+        // Zorg ervoor dat de tekst na het updaten naar boven wordt gescrolld
         narrativeTextElement.scrollTop = 0; 
 
         // Update keuzeknoppen
@@ -1236,11 +1243,10 @@
             let isDisabled = choice.disabled || false;
             const Outsider = gameState.characters.Outsider;
 
-            // Verbeterde logica om de "disabled" status te bepalen, gebaseerd op de tekst van de keuze
+            // Verbeterde logica om de "disabled" status te bepalen
             if (choice.text.includes("Support Pulse") && Outsider.supportPulse < 1) {
                 isDisabled = true;
             } else if (choice.text.includes("Debug Ping") && Outsider.debugPing < 2) {
-                // Aangenomen dat Debug Ping 2 acties kost
                 isDisabled = true;
             } else if (choice.text.includes("Glitch Rewind") && Outsider.glitchRewind < 1) {
                 isDisabled = true;
@@ -1252,8 +1258,10 @@
             }
             
             button.textContent = choice.text;
-            // FIX: Gebruik de handleChoice wrapper die de updateScreen aanroept
-            button.onclick = () => handleChoice(choice.next); 
+            
+            // FIX: Koppel de handleChoice functie via een betrouwbare Event Listener
+            button.addEventListener('click', () => handleChoice(choice.next));
+            
             button.disabled = isDisabled;
             choicesContainer.appendChild(button);
         });
