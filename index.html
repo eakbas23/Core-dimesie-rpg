@@ -155,11 +155,17 @@
                 },
 
                 // --- CENTRAL HUB (Onveranderd) ---
-                CENTRALHUB_1: { /* ... */ },
+                CENTRALHUB_1: { /* ... placeholder ... */ 
+                    text: `<span class="system">Central Hub inladen... (Dit is een placeholder)</span>`,
+                    choices: [{ text: "Ga verder naar Tech Rune", next: "TECHRUNE_1" }]
+                },
                 CENTRALHUB_2_A: { /* ... */ },
                 CENTRALHUB_2_B: { /* ... */ },
                 CENTRALHUB_3: { /* ... */ },
-                TECHRUNE_1: { /* ... */ },
+                TECHRUNE_1: { /* ... placeholder ... */
+                    text: `<span class="system">Tech Rune inladen... (Dit is een placeholder)</span>`,
+                    choices: [{ text: "Kies Stealth Route", next: "TECHRUNE_STEALTH_2" }]
+                },
                 TECHRUNE_BRUTE_FORCE_2: { /* ... */ },
                 TECHRUNE_SPLIT_2: { /* ... */ },
 
@@ -269,17 +275,11 @@
                     choices: [{
                         text: "AANVAL 1: Kaizen's Precision Shot (15 Schade)",
                         next: "TECHRUNE_BAAS_2",
-                        action: () => {
-                            dealDamage(15);
-                            return 'TECHRUNE_BAAS_2';
-                        }
+                        action: () => dealDamage(15) // GEFIXED: Geen 'return'
                     }, {
                         text: "AANVAL 2: Mmz's Overload Kick (20 Schade)",
                         next: "TECHRUNE_BAAS_2",
-                        action: () => {
-                            dealDamage(20);
-                            return 'TECHRUNE_BAAS_2';
-                        }
+                        action: () => dealDamage(20) // GEFIXED: Geen 'return'
                     }, {
                         text: "SUPPORT: Gebruik **SUPPORT PULSE** op Mmz (Extra Schade in de volgende ronde)",
                         next: "TECHRUNE_BAAS_2",
@@ -301,15 +301,15 @@
                     choices: [{
                         text: "AANVAL 1: Kaizen's Precision Shot (15 Schade) - Wordt geblokkeerd!",
                         next: "TECHRUNE_BAAS_3",
-                        action: () => dealDamage(0) // Geblokkeerd
+                        action: () => dealDamage(0) 
                     }, {
                         text: "AANVAL 2: Mmz's Overload Kick (20 Schade) - Wordt geblokkeerd!",
                         next: "TECHRUNE_BAAS_3",
-                        action: () => dealDamage(0) // Geblokkeerd
+                        action: () => dealDamage(0) 
                     }, {
                         text: "SUPPORT: Gebruik **DEBUG PING** op de Warden (Verwijdert de 'Core Deflect' Status)",
                         next: "TECHRUNE_BAAS_3",
-                        action: () => useOutsiderAction('debugPing') // Dit zal de Deflect status 'oplossen' in de volgende scene
+                        action: () => useOutsiderAction('debugPing') 
                     }]
                 },
                 
@@ -332,7 +332,6 @@
                         action: () => {
                              // Controleer of de speler de baas verslagen heeft
                             if (GAME_DATA.warden.hp > 0) {
-                                // Als de speler niet genoeg schade heeft gedaan (demo modus, we doen het toch maar)
                                 GAME_DATA.warden.hp = 0;
                             }
                             GAME_DATA.shards = 1;
@@ -370,9 +369,8 @@
 
             // Update Dialogue, inclusief dynamische HP (alleen in gevechtscènes)
             let currentText = data.text;
-            if (currentScene.startsWith('TECHRUNE_BAAS_')) {
-                currentText = currentText.replace('${GAME_DATA.warden.hp}', GAME_DATA.warden.hp);
-            }
+            // Dit zorgt ervoor dat de HP in de dialoog wordt bijgewerkt
+            currentText = currentText.replace('${GAME_DATA.warden.hp}', GAME_DATA.warden.hp);
             dialogueEl.innerHTML = currentText;
 
             // Update Choices
@@ -383,24 +381,28 @@
                 
                 let isDisabled = false;
                 
-                // Als een skill is vereist
-                if (choice.action && choice.action.name.includes('useOutsiderAction')) {
-                    const skillType = choice.action.name.includes('supportPulse') ? 'supportPulse' : 
-                                     choice.action.name.includes('debugPing') ? 'debugPing' : 
-                                     choice.action.name.includes('glitchRewind') ? 'glitchRewind' : null;
-                    
-                    if (skillType && GAME_DATA.outsiderActions[skillType] <= 0) {
+                // Controleer op beschikbare skills (dit voorkomt dat de knop klikt als de skill op is)
+                if (choice.action) {
+                    if (choice.text.includes('SUPPORT PULSE') && GAME_DATA.outsiderActions.supportPulse <= 0) {
                         isDisabled = true;
-                        button.textContent += ` (0x over - ${skillType})`;
+                        button.textContent += ` (0x over)`;
+                    } else if (choice.text.includes('DEBUG PING') && GAME_DATA.outsiderActions.debugPing <= 0) {
+                        isDisabled = true;
+                        button.textContent += ` (0x over)`;
+                    } else if (choice.text.includes('GLITCH REWIND') && GAME_DATA.outsiderActions.glitchRewind <= 0) {
+                        isDisabled = true;
+                        button.textContent += ` (0x over)`;
                     }
                 }
 
                 button.disabled = isDisabled;
                 
                 button.onclick = () => {
+                    // Voer de actie uit (schade toebrengen, skill gebruiken)
                     if (choice.action) {
-                        choice.action(); // Voer de skill/damage actie uit
+                        choice.action(); 
                     }
+                    // Ga naar de volgende scene (dit gebeurt nu na de actie en niet via een onnodige return)
                     goToScene(choice.next);
                 };
                 
