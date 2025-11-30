@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Core Dimensie RPG - eakbas23</title>
     <style>
-        /* CORE DIMENSIE RPG STYLING */
+        /* CORE DIMENSIE RPG STYLING (ongewijzigd) */
         :root {
             --color-core-blue: #00ffff; /* Kaizen's Data/Licht */
             --color-core-green: #00ff00; /* Mmz's Natuur/Energie */
@@ -80,7 +80,7 @@
             opacity: 1;
         }
         
-        /* OVERIGE GAME STYLING */
+        /* OVERIGE GAME STYLING (ongewijzigd) */
         
         /* Stats Panel */
         #stats-panel {
@@ -1094,7 +1094,7 @@
         kaizenMode: null, mmzMode: null, bearRole: null
     };
     
-    // NIEUWE FUNCTIE: Start de intro animatie
+    // FUNCTIE: Start de intro animatie (DE FIX IS HIER)
     function startIntro() {
         const introScreen = document.getElementById('intro-screen');
         const lines = [
@@ -1117,9 +1117,9 @@
         setTimeout(() => {
             introScreen.style.opacity = '0';
             gameContainer.style.opacity = '1';
-            // Start de daadwerkelijke game flow
-            updateScreen(gameState.currentScene);
-        }, delay + (lines.length * 1500) + 500); // Wacht tot alle lijnen zijn getoond + extra pauze
+            // FIX: Start de daadwerkelijke game flow door de eerste scene te laden
+            updateScreen('centralHub_start'); 
+        }, delay + (lines.length * 1500) + 500); 
     }
 
 
