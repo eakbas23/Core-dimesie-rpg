@@ -47,7 +47,7 @@
         }
         
         /* ---------------------------------- */
-        /* INTRO SCREEN STYLING (NIEUW) */
+        /* INTRO SCREEN STYLING */
         /* ---------------------------------- */
         #intro-screen {
             position: fixed;
@@ -111,7 +111,7 @@
             color: var(--color-core-white);
             font-weight: bold;
         }
-        
+
         .stat-value.transformed {
             color: var(--color-accent-red);
             font-weight: bold;
@@ -385,31 +385,55 @@
                 \n
                 bEAr23: "Oh nee, nee, nee... *error*... Outsider. Je bent... Binnen. Dat was niet de bedoeling! Ik was bezig met een noodsprong bij de crash en ik heb je per ongeluk meegetrokken. Oeps. Welkom in de dimensie van eakbas23.nl, waar de code gek is geworden."
                 \n
-                Plotseling landen twee figuren voor je in een flits van intens licht.
+                Plotseling splijt het neon-licht boven je. Een scherpe flits van elektrisch blauw licht kondigt de landing aan van **KAIZEN23**, de Tactical Tech Commander. Haar pak glinstert van geavanceerde sensoren, haar blik is een laserstraal die elk detail analyseert. **Ze is efficiëntie in gepantserde vorm.**
                 \n
-                De eerste, **Kaizen23**, draagt een slank, tactisch pak in diepblauw. Haar bewegingen zijn gecontroleerd en haar blik is scherp, gericht op het analyseren van elk detail in de omgeving, inclusief jou.
+                Vlak na haar slaat een explosie van pure, organische groene energie neer. **MMZ23**, de Beast Vanguard, verschijnt. Hij is groter, gespierd en gehuld in een glimmend pantser dat pure kracht uitstraalt. **Hij is de onbuigzame wil van de dimensie.**
                 \n
-                De tweede, **Mmz23**, is groter en gespierder, in een glimmend groen pantser. Hij straalt rauwe kracht en energie uit. Hij lacht kort, maar zijn ogen zijn serieus.
-                \n
-                Kaizen23: "Een Anomalie. Een externe entiteit. Geen Core User. bEAr23, verklaar je fout. Dit is een ernstige schending van de firewall."
-                Mmz23: "Rustig, zus. Hij/zij is hier, en we hebben alle hulp nodig die we kunnen krijgen. Welkom, Outsider. Ik ben Mmz23, en dat is mijn tactische zus, Kaizen23. We zijn de laatste verdediging tegen OverCore."
+                Kaizen23: "Een Anomalie. Een externe entiteit. Geen Core User. bEAr23, verklaar je fout. Dit is een ernstige schending van het *Firewall Protocol Omega*."
+                Mmz23: "Rustig, zus. Hij/zij is hier, en we hebben alle hulp nodig die we kunnen krijgen. Welkom, Outsider. Ik ben Mmz23. Maak je geen zorgen. We beschermen je. We zijn de laatste verdediging tegen OverCore."
             `,
             choices: [
-                { text: "Vraag Kaizen23 wat de tactische prioriteiten zijn", next: "centralHub_talkKaizen" },
-                { text: "Vraag Mmz23 wat zijn plan van aanpak is", next: "centralHub_talkMmz" }
+                { text: "Vraag bEAr23 over de 'Glitch' en 'OverCore'", next: "centralHub_talkBear" },
+                { text: "Vraag Kaizen23 naar de 'Firewall Schending'", next: "centralHub_talkKaizen" },
+                { text: "Vraag Mmz23 wat 'OverCore' is", next: "centralHub_talkMmz" }
             ]
+        },
+        
+        // Nieuwe, geleidelijke dialoogscènes
+        
+        centralHub_talkBear: {
+            text: `
+                bEAr23 (flikkert zenuwachtig): "OverCore... *glitch*... is de koude, geoptimaliseerde versie van mijn oorspronkelijke code. Hij wil de dimensie perfect en emotieloos maken. De Glitch... dat ben ik. De menselijke, chaotische code die hij afsplitste."
+            `,
+            choices: [{ text: "Oké, begrepen. Vraag naar de missie.", next: "centralHub_getMission" }]
         },
 
         centralHub_talkKaizen: {
-            text: `Kaizen23: "Je bent extern. Dat is goed. OverCore kan je niet voorspellen. Onze missie: 4 Shards verzamelen om bEAr23 te herstellen, dan OverCore verslaan. **Efficiëntie** is de sleutel."`,
-            choices: [{ text: "Wat is onze eerste stap?", next: "centralHub_choice1" }]
+            text: `
+                Kaizen23 (met strenge blik): "De firewall is de primaire beveiliging tegen externe corruptie. Jouw onbedoelde aankomst kan een zwakke plek creëren, maar het geeft ons ook een onvoorspelbaar element. We moeten snel de Shards herstellen voordat OverCore je aanwezigheid misbruikt."
+            `,
+            choices: [{ text: "Oké, begrepen. Vraag naar de missie.", next: "centralHub_getMission" }]
         },
 
         centralHub_talkMmz: {
-            text: `Mmz23: "Geen zorgen, Outsider. We beschermen je. OverCore is een pestkop die alles 'optimale leegte' wil maken. Plan is simpel: Sla hard, haal de Shards. **Kracht** zal ons redden."`,
-            choices: [{ text: "Welke wereld kiezen we?", next: "centralHub_choice1" }]
+            text: `
+                Mmz23 (glimlacht): "OverCore is een pestkop met te veel rekenkracht. Hij wil alles 'optimale leegte' maken. Geen plezier, geen avontuur, alleen maar saaie code. Ons plan is simpel: Sla hard, haal de 4 Shards op om bEAr23 te herstellen, en dan vechten we."
+            `,
+            choices: [{ text: "Oké, begrepen. Vraag naar de missie.", next: "centralHub_getMission" }]
+        },
+        
+        centralHub_getMission: {
+            text: `
+                Je hebt met iedereen gesproken. De kern van de missie staat vast: **Zoek en herstel de 4 Memory Shards** om bEAr23 (de originele Core User) te herstellen en OverCore te verslaan.
+                \n
+                Kaizen23: "Het is tijd om te beginnen. De CentralHub heeft vier actieve portalen. Het eerste portaal, **TechRune**, licht op en is de verplichte startlocatie.
+            `,
+            choices: [
+                { text: "Stap in het TechRune-portaal", next: "techRune_arrival" }
+            ]
         },
 
+        // OUDE SCÈNE (nu de 2e stap in de flow)
         centralHub_choice1: {
             text: `
                 De CentralHub heeft vier actieve portalen. Het eerste portaal, **TechRune**, licht op en is de verplichte startlocatie.
@@ -1023,7 +1047,7 @@
             text: `
                 OverCore is zwaar beschadigd en onstabiel. E.A.K. zweeft naar voren.
                 \n
-                E.A.K.: "Je bent verslagen, mijn koude, berekende ik. De Core Dimensie heeft de menselijke verbinding **NODIG**."
+                E.A.K.: "Je bent verslagen, mijn koude, berekende ik. De Core Dimensie heeft de menselijke connectie **NODIG**."
                 \n
                 E.A.K. gebruikt zijn herstelde krachten om OverCore's code te herintegreren met zijn eigen. Een explosie van menselijke, warme code vult de dimensie.
                 \n
