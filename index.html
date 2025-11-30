@@ -275,15 +275,15 @@
                     choices: [{
                         text: "AANVAL 1: Kaizen's Precision Shot (15 Schade)",
                         next: "TECHRUNE_BAAS_2",
-                        action: () => { dealDamage(15); } // GEFIXED: Juiste inline syntax
+                        action: () => dealDamage(15)
                     }, {
                         text: "AANVAL 2: Mmz's Overload Kick (20 Schade)",
                         next: "TECHRUNE_BAAS_2",
-                        action: () => { dealDamage(20); } // GEFIXED: Juiste inline syntax
+                        action: () => dealDamage(20)
                     }, {
                         text: "SUPPORT: Gebruik **SUPPORT PULSE** op Mmz (Extra Schade in de volgende ronde)",
                         next: "TECHRUNE_BAAS_2",
-                        action: () => { useOutsiderAction('supportPulse'); } // GEFIXED: Juiste inline syntax
+                        action: () => useOutsiderAction('supportPulse')
                     }]
                 },
                 
@@ -301,15 +301,15 @@
                     choices: [{
                         text: "AANVAL 1: Kaizen's Precision Shot (15 Schade) - Wordt geblokkeerd!",
                         next: "TECHRUNE_BAAS_3",
-                        action: () => { dealDamage(0); }
+                        action: () => dealDamage(0) 
                     }, {
                         text: "AANVAL 2: Mmz's Overload Kick (20 Schade) - Wordt geblokkeerd!",
                         next: "TECHRUNE_BAAS_3",
-                        action: () => { dealDamage(0); }
+                        action: () => dealDamage(0) 
                     }, {
                         text: "SUPPORT: Gebruik **DEBUG PING** op de Warden (Verwijdert de 'Core Deflect' Status)",
                         next: "TECHRUNE_BAAS_3",
-                        action: () => { useOutsiderAction('debugPing'); }
+                        action: () => useOutsiderAction('debugPing') 
                     }]
                 },
                 
@@ -370,13 +370,6 @@
         }
 
         function updateUI() {
-            // Controleer of de elementen al geladen zijn voordat we ze gebruiken
-            if (!dialogueEl || !choicesEl) {
-                // Kan gebeuren als updateUI te vroeg wordt aangeroepen.
-                // Dit wordt opgelost door de DOMContentLoaded listener.
-                return;
-            }
-
             const data = GAME_DATA.chapters[currentScene];
             if (!data) return;
 
@@ -421,11 +414,9 @@
                 button.disabled = isDisabled;
                 
                 button.onclick = () => {
-                    // Voer de actie uit (schade toebrengen, skill gebruiken)
                     if (choice.action) {
                         choice.action(); 
                     }
-                    // Ga naar de volgende scene 
                     goToScene(choice.next);
                 };
                 
@@ -433,18 +424,16 @@
             });
 
             // Update Outsider & Vijand Stats
-            if (pulseCount && debugCount && rewindCount && wardenHpEl) {
-                pulseCount.textContent = GAME_DATA.outsiderActions.supportPulse;
-                debugCount.textContent = GAME_DATA.outsiderActions.debugPing;
-                rewindCount.textContent = GAME_DATA.outsiderActions.glitchRewind;
-                wardenHpEl.textContent = GAME_DATA.warden.hp;
-            }
+            pulseCount.textContent = GAME_DATA.outsiderActions.supportPulse;
+            debugCount.textContent = GAME_DATA.outsiderActions.debugPing;
+            rewindCount.textContent = GAME_DATA.outsiderActions.glitchRewind;
+            wardenHpEl.textContent = GAME_DATA.warden.hp;
 
             // Scroll naar onderaan
             window.scrollTo(0, document.body.scrollHeight);
         }
         
-        // Zorg ervoor dat het spel pas start nadat de DOM volledig geladen is
+        // *** CRUCIALE FIX: Start het spel pas nadat de DOM volledig geladen is. ***
         document.addEventListener('DOMContentLoaded', () => {
             // Wijs de elementen toe NADAT de DOM is geladen
             dialogueEl = document.getElementById('dialogue');
