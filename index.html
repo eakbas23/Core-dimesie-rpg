@@ -78,6 +78,7 @@
             color: var(--color-accent-red);
             font-weight: bold;
             text-shadow: 0 0 5px var(--color-accent-red);
+            font-size: 1em;
         }
 
         /* Main Content Panel */
@@ -310,24 +311,30 @@
     // =======================================================
 
     const scenes = {
-        // --- START & CENTRAL HUB (UNCHANGED) ---
+        // --- START & CENTRAL HUB (VERNIEUWDE INTRO) ---
         
         centralHub_start: {
             text: `
-                Je voelt een schok, een flits van witte code, en dan... stilte. Je bent niet meer in je browser.
-                Je staat op een zwevend platform in een ruimte die bestaat uit neon lijnen en perfecte geometrie. Dit is de **CentralHub**, het hart van de Core Dimensie.
-                Naast je staat **bEAr23**, een kleine digitale beer met flikkerende vacht, eruitzien alsof hij een flinke glitch heeft gehad.
+                Een oorverdovende **SCHOK** van witte ruis vult je bewustzijn. Je voelt je lichaam oplossen in een cascade van binaire code. Dan, plotseling, valt alles stil.
                 \n
-                bEAr23: "*error*... Outsider. Je bent... Binnen. Dat was niet de bedoeling. Ik heb je per ongeluk binnengetrokken bij de crash. Oeps. Welkom in de dimensie van eakbas23.nl."
+                Je staat op een platform dat lijkt te zweven in een bodemloze, donkere leegte. Overal om je heen creëren perfecte, neon-blauwe en groene lijnen de architectuur van de ruimte. Dit is de **CentralHub**, de primaire interface van de Core Dimensie. Het is adembenemend en onheilspellend tegelijk.
                 \n
-                Twee figuren landen voor je in een flits van blauw en groen licht. **Kaizen23** (blauw, tactisch) en haar broer **Mmz23** (groen, gespierd). Ze kijken je onderzoekend aan.
+                Naast je zit een kleine, flikkerende gestalte: **bEAr23**. Zijn vacht is een onstabiele mix van bruine en witte code die constant hapert, alsof hij midden in een zware systeemfout zit. Hij kijkt je aan met grote, bezorgde ogen.
                 \n
-                Kaizen23: "Een Anomalie. Geen Core User. bEAr23, verklaar je fout."
-                Mmz23: "Rustig, zus. Hij/zij is hier, we gaan ze niet straffen. Welkom, Outsider. Ik ben Mmz23."
+                bEAr23: "Oh nee, nee, nee... *error*... Outsider. Je bent... Binnen. Dat was niet de bedoeling! Ik was bezig met een noodsprong bij de crash en ik heb je per ongeluk meegetrokken. Oeps. Welkom in de dimensie van eakbas23.nl, waar de code gek is geworden."
+                \n
+                Plotseling landen twee figuren voor je in een flits van intens licht.
+                \n
+                De eerste, **Kaizen23**, draagt een slank, tactisch pak in diepblauw. Haar bewegingen zijn gecontroleerd en haar blik is scherp, gericht op het analyseren van elk detail in de omgeving, inclusief jou.
+                \n
+                De tweede, **Mmz23**, is groter en gespierder, in een glimmend groen pantser. Hij straalt rauwe kracht en energie uit. Hij lacht kort, maar zijn ogen zijn serieus.
+                \n
+                Kaizen23: "Een Anomalie. Een externe entiteit. Geen Core User. bEAr23, verklaar je fout. Dit is een ernstige schending van de firewall."
+                Mmz23: "Rustig, zus. Hij/zij is hier, en we hebben alle hulp nodig die we kunnen krijgen. Welkom, Outsider. Ik ben Mmz23, en dat is mijn tactische zus, Kaizen23. We zijn de laatste verdediging tegen OverCore."
             `,
             choices: [
-                { text: "Praat eerst met Kaizen23 (Tactische route)", next: "centralHub_talkKaizen" },
-                { text: "Praat eerst met Mmz23 (Actie route)", next: "centralHub_talkMmz" }
+                { text: "Vraag Kaizen23 wat de tactische prioriteiten zijn", next: "centralHub_talkKaizen" },
+                { text: "Vraag Mmz23 wat zijn plan van aanpak is", next: "centralHub_talkMmz" }
             ]
         },
 
@@ -350,7 +357,7 @@
             choices: [{ text: "Stap in het TechRune-portaal", next: "techRune_arrival" }]
         },
         
-        // --- TECHRUNE (BEGIN VAN DE WERELD 1) - (Verkorte versie hier, volledige route in de oorspronkelijke code) ---
+        // --- TECHRUNE (WERELD 1) ---
 
         techRune_arrival: {
             text: `Je stapt door de data-ring en de sfeer verandert abrupt. Je bent in **TechRune**. Wolkenkrabbers zijn gestapelde smartphones. De ingang is zwaar bewaakt.`,
@@ -375,7 +382,7 @@
         },
 
         techRune_stealth1: {
-            text: `bEAr23: "Dit Glitch-pad is 74% stabiel. We moeten door een reeks onstabiele telefoon-schakelaars. De code is rood-blauw-blauw."`,
+            text: `bEAr23: "Dit Glitch-pad is 74% stabiel. We moeten door een reeks onstabiele telefoon-schakelaars. De code moet rood-blauw-blauw zijn."`,
             choices: [
                 { text: "Kies 1: Rood - Blauw - Blauw (De juiste code)", next: "techRune_stealth_success" },
                 { text: "Kies 2: Blauw - Groen - Rood (Breekt de schakelaar)", next: "techRune_stealth_fail" },
@@ -759,10 +766,6 @@
 
 
         // Start het spel
-        // Om het testen makkelijker te maken na een crash of onderbreking:
-        // Optie 1: Start direct bij CentralHub na TechRune (voor snelle test van de nieuwe werelden)
-        // updateScreen("centralHub_postTechRune");
-        // Optie 2: Start bij het begin
         updateScreen(gameState.currentScene);
     }
 
@@ -786,10 +789,11 @@
 
         // Modus en Transform Rendering
         statsElements.kaizenMode.textContent = `MODUS: ${Kaizen23.mode}`;
-        statsElements.kaizenMode.className = (Kaizen23.mode !== 'Standaard') ? 'stat-value transformed' : '';
+        // Voeg de transformed class toe voor visuele flair
+        statsElements.kaizenMode.classList.toggle('transformed', Kaizen23.mode !== 'Standaard');
         
         statsElements.mmzMode.textContent = `MODUS: ${Mmz23.mode}`;
-        statsElements.mmzMode.className = (Mmz23.mode !== 'Standaard') ? 'stat-value transformed' : '';
+        statsElements.mmzMode.classList.toggle('transformed', Mmz23.mode !== 'Standaard');
 
 
         // Outsider Armband en Acties
@@ -844,7 +848,7 @@
         scene.choices.forEach(choice => {
             const button = document.createElement('button');
             button.className = 'choice-button';
-            // Voeg een rode pulse toe als het een cruciale keuze is
+            // Voeg een rode pulse toe als het een cruciale transformatie keuze is
             if (choice.text.includes("TRANSFORMATIE")) {
                 button.className += ' red-pulse';
             }
