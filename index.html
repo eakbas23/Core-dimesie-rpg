@@ -358,7 +358,7 @@ let gameState = {
 // =======================================================
 
 const scenes = {
-    // --- BESTAANDE SCENES (Onveranderd) ---
+    // --- CENTRAL HUB (DEEL 1 & 2) ---
     centralHub_start: {
         text: `
             Je voelt een schok, een flits van witte code, en dan... stilte. Je bent niet meer in je browser.
@@ -417,48 +417,66 @@ const scenes = {
         ]
     },
     
-    // De hele TechRune sectie volgt hier. Omdat deze al werkte, kort ik hem in de code in,
-    // maar in de werkelijke implementatie is hij compleet (zoals in de vorige reactie).
-    // ... (TechRune Scènes: arrival, bruteForce, stealth, lab_access, boss_intro, etc.) ...
+    // --- WERELD 1: TECHRUNE ---
     
     techRune_arrival: {
-        text: `[TechRune Aankomst] Je stapt door de blauwe data-ring...`,
+        text: `
+            Je stapt door de blauwe data-ring. Je komt aan in **TechRune**, een kille omgeving van servers en drones. De lucht knettert van de overbelaste data. Kaizen23 wijst naar de ingang van het Hoofdlab, die bewaakt wordt door een Cipher Drone.
+            <br><br>
+            Kaizen23: "We moeten langs die drone. Twee routes: Mmz23 kan de buitenmuur doorbreken (Brute Force) of we kunnen de beveiligingscodes kraken (Stealth). Wat is het plan?"
+        `,
         choices: [
-            { text: "Kies [Brute Force]", next: "techRune_bruteForce1" },
-            { text: "Kies [Stealth]", next: "techRune_stealth1" },
-            { text: "Kies [Splitsen]", next: "techRune_splitFailure" }
+            { text: "Kies [Brute Force] (Mmz23 Focus)", next: "techRune_bruteForce1" },
+            { text: "Kies [Stealth] (Kaizen23 Focus)", next: "techRune_stealth1" }
         ]
     },
 
     techRune_bruteForce1: {
-        text: `[Brute Force] Mmz23 breekt door. Gevecht!`,
+        text: `
+            Mmz23 laadt op. Hij rent en slaat in op de deur. De Cipher Drone reageert direct met een energiekogel. Je hebt nu de kans om te reageren.
+            <br><br>
+            *Mmz23 staat in de aanval. Kaizen23 heeft de drone geanalyseerd.*
+        `,
         choices: [
-            { text: "Laat Kaizen23 de TACTISCAN_23 gebruiken (10 NRG)", next: "techRune_bruteForce_scan" },
-            { text: "Laat Mmz23 direct een COREBREAKER PUNCH gebruiken (15 NRG)", next: "techRune_bruteForce_attack" },
+            { text: "Laat Kaizen23 de TACTISCAN_23 gebruiken (10 NRG) om de zwakte te raken", next: "techRune_bruteForce_scan" },
+            { text: "Laat Mmz23 direct een COREBREAKER PUNCH gebruiken (15 NRG) om door te stoten", next: "techRune_bruteForce_attack" },
         ],
         onEnter: () => { gameState.techRuneRoute = 'bruteForce'; }
     },
     techRune_bruteForce_scan: {
-        text: `[Scan Succes] Kaizen raakt de zwakte. Drone verslagen.`,
+        text: `
+            [Scan Succes] Kaizen raakt de zwakte in het pantser van de drone met een snelle datavlaag. De drone wordt uitgeschakeld.
+            <br><br>
+            Kaizen23: "Efficiëntie boven chaos."
+        `,
         choices: [{ text: "Ga verder: Mmz23 ruimt de rest op", next: "techRune_lab_access" }],
         onEnter: () => { gameState.characters.Kaizen23.energy -= 10; }
     },
     techRune_bruteForce_attack: {
-        text: `[Brute Force Damage] Mmz23 raakt, maar wordt geraakt.`,
+        text: `
+            [Brute Force Damage] Mmz23 raakt de drone, maar de drone verdedigt goed en schiet een terugkaatsend schot af.
+            <br><br>
+            *Mmz23 verliest 10 HP en 15 Energie.*
+        `,
         choices: [{ text: "Ga verder naar de Lab Toegang", next: "techRune_lab_access" }],
         onEnter: () => { gameState.characters.Mmz23.hp -= 10; gameState.characters.Mmz23.energy -= 15; }
     },
+    
     techRune_stealth1: {
-        text: `[Stealth Puzzel] Code: rood-blauw-blauw.`,
+        text: `
+            Kaizen23 opent een terminal. Ze heeft 3 kansen om de juiste kleurcode in te voeren. De code flikkert: Rood - ??? - Blauw. bEAr23 fluistert: "De tweede kleur is de kleur van pure logica... **blauw**."
+        `,
         choices: [
             { text: "Kies 1: Rood - Blauw - Blauw (Juiste code)", next: "techRune_stealth_success" },
             { text: "Kies 2: Blauw - Groen - Rood (Foute code)", next: "techRune_stealth_fail" },
-            { text: "Gebruik Glitch Rewind (1x)", next: "techRune_stealth1_rewind" }
+            { text: "Gebruik Glitch Rewind (1x beschikbaar)", next: "techRune_stealth1_rewind" }
         ],
         onEnter: () => { gameState.techRuneRoute = 'stealth'; }
     },
     techRune_stealth1_rewind: {
-        text: `[Rewind Actief] Je draait de tijd terug. bEAr23's advies is nu duidelijker.`,
+        text: `
+            [Rewind Actief] Je draait de tijd 10 seconden terug. De codes zijn opnieuw te kiezen. De hint van bEAr23 over **blauw** is nu duidelijker.
+        `,
         choices: [
             { text: "Kies 1: Rood - Blauw - Blauw (Juiste code)", next: "techRune_stealth_success" },
             { text: "Kies 2: Blauw - Groen - Rood (Foute code)", next: "techRune_stealth_fail" }
@@ -471,14 +489,21 @@ const scenes = {
         }
     },
     techRune_stealth_success: {
-        text: `[Stealth Succes] De code werkt. Kaizen is tevreden.`,
+        text: `
+            [Stealth Succes] De code werkt. Het beveiligingssysteem wordt op stil gezet en de deur glijdt open. Kaizen is tevreden.
+        `,
         choices: [{ text: "Ga verder naar de Lab Toegang", next: "techRune_lab_access" }]
     },
     techRune_stealth_fail: {
-        text: `[Stealth Faal] Alarm af. Mmz en Kaizen raken gewond.`,
+        text: `
+            [Stealth Faal] Alarm af. Een lasergrid schiet door de gang. Mmz en Kaizen raken gewond tijdens het ontwijken.
+            <br><br>
+            *Mmz23 en Kaizen23 verliezen elk 5 HP en 10 Energie.*
+        `,
         choices: [{ text: "Ga verder naar de Lab Toegang", next: "techRune_lab_access" }],
         onEnter: () => { gameState.characters.Mmz23.hp -= 5; gameState.characters.Mmz23.energy -= 10; gameState.characters.Kaizen23.hp -= 5; gameState.characters.Kaizen23.energy -= 10; }
     },
+    
     techRune_lab_access: {
         text: `
             [Lab Access] Je vindt het hologram van Eakbas23 en de **CoreLink-Armband**. 
@@ -498,8 +523,15 @@ const scenes = {
             gameState.resetOutsiderActions();
         }
     },
+    
     techRune_boss_intro: {
-        text: `[Boss FASE 1] Cipher Warden verschijnt. Hij laadt een Data Beam op.`,
+        text: `
+            [Boss FASE 1: Cipher Warden]
+            <br><br>
+            De **Cipher Warden**, een reusachtige, zwevende Data-Entity, verschijnt. Hij laadt een Data Beam op, gericht op de Shard.
+            <br><br>
+            Kaizen23: "We moeten zijn oplading verstoren! Nu!"
+        `,
         choices: [
             { text: "Aanval: Mmz23's COREBREAKER PUNCH (15 NRG)", next: "techRune_boss_p1_mmz_attack" },
             { text: "Analyse: Kaizen23's TACTISCAN_23 (10 NRG)", next: "techRune_boss_p1_kaizen_scan" },
@@ -507,60 +539,77 @@ const scenes = {
         ]
     },
     techRune_boss_p1_mmz_attack: {
-        text: `[Aanval Faalt] Mmz23 raakt, maar wordt geraakt. (-20 HP) Warden bereidt zich voor op de volgende aanval.`,
+        text: `
+            [Aanval Faalt] Mmz23 raakt het pantser, maar de Warden vuurt de straal af en treft Mmz23.
+            <br><br>
+            *Mmz23 verliest 20 HP. Warden bereidt zich voor op de volgende aanval.*
+        `,
         choices: [
             { text: "Volgende beurt: Herstel en herpositioneer", next: "techRune_boss_p1_loop" }
         ],
         onEnter: () => { gameState.characters.Mmz23.energy -= 15; gameState.characters.Mmz23.hp -= 20; }
     },
     techRune_boss_p1_kaizen_scan: {
-        text: `[Scan Succes] Kaizen vindt zwakte en creëert HEXA-SHIELD MATRIX. Aanval afgeweerd.`,
+        text: `
+            [Scan Succes] Kaizen vindt een feedback-loop en creëert een HEXA-SHIELD MATRIX, die de Data Beam afleidt. Aanval afgeweerd.
+        `,
         choices: [
             { text: "Volgende beurt: Kaizen23 valt aan op het blootgestelde punt (Data Edge Volley)", next: "techRune_boss_p1_kaizen_attack" }
         ],
         onEnter: () => { gameState.characters.Kaizen23.energy -= 10; }
     },
     techRune_boss_p1_kaizen_attack: {
-        text: `[Krachtige Aanval] Kaizen raakt het zwakke punt hard. Warden schakelt over naar Adaptatie Fase.`,
+        text: `
+            [Krachtige Aanval] Kaizen raakt het zwakke punt hard. Warden schakelt over naar Adaptatie Fase.
+        `,
         choices: [
-            { text: "Ga verder met de strijd (Einde demo)", next: "techRune_cliffhanger" }
+            { text: "Ga verder met de strijd (Warden verslagen)", next: "techRune_cliffhanger" }
         ],
         onEnter: () => { gameState.characters.Kaizen23.energy -= 20; }
     },
     techRune_boss_p1_outsider_ping: {
-        text: `[Ping Gebruikt] Debug Ping vertraagt de Warden. Mmz23 krijgt een bonusaanval.`,
+        text: `
+            [Ping Gebruikt] Debug Ping verstoort de Warden's interne code. Zijn oplading faalt. Mmz23 krijgt een snelle, gratis tegenaanval.
+            <br><br>
+            *1 Debug Ping gebruikt. Warden neemt flinke schade.*
+        `,
         choices: [
-            { text: "Volgende beurt: De strijd gaat door", next: "techRune_boss_p1_loop" }
+            { text: "Volgende beurt: De strijd gaat door", next: "techRune_cliffhanger" } // Direct naar overwinning voor progressie
         ],
         onEnter: () => {
             if (gameState.characters.Outsider.debugPing > 0) {
                 gameState.characters.Outsider.debugPing -= 1;
                 gameState.characters.Outsider.totalActions -= 1;
-            } else { alert("Geen Debug Ping acties meer beschikbaar in deze wereld."); updateScreen("techRune_boss_intro"); return; }
+            } else { alert("Geen Debug Ping acties meer beschikbaar."); updateScreen("techRune_boss_intro"); return; }
         }
     },
     techRune_boss_p1_loop: {
-        text: `[Boss FASE 1 Loop] De Cipher Warden herstelt zijn aanval. Keuze!`,
+        text: `
+            [Boss FASE 1 Loop] De Cipher Warden herstelt zijn aanval. Keuze!
+        `,
         choices: [
             { text: "Aanval: Mmz23's COREBREAKER PUNCH op het pantser (15 NRG)", next: "techRune_boss_p1_mmz_attack" },
             { text: "Analyse: Kaizen23's TACTISCAN_23 (10 NRG)", next: "techRune_boss_p1_kaizen_scan" },
             { text: "Actie Outsider: DEBUG PING op de oplading", next: "techRune_boss_p1_outsider_ping" }
         ]
     },
+    
     techRune_cliffhanger: {
         text: `
             **[TechRune Bevrijd]**
             <br><br>
-            De Cipher Warden trekt zich terug voor Fase 2. TechRune is bevrijd, de Shard is veilig.
+            De Cipher Warden desintegreert in pure data. TechRune is bevrijd, de Shard is veilig.
             <br><br>
-            bEAr23 is stabieler. Je hebt de CoreLink-Armband.
+            bEAr23: "Yes! 25% hersteld! Ik voel... 3 nieuwe portalen."
             <br><br>
-            Kaizen23: "Goed gewerkt, team. Laten we teruggaan naar de CentralHub en hergroeperen. De keuze voor de volgende wereld wacht."
+            Kaizen23: "Goed gewerkt, team. Laten we teruggaan naar de CentralHub en hergroeperen. We staan nu voor een belangrijke keuze."
         `,
         choices: [
             { text: "Ga terug naar de CentralHub", next: "centralHub_postTechRune" }
         ]
     },
+
+    // --- CENTRAL HUB NA WERELD 1 ---
 
     centralHub_postTechRune: {
         text: `
@@ -570,20 +619,23 @@ const scenes = {
             - bEAr23 heeft de Tech-Memory Shard (25% geheugen).
             - De Outsider heeft de CoreLink-Armband (Acties gereset).
             <br><br>
-            Twee nieuwe portalen lichten op: **BeastRealm** (Groen Portaal) en **Bliksem Arena** (Geel/Blauw Portaal). Welke kies je?
+            Twee nieuwe, actieve portalen lichten op: **BeastRealm** (Groen Portaal) en **Bliksem Arena** (Geel/Blauw Portaal). Welke kies je?
         `,
         choices: [
-            // Controle op reeds gekozen werelden om loops te voorkomen
+            // Voorkom dat de speler dezelfde wereld opnieuw kiest
             { text: "Kies 1: 🦁 BEASTREALM (Focust op Mmz23's transformatie)", next: "beastRealm_start", disabled: gameState.inventory.beastShard },
-            { text: "Kies 2: ⚡ BLIKSEM ARENA (Focust op Kaizen23's transformatie)", next: "end_of_game_wait", disabled: gameState.inventory.bliksemShard } // Wordt in Deel 3 uitgewerkt
+            { text: "Kies 2: ⚡ BLIKSEM ARENA (Focust op Kaizen23's transformatie)", next: "bliksemArena_start", disabled: gameState.inventory.bliksemShard }
         ],
         onEnter: () => {
             gameState.currentWorld = "CentralHub";
             gameState.resetOutsiderActions();
-            // Zorgt dat de volgende wereld start
-            if (gameState.inventory.beastShard && !gameState.inventory.bliksemShard) {
-                 scenes.centralHub_postTechRune.choices[0].disabled = true;
-                 scenes.centralHub_postTechRune.choices[1].next = "bliksemArena_start"; // Zorgt dat de 2e optie naar de Bliksem Arena gaat als de BeastRealm klaar is
+            // Updatet de knoppen als een shard al is verzameld
+            scenes.centralHub_postTechRune.choices[0].disabled = gameState.inventory.beastShard;
+            scenes.centralHub_postTechRune.choices[1].disabled = gameState.inventory.bliksemShard;
+            // Als alles klaar is voor de volgende fase, update dan de scene
+            if (gameState.inventory.beastShard && gameState.inventory.bliksemShard) {
+                updateScreen("centralHub_postBliksemArena"); // Naar Deel 4
+                return;
             }
         }
     },
@@ -598,15 +650,14 @@ const scenes = {
             <br><br>
             Mmz23: "Hier voel ik me thuis. De natuurlijke, onvervalste energie van de Dimensie. Maar het is... overwoekerd. De Corruptie is hier rauw, ongetemd."
             <br><br>
-            Kaizen23: "Analyse wijst op de aanwezigheid van de 'Jager'. Dit is zijn territorium. Mmz23, zijn we bereid om de ongetemde kant van je krachten te gebruiken?"
-            <br><br>
-            Mmz23: "De **Beast Aura** is hier, zus. Ik moet hem omarmen. Ik voel een pad naar de Shard, maar het vereist brute kracht of een glimp van inzicht."
+            Kaizen23: "Analyse wijst op de aanwezigheid van de 'Jager'. Dit is zijn territorium. Mmz23, zijn we bereid om de ongetemde kant van je krachten te gebruiken? Er is een dichte muur van Corruptie voor ons."
         `,
         choices: [
             { text: "Blijf op het pad en zoek naar een omweg (Tactische aanpak)", next: "beastRealm_path_kaizen" },
             { text: "Laat Mmz23 de energie van de jungle gebruiken (Mmz23 focus)", next: "beastRealm_power_mmz" },
             { text: "Vraag bEAr23 naar een zwakte in de jungle code", next: "beastRealm_glitch_bear" }
-        ]
+        ],
+        onEnter: () => { gameState.currentWorld = "BeastRealm"; }
     },
 
     beastRealm_path_kaizen: {
@@ -622,7 +673,6 @@ const scenes = {
         ],
         onEnter: () => {
             gameState.characters.Kaizen23.energy -= 15;
-            // Zorg ervoor dat energie niet onder 0 gaat, hoewel dit zelden gebeurt
             if (gameState.characters.Kaizen23.energy < 0) gameState.characters.Kaizen23.energy = 0;
         }
     },
@@ -631,7 +681,7 @@ const scenes = {
         text: `
             Mmz23 sluit zijn ogen. Hij ademt de groene Core energie in. Zijn spiermassa zwelt, zijn ogen lichten op. Dit is de **Beast Aura**.
             <br><br>
-            Mmz23: "**CORE PULSE:** Een puur energiepad opent zich. Maar het trekt de aandacht van de Jager. Nu snel!"
+            Mmz23: "**CORE PULSE:** Een puur energiepad opent zich door de muur. Maar het trekt de aandacht van de Jager. Nu snel!"
             <br><br>
             *Mmz23 verliest 10 Energie. Maar door de aura heelt hij 15 HP.*
         `,
@@ -646,7 +696,7 @@ const scenes = {
 
     beastRealm_glitch_bear: {
         text: `
-            bEAr23 trilt en zijn vacht flikkert. "Ik zie... een tijdelijke lus in de structuur. Ik kan een Glitch creëren die een doorgang stabiliseert. Maar het is een Glitch van de 5%."
+            bEAr23 trilt en zijn vacht flikkert. "Ik zie... een tijdelijke lus in de structuur. Ik kan een Glitch creëren die een doorgang stabiliseert. Maar het is een Glitch van de 25%."
             <br><br>
             bEAr23 concentreert zich. Een kleine, paarse codebarst opent een weg. Het is niet permanent, maar het werkt.
             <br><br>
@@ -704,7 +754,7 @@ const scenes = {
         text: `
             Mmz23 pakt de Shard. De herinneringen en de kracht overspoelen hem. Hij brult en de groene vlam om hem heen wordt een complete, brute **Beast Aura**!
             <br><br>
-            Mmz23: "IK BEN KLAAR!"
+            Mmz23: "IK BEN KLAAR! Dit is mijn ware kracht!"
             <br><br>
             *Mmz23's Max HP en Max Energie gaan permanent omhoog met 10! Hij heelt volledig.*
             <br><br>
@@ -725,7 +775,6 @@ const scenes = {
             gameState.characters.Mmz23.hp = gameState.characters.Mmz23.maxHp; // Volledig geheeld
             gameState.characters.Mmz23.energy = gameState.characters.Mmz23.maxEnergy; // Volledig geheeld
             
-            // Kaizen heelt ook 10% ter aanmoediging
             gameState.characters.Kaizen23.hp = Math.min(gameState.characters.Kaizen23.maxHp, gameState.characters.Kaizen23.hp + 10);
         }
     },
@@ -734,7 +783,7 @@ const scenes = {
         text: `
             De **BEAST HUNTER** is een gigantische, groene en zwarte constructie, gemaakt van verwrongen wortel-code. Hij gromt, en vuurt een reeks energieprojectielen af.
             <br><br>
-            **GEVECHT: FASE 1 (150 HP)** - De Hunter valt non-stop aan. Mmz23 moet de aanval onderdrukken!
+            **GEVECHT: FASE 1** - De Hunter valt non-stop aan. Mmz23 moet de aanval onderdrukken!
             <br><br>
             Kaizen23: "Zijn verdediging is zwak, maar zijn aanval is non-stop. We hebben een 'Breuk' nodig om hem te onderbreken."
         `,
@@ -747,18 +796,17 @@ const scenes = {
 
     beastRealm_boss_mmz_roar: {
         text: `
-            Mmz23 laat een oorverdovende **BEAST ROAR** los. De Hunter stopt met zijn aanval.
+            Mmz23 laat een oorverdovende **BEAST ROAR** los. De Hunter stopt met zijn aanval en valt achterover in de dichte jungle.
             <br><br>
-            Kaizen23: "Het werkt! Zijn flow is onderbroken. Nu een tegenaanval!"
+            Kaizen23: "Het werkt! Zijn flow is onderbroken. Dit is het moment!"
             <br><br>
-            *Mmz23 verliest 20 Energie. De Hunter neemt 30 schade. FASE 1 is voorbij.*
+            *Mmz23 verliest 20 Energie. FASE 1 is voorbij.*
         `,
         choices: [
-            { text: "Ga verder: De Hunter gaat in Fase 2", next: "beastRealm_boss_p2_success" }
+            { text: "Ga verder: De Hunter gaat in Fase 2 (Hunter verslagen)", next: "beastRealm_boss_p2_success" }
         ],
         onEnter: () => {
             gameState.characters.Mmz23.energy -= 20;
-            // Normaal zou je HP hier aftrekken, maar we gaan direct naar de volgende fase
         }
     },
 
@@ -774,8 +822,8 @@ const scenes = {
         onEnter: () => {
             gameState.characters.Kaizen23.energy -= 20;
             gameState.characters.Kaizen23.hp -= 25;
-            if (gameState.characters.Kaizen23.hp < 0) {
-                 updateScreen("game_over_kaizen"); // Einde Game (vereist nieuwe scene)
+            if (gameState.characters.Kaizen23.hp <= 0) {
+                 updateScreen("game_over"); // Tijd om Game Over in te bouwen
             }
         }
     },
@@ -784,12 +832,12 @@ const scenes = {
         text: `
             Je gebruikt de **Debug Ping**. De Hunter's aanval vertraagt tot nul. De vertraging geeft Mmz23 tijd om de kwetsbare schouder te raken.
             <br><br>
-            Mmz23: "COREBREAKER!"
+            Mmz23: "COREBREAKER PUNCH!"
             <br><br>
-            *1 Debug Ping gebruikt. Hunter neemt 40 schade. FASE 1 is voorbij.*
+            *1 Debug Ping gebruikt. Hunter is verslagen.*
         `,
         choices: [
-            { text: "Ga verder: De Hunter gaat in Fase 2", next: "beastRealm_boss_p2_success" }
+            { text: "Ga verder: De Hunter is uitgeschakeld.", next: "beastRealm_boss_p2_success" }
         ],
         onEnter: () => {
             if (gameState.characters.Outsider.debugPing > 0) {
@@ -805,20 +853,18 @@ const scenes = {
 
     beastRealm_boss_p2_success: {
         text: `
-            De Beast Hunter is zwaar beschadigd. Zijn pantser barst open. Mmz23 kijkt naar de Shard.
+            De Beast Hunter is vernietigd. Zijn essentie lost op in de jungle, die weer puur groen wordt.
             <br><br>
-            Mmz23: "Hij gebruikt onze eigen angst. De Shard herstelt mijn ware, gecontroleerde kracht. **Ik heb de Beast Aura geaccepteerd!**"
+            Mmz23: "Dit is mijn herinnering aan de Beast Aura. Nu heb ik de controle. Ik ben sterker, sneller."
             <br><br>
-            De Hunter verandert in een zwerm insect-drones en vlucht. De BeastRealm is gezuiverd.
-            <br><br>
-            Kaizen23: "Efficiënt. Mmz23's nieuwe kracht is stabiel. Goed gedaan, broer. Goed gedaan, Outsider."
+            De **Beast-Memory Shard** is geabsorbeerd. Tijd om terug te keren.
         `,
         choices: [
             { text: "Ga terug naar de CentralHub. Klaar voor Wereld 3.", next: "centralHub_postBeastRealm" }
         ]
     },
 
-    // --- CENTRAL HUB NA BEASTREALM ---
+    // --- CENTRAL HUB NA WERELD 2 ---
     
     centralHub_postBeastRealm: {
         text: `
@@ -829,7 +875,7 @@ const scenes = {
             - bEAr23 heeft de Tech- en Beast-Memory Shard (50% geheugen).
             - De Outsider heeft de CoreLink-Armband (Acties gereset).
             <br><br>
-            Het laatste portaal, **Bliksem Arena**, licht op met felgeel en blauw licht. Kaizen23 kijkt vastberaden.
+            Het laatste portaal, **Bliksem Arena**, licht nu fel geel en blauw op. Kaizen23 kijkt vastberaden. Dit is haar test.
         `,
         choices: [
             { text: "Kies: ⚡ BLIKSEM ARENA (Focust op Kaizen23's transformatie)", next: "bliksemArena_start" },
@@ -838,15 +884,19 @@ const scenes = {
         onEnter: () => {
             gameState.currentWorld = "CentralHub";
             gameState.resetOutsiderActions();
-            gameState.inventory.beastShard = true; // Zorg dat deze true is voor de volgende fase
+            // Updatet de knop als de Bliksem Arena al voltooid zou zijn
+            if (gameState.inventory.bliksemShard) {
+                 updateScreen("centralHub_postBliksemArena"); // Naar Deel 4
+                 return;
+            }
         }
     },
     
     centralHub_check_nexus: {
          text: `
-             De Nexus-poort, het pad naar OverCore, blijft geblokkeerd totdat alle Shards zijn verzameld.
+             De Nexus-poort, het pad naar OverCore, blijft geblokkeerd.
              <br><br>
-             bEAr23: "De poort is 50% stabiel, maar niet toegankelijk. We hebben de **Bliksem Shard** en de **Origin Shard** nodig."
+             bEAr23: "De poort is 50% stabiel. We hebben de **Bliksem Shard** en de **Origin Shard** nodig. We moeten de Bliksem Arena in."
          `,
          choices: [
              { text: "Ga naar ⚡ BLIKSEM ARENA", next: "bliksemArena_start" }
@@ -864,20 +914,24 @@ const scenes = {
             <br><br>
             Kaizen23: "Mijn beurt. Dit is de wereld waar ik mijn tactische en datakracht moet omarmen. Het is een test van snelheid en efficiëntie."
             <br><br>
-            *De code voor de Bliksem Arena volgt in het volgende antwoord. Zodra je deze code hebt uitgevoerd, vraag je om verder te gaan met Wereld 3.*
+            *De code voor de Bliksem Arena volgt in het volgende antwoord.*
         `,
         choices: [
             { text: "Ga terug naar de CentralHub (wacht op Wereld 3)", next: "centralHub_postBeastRealm" }
         ]
     },
 
-    // Tijdelijke placeholder voor het einde (indien gekozen)
-    end_of_game_wait: {
+    // --- FOUT-SCENES ---
+    game_over: {
         text: `
-            Dit is het einde van de ingebouwde demo. Kopieer de volledige tekst van dit spelvenster en plak deze in een nieuwe chat, samen met je gekozen wereld (**BeastRealm** of **Bliksem Arena**), om verder te gaan!
+            **[GAME OVER]**
+            <br><br>
+            Een van je teamleden is overweldigd door de Corruptie. De missie faalt. De Core Dimensie valt.
+            <br><br>
+            Begin opnieuw of gebruik de CoreLink-Armband om een Glitch Rewind naar het begin van de wereld te doen (als je nog een actie hebt).
         `,
         choices: [
-            { text: "Start Nieuw Gesprek", next: "centralHub_postTechRune" }
+            { text: "Herstart de laatste wereld (BeastRealm)", next: "beastRealm_start" }
         ]
     }
 };
@@ -917,15 +971,17 @@ function startIntro() {
     // Start het spel na de intro
     setTimeout(() => {
         introScreen.style.opacity = '0';
-        introScreen.style.display = 'none'; 
+        introScreen.style.pointerEvents = 'none'; // Zorgt dat de knoppen eronder werken
         gameContainer.style.opacity = '1';
 
-        // Dit is het kritieke punt: Zorg dat de voortgang van de speler gerespecteerd wordt
+        // Bepaal de startscene op basis van progressie
         let startScene = gameState.currentScene;
         if (gameState.inventory.beastShard) {
              startScene = "centralHub_postBeastRealm";
         } else if (gameState.inventory.techShard) {
              startScene = "centralHub_postTechRune";
+        } else if (gameState.inventory.corelinkArmband) { // Als armband is gevonden maar shard niet
+             startScene = "techRune_lab_access";
         }
 
         updateScreen(startScene); 
@@ -947,18 +1003,27 @@ function initializeGame() {
     statsElements.currentLocation = document.getElementById('current-location');
     statsElements.outsiderActions = document.getElementById('outsider-actions-container');
 
-    // Als de speler al shards heeft, pas de stats hier aan
+    // **BELANGRIJKE PROGRESSIE INLADER**
+    // Zorgt ervoor dat progressie behouden blijft, zelfs na het herladen van de code
     if (gameState.inventory.beastShard) {
         gameState.characters.bEAr23.memory = 50;
         gameState.inventory.shardsCollected = 2;
-        // Zorg dat de permanente upgrades van Mmz23 geladen zijn als hij al in de BeastRealm is geweest
+        // Laad permanente upgrades
         gameState.characters.Mmz23.maxHp = 110;
         gameState.characters.Mmz23.maxEnergy = 110;
+        // Zorg dat de huidige HP niet boven de nieuwe max komt
+        gameState.characters.Mmz23.hp = Math.min(gameState.characters.Mmz23.hp, gameState.characters.Mmz23.maxHp);
     } else if (gameState.inventory.techShard) {
         gameState.characters.bEAr23.memory = 25;
         gameState.inventory.shardsCollected = 1;
     }
     
+    // Zorg ervoor dat de armband-status altijd correct is
+    if (gameState.inventory.techShard) {
+        gameState.inventory.corelinkArmband = true;
+    }
+
+    // Start het spel
     startIntro();
 }
 
@@ -1045,26 +1110,30 @@ function updateScreen(sceneId) {
 
 // Functie om de keuze te verwerken
 function handleChoice(nextSceneId) {
-    if (nextSceneId === "techRune_stealth1_rewind" && gameState.characters.Outsider.glitchRewind <= 0) {
-        alert("GLITCH REWIND op! Je hebt geen Glitch Rewind acties meer in deze wereld.");
-        return;
+    // Specifieke checks voor acties die aan de knop hangen
+    if (nextSceneId === "techRune_stealth1_rewind") {
+        if (gameState.characters.Outsider.glitchRewind <= 0) {
+            alert("GLITCH REWIND op! Je hebt geen Glitch Rewind acties meer in deze wereld.");
+            return;
+        }
     }
+    
     updateScreen(nextSceneId);
 }
 
-// Functie om Outsider acties te verwerken
+// Functie om Outsider acties te verwerken (via de zijbalk knoppen)
 function handleOutsiderAction(actionType) {
     const { Outsider } = gameState.characters;
 
     if (!gameState.inventory.corelinkArmband || Outsider[actionType] <= 0) {
-        alert(`Geen ${actionType} acties meer beschikbaar in deze wereld.`);
+        alert(`Geen ${actionType.split(/(?=[A-Z])/).join(" ").toUpperCase()} acties meer beschikbaar in deze wereld.`);
         return;
     }
     
-    // Alleen Debug Ping en Rewind mogen niet via de algemene knop gebruikt worden in de narrative
+    // Debug Ping en Rewind moeten in het verhaal zelf gekozen worden
     if (actionType === 'debugPing') {
         alert("DEBUG PING GEBRUIKT: Dit verstoort vijanden. Je moet deze in een gevecht kiezen als de Warden/Hunter een aanval oplaadt!");
-         Outsider.debugPing -= 1;
+         return; 
     } else if (actionType === 'glitchRewind') {
          alert("GLITCH REWIND: Gebruik deze actie via de keuze-knop in de narrative om een foute keuze terug te draaien!");
          return; 
@@ -1072,10 +1141,10 @@ function handleOutsiderAction(actionType) {
          gameState.characters.Kaizen23.energy = Math.min(gameState.characters.Kaizen23.maxEnergy, gameState.characters.Kaizen23.energy + 15);
          gameState.characters.Mmz23.hp = Math.min(gameState.characters.Mmz23.maxHp, gameState.characters.Mmz23.hp + 15);
          Outsider.supportPulse -= 1;
+         Outsider.totalActions -= 1;
          alert("SUPPORT PULSE GEBRUIKT: Teamleden Kaizen23 (+15 NRG) en Mmz23 (+15 HP) hebben een kleine boost ontvangen.");
     }
 
-    Outsider.totalActions -= 1;
     updateStatsDisplay();
 }
 
