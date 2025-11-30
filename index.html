@@ -341,20 +341,31 @@
             }
         };
 
-        // --- SPEL LOGICA ---
-
+        // --- GLOBALE VARIABELEN ---
         let currentScene = 'START';
-        const dialogueEl = document.getElementById('dialogue');
-        const choicesEl = document.getElementById('choices');
-        const pulseCount = document.getElementById('support-pulse');
-        const debugCount = document.getElementById('debug-ping');
-        const rewindCount = document.getElementById('glitch-rewind');
-        const wardenHpEl = document.getElementById('warden-hp');
-        
-        // Functie om schade toe te voegen (vereenvoudigd voor demo)
+        let dialogueEl, choicesEl, pulseCount, debugCount, rewindCount, wardenHpEl;
+
+        // --- SPEL LOGICA FUNCTIES ---
+
         function dealDamage(amount) {
             GAME_DATA.warden.hp -= amount;
             if (GAME_DATA.warden.hp < 0) GAME_DATA.warden.hp = 0;
+            updateUI();
+        }
+
+        function useOutsiderAction(type) {
+             if (type === 'supportPulse' && GAME_DATA.outsiderActions.supportPulse > 0) {
+                 GAME_DATA.outsiderActions.supportPulse--;
+             } else if (type === 'debugPing' && GAME_DATA.outsiderActions.debugPing > 0) {
+                 GAME_DATA.outsiderActions.debugPing--;
+             } else if (type === 'glitchRewind' && GAME_DATA.outsiderActions.glitchRewind > 0) {
+                 GAME_DATA.outsiderActions.glitchRewind--;
+             }
+             updateUI(); // Zorgt ervoor dat de statistieken direct worden bijgewerkt
+        }
+        
+        function goToScene(sceneKey) {
+            currentScene = sceneKey;
             updateUI();
         }
 
@@ -362,16 +373,15 @@
             const data = GAME_DATA.chapters[currentScene];
             if (!data) return;
 
-            // Voer eenmalige actie uit bij betreden van scene (zoals armband activeren)
+            // Voer eenmalige actie uit bij betreden van scene
             if (data.onEnter && typeof data.onEnter === 'function') {
                 data.onEnter();
             }
 
-            // Update Dialogue, inclusief dynamische HP.
+            // Update Dialogue
             let currentText = data.text;
             
-            // *** CRUCIALE FIX: Zorgt ervoor dat de HP-update alleen gebeurt als de variabele aanwezig is,
-            // *** waardoor crashen in START en PROLOOG_2 wordt voorkomen.
+            // Vervang de dynamische HP-placeholder (alleen in gevechtsscenes)
             if (currentText.includes('${GAME_DATA.warden.hp}')) {
                 currentText = currentText.replace('${GAME_DATA.warden.hp}', GAME_DATA.warden.hp);
             }
@@ -389,7 +399,6 @@
                 
                 // Controleer op beschikbare skills
                 if (choice.action) {
-                    // Gebruik de tekst om de benodigde skill te detecteren
                     if (choice.text.includes('SUPPORT PULSE') && GAME_DATA.outsiderActions.supportPulse <= 0) {
                         isDisabled = true;
                         button.textContent += ` (0x over)`;
@@ -405,11 +414,9 @@
                 button.disabled = isDisabled;
                 
                 button.onclick = () => {
-                    // Voer de actie uit (schade toebrengen, skill gebruiken)
                     if (choice.action) {
                         choice.action(); 
                     }
-                    // Ga naar de volgende scene 
                     goToScene(choice.next);
                 };
                 
@@ -422,29 +429,24 @@
             rewindCount.textContent = GAME_DATA.outsiderActions.glitchRewind;
             wardenHpEl.textContent = GAME_DATA.warden.hp;
 
-            // Scroll naar onderaan om nieuwe tekst te zien
+            // Scroll naar onderaan
             window.scrollTo(0, document.body.scrollHeight);
         }
-
-        // FUNCTIES VOOR OUTSIDER SKILLS
-        function useOutsiderAction(type) {
-             if (type === 'supportPulse' && GAME_DATA.outsiderActions.supportPulse > 0) {
-                 GAME_DATA.outsiderActions.supportPulse--;
-             } else if (type === 'debugPing' && GAME_DATA.outsiderActions.debugPing > 0) {
-                 GAME_DATA.outsiderActions.debugPing--;
-             } else if (type === 'glitchRewind' && GAME_DATA.outsiderActions.glitchRewind > 0) {
-                 GAME_DATA.outsiderActions.glitchRewind--;
-             }
-             updateUI(); // Zorgt ervoor dat de statistieken direct worden bijgewerkt
-        }
         
-        function goToScene(sceneKey) {
-            currentScene = sceneKey;
-            updateUI();
-        }
+        // *** CRUCIALE FIX: Start het spel pas nadat de DOM volledig geladen is. ***
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wijs de elementen toe NADAT de DOM is geladen
+            dialogueEl = document.getElementById('dialogue');
+            choicesEl = document.getElementById('choices');
+            pulseCount = document.getElementById('support-pulse');
+            debugCount = document.getElementById('debug-ping');
+            rewindCount = document.getElementById('glitch-rewind');
+            wardenHpEl = document.getElementById('warden-hp');
+            
+            // Start het spel
+            goToScene('START');
+        });
 
-        // Start het spel
-        goToScene('START');
     </script>
 </body>
 </html>
