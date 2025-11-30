@@ -39,12 +39,12 @@
             margin-bottom: 5px;
             text-transform: uppercase;
         }
-        .kaizen { color: #00BFFF; } /* Lichtblauw */
-        .mmz { color: #00FF7F; }    /* Groen */
-        .bear { color: #FF4500; }   /* Oranje voor bEAr */
-        .outsider { color: #FFD700; } /* Goud */
-        .system { color: #FF00FF; } /* Systeem melding */
-        .important { font-weight: bold; color: #FFA500; } /* Oranje nadruk */
+        .kaizen { color: #00BFFF; }
+        .mmz { color: #00FF7F; }
+        .bear { color: #FF4500; }
+        .outsider { color: #FFD700; }
+        .system { color: #FF00FF; }
+        .important { font-weight: bold; color: #FFA500; }
         .damage { color: #FF4500; font-weight: bold;}
         .heal { color: #00FF7F; font-weight: bold;}
 
@@ -116,21 +116,22 @@
             },
             
             warden: { hp: 100 },
+            shards: 0, // Nieuwe variabele voor shards
 
             // --- HOOFDSTUKKEN ---
             chapters: {
-                // --- NIEUWE MEESLEPENDE PROLOOG ---
+                // --- PROLOOG ---
                 START: {
                     text: `
                     <span class="outsider">SYSTEEM LOG: [eakbas23.nl] - 01:47 AM</span>
                     <br>
-                    De nacht is gevallen. De enige lichtbron is het felle blauw van je scherm. Je scrollt door de 'TechRune' gadgets, specifiek op zoek naar de <span class="important">ultieme powerbank</span>.
+                    De nacht is gevallen. Je zoekt de <span class="important">ultieme powerbank</span>.
                     <br><br>
                     <span class="system">WEB ASSISTENT GEVONDEN:</span> bEAr23 (Glitch Support, Online).
                     <br><br>
-                    <span class="outsider">Jij:</span> "Hé, bEAr23. Heb je iets dat méér is dan de standaard 50.000 mAh? Ik zoek de échte, verborgen krachtbron."
+                    <span class="outsider">Jij:</span> "Hé, bEAr23. Ik zoek de échte, verborgen krachtbron: OVERCORE_SHARD_CORE_POWER.dat."
                     <br><br>
-                    <span class="bear">bEAr23:</span> "<span class="bear">Zoeken... Standaard files... Nee. Even kijken in het <span class="important">Archief van de Webshop Core</span>... Wacht. Ik vind een bestand met de naam: <span class="important">OVERCORE_SHARD_CORE_POWER.dat</span>. Dit is verzegeld. Waarom...?</span>"
+                    <span class="bear">bEAr23:</span> "<span class="bear">Dit is verzegelde data. Waarom...?</span>"
                     `,
                     choices: [{
                         text: "Zeg tegen bEAr23: 'Open dat bestand. Nu.'",
@@ -140,13 +141,9 @@
 
                 PROLOOG_2: {
                     text: `
-                    <span class="bear">bEAr23:</span> "<span class="bear">Ik zal het proberen. Maar deze code... het voelt alsof er iets terug duwt.</span>"
+                    <span class="bear">bEAr23:</span> "<span class="bear">FOUT! DIT IS GEEN DATA! HET IS EEN BEWUSTZIJN! INLEIDING EXTERNE ENTITEIT GEACTIVEERD! HET ZUIGT ME LEE-</span>"
                     <br><br>
-                    De hele website begint te flikkeren. De logo's strekken uit tot scherpe geometrische vormen. Een oorverdovend geluid van statische ruis vult de kamer.
-                    <br><br>
-                    <span class="bear">bEAr23:</span> "<span class="bear">FOUT! DIT IS GEEN DATA! HET IS EEN BEWUSTZIJN! INLEIDING EXTERNE ENTITEIT GEACTIVEERD! <span class="important">HET ZUIGT ME LEE-</span></span>"
-                    <br><br>
-                    Een vreemd groen-blauw portaal opent zich op je scherm, rechtstreeks uit de glitch. Je wordt met een onweerstaanbare kracht de digitale dimensie ingezogen en landt met een harde klap.
+                    Een groen-blauw portaal opent zich. Je wordt de digitale dimensie ingezogen.
                     `,
                     choices: [{
                         text: "Hoofdstuk 2: Ontwaking in CentralHub",
@@ -154,31 +151,22 @@
                     }]
                 },
 
-                // --- CENTRAL HUB (Onveranderd) ---
-                CENTRALHUB_1: { /* ... placeholder ... */ 
-                    text: `<span class="system">Central Hub inladen... (Dit is een placeholder)</span>`,
+                // --- CENTRAL HUB (Placeholder) ---
+                CENTRALHUB_1: {
+                    text: `<span class="system">Central Hub inladen... (Placeholder)</span>`,
                     choices: [{ text: "Ga verder naar Tech Rune", next: "TECHRUNE_1" }]
                 },
-                CENTRALHUB_2_A: { /* ... */ },
-                CENTRALHUB_2_B: { /* ... */ },
-                CENTRALHUB_3: { /* ... */ },
-                TECHRUNE_1: { /* ... placeholder ... */
-                    text: `<span class="system">Tech Rune inladen... (Dit is een placeholder)</span>`,
+                TECHRUNE_1: {
+                    text: `<span class="system">Tech Rune inladen... (Placeholder)</span>`,
                     choices: [{ text: "Kies Stealth Route", next: "TECHRUNE_STEALTH_2" }]
                 },
-                TECHRUNE_BRUTE_FORCE_2: { /* ... */ },
-                TECHRUNE_SPLIT_2: { /* ... */ },
 
-                // --- STEALTH ROUTE UITGEWERKT ---
+                // --- STEALTH ROUTE ---
                 TECHRUNE_STEALTH_2: {
                     text: `
                     <span class="kaizen">STEALTH ROUTE: DE DATALEIDINGEN</span>
                     <br>
-                    Je kiest voor de tactische aanpak. Kaizen23 leidt jullie door de smalle dataleidingen, waar de lucht naar ozon en verbrande code ruikt.
-                    <br><br>
-                    <span class="kaizen">Kaizen23:</span> "<span class="kaizen">Stilte. De Cipher Warden heeft een netwerk van 'Sentinel Drones'. Eén fout en we zijn gevonden. Er is hier een verlaten testlab; ik gok dat we daar de Armband vinden.</span>"
-                    <br><br>
-                    <span class="mmz">Mmz23:</span> "<span class="mmz">Blijf achter me, Outsider. Ik houd de flanken in de gaten.</span>"
+                    Kaizen23 leidt jullie. We zoeken de CoreLink-Armband.
                     `,
                     choices: [{
                         text: "Kruip verder door de duistere dataleiding.",
@@ -190,11 +178,9 @@
                     text: `
                     <span class="outsider">HET VERBORGEN LAB</span>
                     <br>
-                    Het lab is stil. Op een verhoogd platform zie je een gloeiende, minimalistische <span class="important">blauw-oranje Armband</span>.
+                    Je pakt de gloeiende, minimalistische <span class="important">blauw-oranje Armband</span>.
                     <br><br>
-                    <span class="bear">bEAr23:</span> "<span class="bear">Daar is hij! De CoreLink-Armband! Hij is ontworpen om de dimensie-barrière te omzeilen en jou direct met ons te laten communiceren. Pak hem snel.</span>"
-                    <br><br>
-                    <span class="system">SYSTEM:</span> Je hebt de <span class="important">CORELINK-ARMBAND</span> ontvangen! De Outsider's actieve vaardigheden zijn nu geactiveerd. Dit is jouw rol: <span class="important">Support</span>.
+                    <span class="system">SYSTEM:</span> Je hebt de <span class="important">CORELINK-ARMBAND</span> ontvangen! Jouw rol: <span class="important">Support</span>.
                     `,
                     choices: [{
                         text: "Ga door: Een stroomstoring blokkeert de uitgang.",
@@ -207,11 +193,9 @@
                     text: `
                     <span class="kaizen">DE STROOMKABEL PUZZEL</span>
                     <br>
-                    De uitgang is verzegeld. Een datakabel netwerk is losgeraakt, en de deur vraagt om een exacte stroomfrequentie.
+                    De deur vraagt om een exacte stroomfrequentie. We hebben hulp nodig om sneller te werken.
                     <br><br>
-                    <span class="kaizen">Kaizen23:</span> "<span class="kaizen">We hebben slechts 5 seconden om de juiste volgorde van de kabels te berekenen, anders gaat het hoofdalarm af. Maar we kunnen hulp gebruiken om sneller te werken, of om het systeem te ontregelen.</span>"
-                    <br><br>
-                    <span class="outsider">KEUZE:</span> Gebruik je Armband-skills om de kans op succes te vergroten of vertrouw je op de basis?
+                    <span class="outsider">KEUZE:</span> Gebruik je Armband-skills?
                     `,
                     choices: [
                         {
@@ -232,31 +216,13 @@
                 },
                 
                 TECHRUNE_STEALTH_5_SUCCES: {
-                    text: `
-                    <span class="system">SUCCES!</span>
-                    <br>
-                    Kaizen23 plugt de laatste kabel in. De deur ontgrendelt met een zachte klik. Het alarm bleef stil.
-                    <br><br>
-                    <span class="kaizen">Kaizen23:</span> "<span class="kaizen">Goed werk. De Cipher Warden is in de hal hierboven. Tijd voor de confrontatie.</span>"
-                    `,
-                    choices: [{
-                        text: "Ga door naar de Cipher Warden (Mini-Baas).",
-                        next: "TECHRUNE_BAAS_1"
-                    }]
+                    text: `<span class="system">SUCCES!</span> De deur ontgrendelt. Kaizen23: "Tijd voor de confrontatie."`,
+                    choices: [{ text: "Ga door naar de Cipher Warden (Mini-Baas).", next: "TECHRUNE_BAAS_1" }]
                 },
                 
                 TECHRUNE_STEALTH_5_SUCCES_DEBUG: {
-                    text: `
-                    <span class="system">SUCCES DOOR DEBUG!</span>
-                    <br>
-                    Je Debug Ping veroorzaakte een fractie van een seconde 'lag' in het beveiligingssysteem. Dat was net genoeg.
-                    <br><br>
-                    <span class="bear">bEAr23:</span> "<span class="bear">Ha! Je 'Glitch Anomalie' werkt. Nu naar de baas!</span>"
-                    `,
-                    choices: [{
-                        text: "Ga door naar de Cipher Warden (Mini-Baas).",
-                        next: "TECHRUNE_BAAS_1"
-                    }]
+                    text: `<span class="system">SUCCES DOOR DEBUG!</span> Je Ping veroorzaakte 'lag'. bEAr23: "Ha! Nu naar de baas!"`,
+                    choices: [{ text: "Ga door naar de Cipher Warden (Mini-Baas).", next: "TECHRUNE_BAAS_1" }]
                 },
                 
                 // --- MINI-BAAS GEVECHT (TURN 1) ---
@@ -264,35 +230,31 @@
                     text: `
                     <span class="mmz">CONFRONTATIE: DE CIPHER WARDEN</span>
                     <br>
-                    Jullie staan voor de Mini-Baas. Hij is een 3 meter hoge, donkere, gepantserde robot, met een rood, dreigend oog in zijn scherm-hoofd.
+                    De Warden is een 3 meter hoge, gepantserde robot.
                     <br><br>
-                    <span class="kaizen">Kaizen23:</span> "<span class="kaizen">Hij is te zwaar. Richt op zijn kern, die zichtbaar wordt na zijn aanval. Outsider, houd ons overeind!</span>"
-                    <br><br>
-                    <span class="system">CIPHER WARDEN:</span> <span class="damage">Activeert Data Sweep aanval!</span> (Schade aan Kaizen & Mmz)
+                    <span class="system">CIPHER WARDEN:</span> <span class="damage">Activeert Data Sweep aanval!</span>
                     <br>
-                    <span class="mmz">Mmz23:</span> "<span class="mmz">Oef! Dat deed pijn! Nu is onze beurt!</span>"
+                    <span class="mmz">Mmz23:</span> "Oef! Dat deed pijn! Nu is onze beurt!"
                     `,
                     choices: [{
                         text: "AANVAL 1: Kaizen's Precision Shot (15 Schade)",
                         next: "TECHRUNE_BAAS_2",
-                        action: () => { dealDamage(15); } // GEFIXED: Juiste inline syntax
+                        action: () => { dealDamage(15); }
                     }, {
                         text: "AANVAL 2: Mmz's Overload Kick (20 Schade)",
                         next: "TECHRUNE_BAAS_2",
-                        action: () => { dealDamage(20); } // GEFIXED: Juiste inline syntax
+                        action: () => { dealDamage(20); }
                     }, {
                         text: "SUPPORT: Gebruik **SUPPORT PULSE** op Mmz (Extra Schade in de volgende ronde)",
                         next: "TECHRUNE_BAAS_2",
-                        action: () => { useOutsiderAction('supportPulse'); } // GEFIXED: Juiste inline syntax
+                        action: () => { useOutsiderAction('supportPulse'); }
                     }]
                 },
                 
-                // --- MINI-BAAS GEVECHT (TURN 2 - GEVECHTS LOGICA) ---
+                // --- MINI-BAAS GEVECHT (TURN 2) ---
                 TECHRUNE_BAAS_2: {
                     text: `
                     <span class="system">SYSTEM:</span> Je hebt de Cipher Warden geraakt. Zijn HP is nu <span id="warden-hp-dialogue">${GAME_DATA.warden.hp}</span>.
-                    <br><br>
-                    <span class="kaizen">Kaizen23:</span> "<span class="kaizen">Blijf de druk opvoeren! Hij bereidt zijn volgende aanval voor!</span>"
                     <br><br>
                     <span class="system">CIPHER WARDEN:</span> <span class="damage">Activeert Core Deflect!</span> (Verdedigt de komende aanval!)
                     <br>
@@ -313,28 +275,21 @@
                     }]
                 },
                 
-                // --- MINI-BAAS GEVECHT (TURN 3 - WINNEN/VERLIEZEN) ---
+                // --- MINI-BAAS GEVECHT (TURN 3 - Einde) ---
                 TECHRUNE_BAAS_3: {
                     text: `
                     <span class="system">SYSTEM:</span> De Warden is nu verdedigd... of is de verdediging door jou <span class="heal">ge-debugged</span>?
                     <br><br>
-                    <span class="mmz">Mmz23:</span> "<span class="mmz">Nu! De Deflect is weg!</span>"
-                    <br><br>
-                    <span class="system">JULLIE AANVAL!</span> Mmz stormt toe en Kaizen vuurt haar Precision Shot af.
+                    <span class="system">JULLIE AANVAL!</span> <span class="heal">40 SCHADE toegebracht!</span>
                     <br>
-                    <span class="system">SYSTEM:</span> <span class="heal">40 SCHADE toegebracht!</span>
-                    <br>
-                    ${GAME_DATA.warden.hp > 0 ? `<span class="system">DE WARDEN OVERLEEFT!</span>` : `<span class="system">OVERCORE WARDEN VERSLAGEN! De bewaker stort neer en laat de eerste SHARD achter!</span>`}
+                    <span class="system">OVERCORE WARDEN VERSLAGEN! De bewaker stort neer en laat de eerste SHARD achter!</span>
                     `,
                     choices: [{
                         text: "GEVECHT VOORBIJ: Eerste Shard verzameld! Ga terug naar CentralHub.",
                         next: "CENTRALHUB_1",
                         action: () => {
-                             // Controleer of de speler de baas verslagen heeft
-                            if (GAME_DATA.warden.hp > 0) {
-                                GAME_DATA.warden.hp = 0;
-                            }
-                            GAME_DATA.shards = 1;
+                            GAME_DATA.warden.hp = 0; // Zorg dat HP op 0 staat
+                            GAME_DATA.shards = 1; // Shard ontvangen
                         }
                     }]
                 }
@@ -350,7 +305,7 @@
         function dealDamage(amount) {
             GAME_DATA.warden.hp -= amount;
             if (GAME_DATA.warden.hp < 0) GAME_DATA.warden.hp = 0;
-            updateUI();
+            // updateUI wordt automatisch aangeroepen door goToScene na de action
         }
 
         function useOutsiderAction(type) {
@@ -361,7 +316,7 @@
              } else if (type === 'glitchRewind' && GAME_DATA.outsiderActions.glitchRewind > 0) {
                  GAME_DATA.outsiderActions.glitchRewind--;
              }
-             updateUI(); // Zorgt ervoor dat de statistieken direct worden bijgewerkt
+             // updateUI wordt automatisch aangeroepen door goToScene na de action
         }
         
         function goToScene(sceneKey) {
@@ -370,15 +325,15 @@
         }
 
         function updateUI() {
-            // Controleer of de elementen al geladen zijn voordat we ze gebruiken
-            if (!dialogueEl || !choicesEl) {
-                // Kan gebeuren als updateUI te vroeg wordt aangeroepen.
-                // Dit wordt opgelost door de DOMContentLoaded listener.
-                return;
-            }
+            // Controleer of de elementen bestaan (dit zou goed moeten zijn na DOMContentLoaded)
+            if (!dialogueEl || !choicesEl) return; 
 
             const data = GAME_DATA.chapters[currentScene];
-            if (!data) return;
+            if (!data) {
+                dialogueEl.innerHTML = `<span class="system">FOUT: SCENE ${currentScene} NIET GEVONDEN.</span>`;
+                choicesEl.innerHTML = '';
+                return;
+            }
 
             // Voer eenmalige actie uit bij betreden van scene
             if (data.onEnter && typeof data.onEnter === 'function') {
@@ -388,8 +343,9 @@
             // Update Dialogue
             let currentText = data.text;
             
-            // Vervang de dynamische HP-placeholder (alleen in gevechtsscenes)
+            // Vervang de dynamische HP-placeholder
             if (currentText.includes('${GAME_DATA.warden.hp}')) {
+                // Correcte vervanging van de template string
                 currentText = currentText.replace('${GAME_DATA.warden.hp}', GAME_DATA.warden.hp);
             }
             
@@ -404,7 +360,7 @@
                 
                 let isDisabled = false;
                 
-                // Controleer op beschikbare skills
+                // Controleer op beschikbare skills (maakt knop disabled)
                 if (choice.action) {
                     if (choice.text.includes('SUPPORT PULSE') && GAME_DATA.outsiderActions.supportPulse <= 0) {
                         isDisabled = true;
@@ -420,12 +376,11 @@
 
                 button.disabled = isDisabled;
                 
+                // Belangrijk: De klik-handler roept eerst de action() aan en gaat dan naar de scene
                 button.onclick = () => {
-                    // Voer de actie uit (schade toebrengen, skill gebruiken)
                     if (choice.action) {
                         choice.action(); 
                     }
-                    // Ga naar de volgende scene 
                     goToScene(choice.next);
                 };
                 
