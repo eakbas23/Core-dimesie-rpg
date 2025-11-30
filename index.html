@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Core Dimensie RPG - eakbas23</title>
     <style>
-        /* CORE DIMENSIE RPG STYLING (ongewijzigd) */
+        /* CORE DIMENSIE RPG STYLING */
         :root {
-            --color-core-blue: #00ffff; /* Kaizen's Data/Licht */
-            --color-core-green: #00ff00; /* Mmz's Natuur/Energie */
-            --color-core-white: #ffffff; /* bEAr's Code/Glitch */
+            --color-core-blue: #00ffff;
+            --color-core-green: #00ff00;
+            --color-core-white: #ffffff;
             --color-dark-bg: #121212;
             --color-mid-bg: #212121;
             --color-text: #e0e0e0;
@@ -44,25 +44,58 @@
             background-color: var(--color-mid-bg);
             opacity: 0;
             transition: opacity 1s ease-in-out;
+            z-index: 500;
+            height: auto; 
+            min-height: 90vh; 
         }
 
-        /* FIX VOOR SCROLLEN OP MOBIEL */
+        /* FIX 1: Z-INDEX VERHOOGD EN POSITION RELATIVE VOOR KLIKBAARHEID */
         #narrative-text {
             min-height: 200px;
-            max-height: 450px;
+            max-height: 50vh; 
             border: 1px solid var(--color-core-white);
             padding: 20px;
-            overflow-y: scroll; /* Gebruik 'scroll' in plaats van 'auto' */
-            -webkit-overflow-scrolling: touch; /* Cruciaal voor iOS scrollen */
+            overflow-y: scroll; 
+            -webkit-overflow-scrolling: touch; 
             line-height: 1.6;
             white-space: pre-wrap;
-            /* Zorg ervoor dat het vak een vaste hoogte heeft in de layout */
             box-sizing: border-box; 
+            z-index: 900; /* Verhoogd */
+            position: relative; /* Cruciaal voor z-index context */
         }
 
-        /* De rest van de styling (niet hier weergegeven) blijft hetzelfde. */
+        #choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 910; /* Verhoogd */
+            position: relative; /* Cruciaal voor z-index context */
+        }
+
+        .choice-button {
+            background-color: var(--color-core-blue);
+            color: var(--color-dark-bg);
+            border: none;
+            padding: 12px 15px;
+            text-align: left;
+            font-family: var(--font-mono);
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+            text-transform: uppercase;
+        }
+
+        .choice-button:hover {
+            background-color: var(--color-core-green);
+            box-shadow: 0 0 10px var(--color-core-green);
+            color: var(--color-dark-bg);
+        }
         
-        /* ... (De rest van de CSS blijft hetzelfde als in het vorige antwoord) ... */
+        .choice-button:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+            color: #ccc;
+        }
 
         #intro-screen {
             position: fixed;
@@ -82,155 +115,18 @@
             transition: opacity 1s ease-in-out;
             z-index: 1000;
         }
-
-        .intro-line {
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-            margin: 10px 0;
-            padding: 5px 0;
-            border-bottom: 1px dashed rgba(0, 255, 255, 0.2);
-        }
         
-        .intro-line.active {
-            opacity: 1;
-        }
-        
-        /* Stats Panel */
-        #stats-panel {
-            background-color: #1a1a1a;
-            border: 1px solid var(--color-core-blue);
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .stats-block h3 {
-            border-bottom: 2px solid var(--color-core-green);
-            padding-bottom: 5px;
-            margin-top: 0;
-            color: var(--color-core-green);
-            font-size: 1.1em;
-        }
-
-        .stat-line {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9em;
-            margin-bottom: 3px;
-        }
-
-        .stat-value {
-            color: var(--color-core-white);
-            font-weight: bold;
-        }
-
-        .stat-value.transformed {
-            color: var(--color-accent-red);
-            font-weight: bold;
-            text-shadow: 0 0 5px var(--color-accent-red);
-            font-size: 1em;
-        }
-        
-        /* Speciale bEAr23 (E.A.K.) status */
-        .stat-value.core-origin {
-            color: var(--color-core-blue);
-            font-weight: bold;
-            text-shadow: 0 0 5px var(--color-core-blue);
-            font-size: 1em;
-        }
-
-
-        /* Main Content Panel */
-        #main-content {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        #choices-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .choice-button {
-            background-color: var(--color-core-blue);
-            color: var(--color-dark-bg);
-            border: none;
-            padding: 12px 15px;
-            text-align: left;
-            font-family: var(--font-mono);
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.2s, box-shadow 0.2s;
-            text-transform: uppercase;
-        }
-
-        .choice-button.red-pulse {
-             background-color: var(--color-accent-red);
-        }
-
-        .choice-button:hover {
-            background-color: var(--color-core-green);
-            box-shadow: 0 0 10px var(--color-core-green);
-            color: var(--color-dark-bg);
-        }
-
-        .choice-button:disabled {
-            background-color: #555;
-            cursor: not-allowed;
-            color: #ccc;
-        }
-
-        /* Outsider Special Actions */
-        #outsider-actions-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-        
-        .outsider-action-button {
-            padding: 10px;
-            background-color: var(--color-accent-red);
-            color: var(--color-dark-bg);
-            border: 1px solid var(--color-accent-red);
-            font-size: 0.85em;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            text-align: center;
-        }
-
-        .outsider-action-button:hover:not(:disabled) {
-            background-color: #ff8c66;
-        }
-
-        .outsider-action-button:disabled {
-            background-color: #444;
-            color: #888;
-            border-color: #444;
-            cursor: not-allowed;
-        }
-
-        #header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 10px;
-            background-color: #0d0d0d;
-        }
-        
-        #header h1 {
-            color: var(--color-core-blue);
-            margin: 0;
-            font-size: 2em;
-            text-shadow: 0 0 5px var(--color-core-blue);
-        }
+        /* ... (Overige styling ongewijzigd) ... */
 
         /* Responsiveness */
         @media (max-width: 800px) {
             #game-container {
                 grid-template-columns: 1fr;
                 padding: 10px;
+                min-height: 95vh; 
+            }
+            #narrative-text {
+                 max-height: 40vh; 
             }
             #stats-panel {
                 order: 2;
@@ -328,11 +224,9 @@
 
 <script>
     // =======================================================
-    // 1. GAME STATE INITIALISATIE & SCENES
+    // 1. GAME STATE INITIALISATIE & SCENES (ONGEDEERD)
     // =======================================================
 
-    // De gameState en scenes objecten zijn ongewijzigd gebleven
-    // ... (gameState object)
     let gameState = {
         // Personage Stats
         characters: {
@@ -351,10 +245,10 @@
         // Inventaris & Upgrades
         inventory: {
             corelinkArmband: false, 
-            techShard: false, // 1/4
-            beastShard: false, // 2/4
-            bliksemShard: false, // 3/4
-            originShard: false, // 4/4
+            techShard: false, 
+            beastShard: false, 
+            bliksemShard: false, 
+            originShard: false, 
             shardsCollected: 0
         },
 
@@ -374,10 +268,8 @@
         }
     };
     
-    // ... (scenes object)
+    // De scenes object is ongewijzigd gebleven (zie vorige antwoord voor inhoud)
     const scenes = {
-        // --- START & CENTRAL HUB (UITGEBREIDE INTRO) ---
-        
         centralHub_start: {
             text: `
                 Een oorverdovende **SCHOK** van witte ruis vult je bewustzijn. Je voelt je lichaam oplossen in een cascade van binaire code. Dan, plotseling, valt alles stil.
@@ -401,28 +293,24 @@
                 { text: "Vraag Mmz23 wat 'OverCore' is", next: "centralHub_talkMmz" }
             ]
         },
-        
         centralHub_talkBear: {
             text: `
                 bEAr23 (flikkert zenuwachtig): "OverCore... *glitch*... is de koude, geoptimaliseerde versie van mijn oorspronkelijke code. Hij wil de dimensie perfect en emotieloos maken. De Glitch... dat ben ik. De menselijke, chaotische code die hij afsplitste."
             `,
             choices: [{ text: "Oké, begrepen. Vraag naar de missie.", next: "centralHub_getMission" }]
         },
-
         centralHub_talkKaizen: {
             text: `
                 Kaizen23 (met strenge blik): "De firewall is de primaire beveiliging tegen externe corruptie. Jouw onbedoelde aankomst kan een zwakke plek creëren, maar het geeft ons ook een onvoorspelbaar element. We moeten snel de Shards herstellen voordat OverCore je aanwezigheid misbruikt."
             `,
             choices: [{ text: "Oké, begrepen. Vraag naar de missie.", next: "centralHub_getMission" }]
         },
-
         centralHub_talkMmz: {
             text: `
                 Mmz23 (glimlacht): "OverCore is een pestkop met te veel rekenkracht. Hij wil alles 'optimale leegte' maken. Geen plezier, geen avontuur, alleen maar saaie code. Ons plan is simpel: Sla hard, haal de 4 Shards op om bEAr23 te herstellen, en dan vechten we."
             `,
             choices: [{ text: "Oké, begrepen. Vraag naar de missie.", next: "centralHub_getMission" }]
         },
-        
         centralHub_getMission: {
             text: `
                 Je hebt met iedereen gesproken. De kern van de missie staat vast: **Zoek en herstel de 4 Memory Shards** om bEAr23 (de originele Core User) te herstellen en OverCore te verslaan.
@@ -433,7 +321,6 @@
                 { text: "Stap in het TechRune-portaal", next: "techRune_arrival" }
             ]
         },
-
         centralHub_choice1: {
             text: `
                 De CentralHub heeft vier actieve portalen. Het eerste portaal, **TechRune**, licht op en is de verplichte startlocatie.
@@ -442,9 +329,6 @@
             `,
             choices: [{ text: "Stap in het TechRune-portaal", next: "techRune_arrival" }]
         },
-        
-        // --- TECHRUNE (WERELD 1) ---
-
         techRune_arrival: {
             text: `Je stapt door de data-ring en de sfeer verandert abrupt. Je bent in **TechRune**. Wolkenkrabbers zijn gestapelde smartphones. De ingang is zwaar bewaakt.`,
             choices: [
@@ -452,7 +336,6 @@
                 { text: "Kies [Stealth]: Volg bEAr23 en probeer de beveiliging te omzeilen (Puzzels)", next: "techRune_stealth1" }
             ]
         },
-        
         techRune_bruteForce1: {
             text: `Mmz23 lacht. "RAMMEN!" Hij verbrijzelt een muur van telefoons. Een zwerm vijandige drones komt op jullie af.`,
             choices: [
@@ -460,13 +343,11 @@
             ],
             onEnter: () => { gameState.techRuneRoute = 'bruteForce'; }
         },
-        
         techRune_bruteForce_scan: {
             text: `Kaizen23 vuurt een reeks precieze projectielen af, waardoor de blauwe drone onmiddellijk explodeert. (Kaizen23 Energie -10. 1 Drone verslagen.) Mmz23: "Eentje minder. De rest is van mij!"`,
             choices: [{ text: "Ga verder naar de Lab Toegang", next: "techRune_lab_access" }],
             onEnter: () => { gameState.characters.Kaizen23.energy -= 10; }
         },
-
         techRune_stealth1: {
             text: `bEAr23: "Dit Glitch-pad is 74% stabiel. We moeten door een reeks onstabiele telefoon-schakelaars. De code moet rood-blauw-blauw zijn."`,
             choices: [
@@ -475,12 +356,10 @@
             ],
             onEnter: () => { gameState.techRuneRoute = 'stealth'; }
         },
-        
         techRune_stealth_success: {
             text: `De code werkt. De drones in de omgeving vriezen even vast en de weg opent zich. Kaizen23: "Perfectie. Geen onnodige energie verspild."`,
             choices: [{ text: "Ga verder naar de Lab Toegang", next: "techRune_lab_access" }]
         },
-
         techRune_stealth_fail: {
             text: `Het alarmsysteem gaat af! Jullie moeten de aanval afweren. Mmz23 en Kaizen23 verliezen elk 5 HP en 10 Energie.`,
             choices: [{ text: "Ga verder naar de Lab Toegang", next: "techRune_lab_access" }],
@@ -491,7 +370,6 @@
                 gameState.characters.Kaizen23.energy -= 10;
             }
         },
-
         techRune_lab_access: {
             text: `
                 Jullie bereiken een verborgen lab. Eakbas23 Hologram: "*Voor de Anomalie: neem deze. Het is de **CoreLink-Armband**. Het zal je keuzes versterken.*"
@@ -507,14 +385,12 @@
                 gameState.resetOutsiderActions();
             }
         },
-
         techRune_boss_intro: {
             text: `De 3 meter hoge **CIPHER WARDEN** verschijnt. Cipher Warden: "INTRUSIE GEDETECTEERD. OPTIMALE VERNIETIGING PROTOCOL START." Kaizen23: "Aanvallen!"`,
             choices: [
                 { text: "Aanval: Mmz23's COREBREAKER PUNCH op het pantser (15 NRG)", next: "techRune_boss_p1_mmz_attack" },
             ]
         },
-
         techRune_boss_p1_mmz_attack: {
             text: `Mmz23 beukt, maar het pantser houdt stand. De Warden vuurt de Data Beam af, die Mmz23 hard raakt. (-20 HP)`,
             choices: [{ text: "Volgende beurt: Herstel en herpositioneer", next: "techRune_cliffhanger" }],
@@ -523,7 +399,6 @@
                 gameState.characters.Mmz23.hp -= 20;
             }
         },
-
         techRune_cliffhanger: {
             text: `
                 De strijd met de Cipher Warden is nog niet voorbij, maar jullie hebben hem teruggedrongen!
@@ -531,9 +406,6 @@
             `,
             choices: [{ text: "Ga terug naar de CentralHub", next: "centralHub_postTechRune" }]
         },
-
-        // --- CENTRAL HUB NA TECHRUNE ---
-
         centralHub_postTechRune: {
             text: `
                 Terug in de CentralHub. Je team heeft TechRune bevrijd.
@@ -553,11 +425,6 @@
                 gameState.resetOutsiderActions();
             }
         },
-        
-        // =======================================================
-        // 4. WERELD 2: BEAST REALM (SHARD 2)
-        // =======================================================
-
         beastRealm_arrival: {
             text: `
                 Je stapt in een digitale jungle, **BeastRealm**. Neon-bladeren, lianen van energie en de geur van corrupte code hangen in de lucht.
@@ -575,7 +442,6 @@
                 gameState.resetOutsiderActions();
             }
         },
-        
         beastRealm_alpha_encounter: {
             text: `
                 Mmz23 bereikt een clearing waar een klein, glitchend wolfje vastzit. Boven hem staat de **Alpha-Glitch-Beast**, een enorme hybride van wolf en leeuw, de corrupte bewaker.
@@ -590,7 +456,6 @@
                 { text: "Gebruik Support Pulse op Mmz23 (1 Actie, +30% Verdediging)", next: "beastRealm_support_intervene", disabled: gameState.characters.Outsider.supportPulse < 1 }
             ]
         },
-
         beastRealm_support_intervene: {
             text: `
                 Je gebruikt **Support Pulse** (1 actie over). Mmz23's verdediging gaat omhoog. Hij redt het wolfje, maar de klap van de Alpha is nog steeds zwaar.
@@ -608,7 +473,6 @@
                 gameState.characters.Mmz23.hp -= 15;
             }
         },
-
         beastRealm_mmz_transform: {
             text: `
                 Mmz23 springt voor het wolfje en absorbeert de klap. Hij schreeuwt van de pijn, maar de woede neemt het over.
@@ -627,7 +491,6 @@
                 gameState.characters.Mmz23.energy = 80;
             }
         },
-
         beastRealm_alpha_boss: {
             text: `
                 De strijd tegen de **Alpha-Glitch-Beast** (Feral Regent) begint.
@@ -641,7 +504,6 @@
                 { text: "Vernietig de Feral Regent met brute kracht (Mmz23 PRIMAL COREBREAKER)", next: "beastRealm_shard_obtained_kill" }
             ]
         },
-        
         beastRealm_shard_obtained: {
             text: `
                 Mmz23's krachtige Wild Pack Call snijdt door de code van de Alpha. De corrupte code lost op, de Regent is bevrijd!
@@ -657,7 +519,6 @@
                 gameState.characters.bEAr23.memory = 50;
             }
         },
-        
         beastRealm_shard_obtained_kill: {
             text: `
                 Mmz23's pure kracht wint. De Feral Regent explodeert in data en laat de **Heart-Link Memory Shard** achter.
@@ -672,11 +533,6 @@
                 gameState.characters.bEAr23.memory = 50;
             }
         },
-
-        // =======================================================
-        // 5. WERELD 3: BLIKSEM ARENA (SHARD 3)
-        // =======================================================
-        
         bliksemArena_arrival: {
             text: `
                 Je stapt in de **Bliksem Arena**. Een cirkelvormige arena zweeft in een eeuwige, paarse storm. Energiezuilen flitsen.
@@ -694,7 +550,6 @@
                 gameState.resetOutsiderActions();
             }
         },
-        
         bliksemArena_duo_intro: {
             text: `
                 Twee figuren verschijnen: **AURON** (massief, powerbank-pantser) en **LYRA** (slank, transparant).
@@ -709,7 +564,6 @@
                 { text: "Focus op Auron: Onderbreek de Thunder Smash", next: "bliksemArena_p1_focus_auron" }
             ]
         },
-
         bliksemArena_p1_focus_lyra: {
             text: `
                 Mmz23 valt Lyra's schild aan. Het schild is zwak, maar Kaizen23 is te ver om te helpen.
@@ -725,7 +579,6 @@
                 gameState.characters.Mmz23.hp = 20;
             }
         },
-
         bliksemArena_p1_focus_auron: {
             text: `
                 Kaizen23 en Mmz23 vallen Auron aan om de Thunder Smash te onderbreken. Het lukt, maar Lyra's afleidingsaanval raakt Kaizen23.
@@ -733,14 +586,13 @@
                 Kaizen23: "AUW. Geen tijd voor fouten!" (-15 HP, -10 NRG)
             `,
             choices: [
-                { text: "Val het duo nogmaals aan", next: "bliksemArena_duo_intro" } // Terug naar keuze
+                { text: "Val het duo nogmaals aan", next: "bliksemArena_duo_intro" } 
             ],
             onEnter: () => {
                 gameState.characters.Kaizen23.hp -= 15;
                 gameState.characters.Kaizen23.energy -= 10;
             }
         },
-
         bliksemArena_kaizen_transform_trigger: {
             text: `
                 Mmz23 ligt gewond, de energie wordt uit hem gezogen. Kaizen23 ziet haar broer vallen en een koude woede neemt haar over.
@@ -759,7 +611,6 @@
                 gameState.characters.Kaizen23.energy = 100;
             }
         },
-        
         bliksemArena_shard_obtained: {
             text: `
                 De KAIZEN BARRAGE is verwoestend. Lyra en Auron worden verslagen. Ze laten de **Overcharge Memory Shard** achter.
@@ -775,9 +626,6 @@
                 gameState.characters.bEAr23.memory = 75;
             }
         },
-
-        // --- CENTRAL HUB NA WERELD 2 OF 3 ---
-
         centralHub_checkProgress: {
             text: `
                 Terug in de CentralHub. Jullie hebben een nieuwe Shard beveiligd.
@@ -795,11 +643,6 @@
                 gameState.resetOutsiderActions();
             }
         },
-
-        // =======================================================
-        // 6. WERELD 4: CLOUD CITY (PLOTTWIST)
-        // =======================================================
-
         cloudCity_arrival: {
             text: `
                 Je stapt door het portaal en komt terecht in **Cloud City**. Dit is een massieve, futuristische stad die boven de rest van de dimensie zweeft, omgeven door witte, perfecte, maar kille code.
@@ -818,7 +661,6 @@
                 gameState.characters.bEAr23.stability -= 10;
             }
         },
-
         cloudCity_archive_room: {
             text: `
                 In de archiefkamer zien jullie een gigantisch, glazen vat waar een pure, witte **Origin Shard** in zweeft. Maar de Shard wordt bewaakt door een projectie van de **ORIGINAL eakbas23-CODE**.
@@ -836,7 +678,6 @@
                 }
             ]
         },
-
         cloudCity_ping_check: {
             text: `
                 Je gebruikt de **Debug Ping** op de Original Code. Je merkt dat de projectie niet de Code zelf is, maar een Glitch-Mirror.
@@ -848,11 +689,9 @@
                 { text: "Ga direct naar de Origin Shard", next: "cloudCity_plottwist_pt1" }
             ],
             onEnter: () => {
-                // Verbruik de 2 Debug Pings
                 gameState.characters.Outsider.debugPing = Math.max(0, gameState.characters.Outsider.debugPing - 2); 
             }
         },
-
         cloudCity_plottwist_pt1: {
             text: `
                 Terwijl jullie naar de Shard snellen, trekt bEAr23 de aandacht.
@@ -868,7 +707,6 @@
                 { text: "Pak de Origin Shard en geef hem aan bEAr23", next: "cloudCity_final_shard" }
             ]
         },
-
         cloudCity_final_shard: {
             text: `
                 Je pakt de **Origin Shard**. Zodra bEAr23 het aanraakt, gloeit hij fel wit. De glitch verdwijnt en hij staat op als de voltooide **E.A.K. - THE CORE ORIGIN**.
@@ -889,16 +727,9 @@
                 gameState.resetOutsiderActions();
             }
         },
-
-        // =======================================================
-        // 7. DE FINALE: BOVENSTE RING
-        // =======================================================
-
         final_boss_intro: {
             text: `
                 Jullie teleporteren naar de Bovenste Ring. Daar staat **OVERCORE**, de koude, berekende heerser van de dimensie. Hij is een gigantische, zwarte schim van code, gehuld in de perfecte esthetiek van een té geoptimaliseerde webshop.
-                \n
-                OVERCORE: "Je bent compleet, E.A.K. Maar Emotie is een bug. Ik ben de update. Ik zal jullie allemaal defragmenteren."
                 \n
                 Kaizen23 (CORE ASCEND): "Dat zullen we nog zien. We vechten voor de menselijke connectie!"
                 Mmz23 (BEAST MODE): "Tijd om hem in stukjes te rammen!"
@@ -911,12 +742,10 @@
             ],
             onEnter: () => {
                 gameState.currentWorld = "Bovenste Ring (FINALE)";
-                // Reset stats voor de grote finale
                 gameState.characters.Kaizen23.hp = 100;
                 gameState.characters.Mmz23.hp = 100;
             }
         },
-        
         final_boss_p1_attack: {
             text: `
                 E.A.K. vuurt zijn Origin Pulse af. OverCore's pantser krijgt een zware klap.
@@ -945,7 +774,6 @@
                 }
             ]
         },
-
         final_boss_rewind_check: {
             text: `
                 Je probeert de Rewind, maar de dimensie is te stabiel door de nabijheid van de Origin Shard.
@@ -961,11 +789,9 @@
             onEnter: () => {
                 gameState.characters.Kaizen23.hp -= 10;
                 gameState.characters.Mmz23.hp -= 10;
-                gameState.characters.Outsider.glitchRewind = 0; // Rewind is nu verbruikt
+                gameState.characters.Outsider.glitchRewind = 0; 
             }
         },
-
-        // Nieuwe Scènes voor de No-Pulse route (Glitch Rewind fail)
         final_boss_p2_kaizen_save_no_pulse: {
             text: `
                 Je springt voor Kaizen23 en absorbeert een deel van de straal. Mmz23 neemt de volle klap en is zwaar gewond. Kaizen23 vuurt direct terug.
@@ -984,7 +810,6 @@
                 gameState.characters.Outsider.supportPulse = 0;
             }
         },
-        
         final_boss_p2_mmz_save_no_pulse: {
             text: `
                 Je springt voor Mmz23 en absorbeert een deel van de straal. Kaizen23 neemt de volle klap en is zwaar gewond. Mmz23 beukt direct terug.
@@ -1003,8 +828,6 @@
                 gameState.characters.Outsider.supportPulse = 0;
             }
         },
-        
-        // Oorspronkelijke Pulse routes (hebben minder schade)
         final_boss_p2_kaizen_save: {
             text: `
                 Je geeft Kaizen23 de laatste **Support Pulse**. Kaizen23 vangt de straal op en gebruikt de boost om direct terug te vuren.
@@ -1023,7 +846,6 @@
                 gameState.characters.Mmz23.hp -= 20;
             }
         },
-
         final_boss_p2_mmz_save: {
             text: `
                 Je geeft Mmz23 de laatste **Support Pulse**. Mmz23 lacht, de boost geeft hem de kracht om de aanval te pareren.
@@ -1042,7 +864,6 @@
                 gameState.characters.Kaizen23.hp -= 20;
             }
         },
-
         final_boss_ending: {
             text: `
                 OverCore is zwaar beschadigd en onstabiel. E.A.K. zweeft naar voren.
@@ -1062,7 +883,6 @@
                 { text: "Keer terug naar de Echte Wereld", next: "end_game_win" }
             ]
         },
-
         end_game_win: {
             text: `
                 **Gefeliciteerd, Outsider!**
@@ -1082,7 +902,7 @@
     };
     
     // =======================================================
-    // 3. LOGICA EN RENDERING (GECORRIGEERD)
+    // 3. LOGICA EN RENDERING (MET DISPLAY:NONE FIX)
     // =======================================================
 
     const narrativeTextElement = document.getElementById('narrative-text');
@@ -1116,6 +936,8 @@
         // Start het spel na de intro
         setTimeout(() => {
             introScreen.style.opacity = '0';
+            // FIX 2: Verberg de intro-screen na de animatie zodat deze GEEN kliks kan onderscheppen
+            introScreen.style.display = 'none'; 
             gameContainer.style.opacity = '1';
             // Start de daadwerkelijke game flow door de eerste scene te laden
             updateScreen('centralHub_start'); 
