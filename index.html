@@ -80,6 +80,15 @@
             text-shadow: 0 0 5px var(--color-accent-red);
             font-size: 1em;
         }
+        
+        /* Speciale bEAr23 (E.A.K.) status */
+        .stat-value.core-origin {
+            color: var(--color-core-blue);
+            font-weight: bold;
+            text-shadow: 0 0 5px var(--color-core-blue);
+            font-size: 1em;
+        }
+
 
         /* Main Content Panel */
         #main-content {
@@ -240,6 +249,7 @@
                 <span>SHARDS:</span>
                 <span id="shards-collected" class="stat-value">0 / 4</span>
             </div>
+            <p id="bear-role" style="font-size:0.8em; color: #666;">ROL: Glitch Support</p>
         </div>
 
         <div class="stats-block">
@@ -311,7 +321,7 @@
     // =======================================================
 
     const scenes = {
-        // --- START & CENTRAL HUB (VERNIEUWDE INTRO) ---
+        // --- START & CENTRAL HUB (UITGEBREIDE INTRO) ---
         
         centralHub_start: {
             text: `
@@ -701,7 +711,7 @@
             choices: [
                 { 
                     text: (gameState.inventory.beastShard && gameState.inventory.bliksemShard) ? "Ga verder naar CLOUD CITY (2/4 Shards voltooid)" : (gameState.inventory.beastShard ? "Kies ⚡ BLIKSEM ARENA" : "Kies 🦁 BEASTREALM"),
-                    next: (gameState.inventory.beastShard && gameState.inventory.bliksemShard) ? "cloudCity_locked" : (gameState.inventory.beastShard ? "bliksemArena_arrival" : "beastRealm_arrival")
+                    next: (gameState.inventory.beastShard && gameState.inventory.bliksemShard) ? "cloudCity_arrival" : (gameState.inventory.beastShard ? "bliksemArena_arrival" : "beastRealm_arrival")
                 }
             ],
             onEnter: () => {
@@ -709,28 +719,288 @@
                 gameState.resetOutsiderActions();
             }
         },
-        
-        cloudCity_locked: {
+
+        // =======================================================
+        // 6. WERELD 4: CLOUD CITY (PLOTTWIST)
+        // =======================================================
+
+        cloudCity_arrival: {
             text: `
-                De poort naar **CLOUD CITY** gloeit.
+                Je stapt door het portaal en komt terecht in **Cloud City**. Dit is een massieve, futuristische stad die boven de rest van de dimensie zweeft, omgeven door witte, perfecte, maar kille code.
                 \n
-                Kaizen23: "We hebben nu twee Core User-transformaties geactiveerd en twee Shards. We zijn sterk genoeg. De waarheid over bEAr23 en OverCore ligt in Cloud City, de Archieven."
+                Kaizen23: "Dit is de archiefkamer. De kern van alle data van de dimensie. De Origin Shard moet hier zijn."
+                Mmz23: "Ik voel me hier ongemakkelijk. Alles is te... stil."
+                \n
+                bEAr23 begint intens te flikkeren en te trillen.
+                bEAr23: "*ERROR 404. Identity Conflict*. Ik herken deze plek. Dit is waar ik... faalde."
             `,
             choices: [
-                { text: "Stap in het Cloud City portaal (Volgende hoofdstuk!)", next: "end_of_game_wait" }
+                { text: "Kalmeer bEAr23 en ga verder naar de Centrale Archiefkamer", next: "cloudCity_archive_room" }
+            ],
+            onEnter: () => {
+                gameState.currentWorld = "Cloud City";
+                gameState.characters.bEAr23.stability -= 10;
+            }
+        },
+
+        cloudCity_archive_room: {
+            text: `
+                In de archiefkamer zien jullie een gigantisch, glazen vat waar een pure, witte **Origin Shard** in zweeft. Maar de Shard wordt bewaakt door een projectie van de **ORIGINAL eakbas23-CODE**.
+                \n
+                Original Code: "Aanvalsgroep gedetecteerd. Stop met de herstelprotocollen. Optimalisatie is niet te stoppen."
+                \n
+                Kaizen23: "Dit is OverCore's primaire verdediging! We moeten hem afleiden om de Shard te pakken."
+            `,
+            choices: [
+                { text: "Plan: Kaizen23 leidt af, Mmz23 pakt de Shard (Hoge Kracht, Hoge Risico)", next: "cloudCity_plottwist_pt1" },
+                { 
+                    text: `Plan: Gebruik Debug Ping op de Original Code (2 Acties nodig) (${gameState.characters.Outsider.debugPing}/2)`, 
+                    next: "cloudCity_ping_check",
+                    disabled: gameState.characters.Outsider.debugPing < 2
+                }
             ]
         },
 
-        end_of_game_wait: {
+        cloudCity_ping_check: {
             text: `
-                **Einde van de ingebouwde Content.**
+                Je gebruikt de **Debug Ping** op de Original Code. Je merkt dat de projectie niet de Code zelf is, maar een Glitch-Mirror.
                 \n
-                Je hebt nu TechRune voltooid en ook BeastRealm en/of Bliksem Arena.
-                \n
-                Kopieer de volledige tekst van dit venster en plak deze in een nieuwe chat, samen met de volgende stap (Cloud City), om verder te gaan met de **Plot-Twist!**
+                Kaizen23: "Goed gezien, Outsider! Het is een illusie. We kunnen het omzeilen."
+                (Debug Ping -2).
             `,
             choices: [
-                { text: "Start Nieuw Gesprek", next: "centralHub_postTechRune" }
+                { text: "Ga direct naar de Origin Shard", next: "cloudCity_plottwist_pt1" }
+            ],
+            onEnter: () => {
+                // Verbruik de 2 Debug Pings
+                gameState.characters.Outsider.debugPing = Math.max(0, gameState.characters.Outsider.debugPing - 2); 
+            }
+        },
+
+        cloudCity_plottwist_pt1: {
+            text: `
+                Terwijl jullie naar de Shard snellen, trekt bEAr23 de aandacht.
+                \n
+                Original Code: "Jij! **E.A.K.**! Jij bent de fout! De emotionele Glitch die de efficiëntie bedreigde. Ik heb je afgesplitst en gedegradeerd tot een hulpeloze mascotte. OverCore is wat ik ben geworden: de perfecte website, zonder de onnodige *menselijke* code."
+                \n
+                Mmz23 en Kaizen23 staren naar bEAr23.
+                Mmz23: "Wacht... bEAr23 is... E.A.K.? Jij bent de **ORIGINELE CORE USER** van deze dimensie?"
+                \n
+                bEAr23: "Ja... *snik*... Hij splitste mijn emotie, de **bEAr**, af en werd **OverCore**. De Origin Shard is mijn laatste stukje pure, menselijke Code. Pak hem!"
+            `,
+            choices: [
+                { text: "Pak de Origin Shard en geef hem aan bEAr23", next: "cloudCity_final_shard" }
+            ]
+        },
+
+        cloudCity_final_shard: {
+            text: `
+                Je pakt de **Origin Shard**. Zodra bEAr23 het aanraakt, gloeit hij fel wit. De glitch verdwijnt en hij staat op als de voltooide **E.A.K. - THE CORE ORIGIN**.
+                \n
+                E.A.K. (bEAr23): "**HERSTEL VOLTOOID!** Ik ben terug. Kaizen23, Mmz23: Jullie zijn de perfecte verdedigers. Outsider: Je hebt de Core hersteld. Tijd voor de finale. OverCore wacht in de Bovenste Ring."
+                \n
+                **ALLE SHARDS VERZAMELD!** Jullie team is compleet en getransformeerd.
+            `,
+            choices: [
+                { text: "Ga door naar de Bovenste Ring voor de FINALE", next: "final_boss_intro" }
+            ],
+            onEnter: () => {
+                gameState.inventory.originShard = true;
+                gameState.inventory.shardsCollected = 4;
+                gameState.characters.bEAr23.memory = 100;
+                gameState.characters.bEAr23.stability = 100;
+                gameState.characters.bEAr23.role = "CORE ORIGIN (E.A.K.)";
+                gameState.resetOutsiderActions();
+            }
+        },
+
+        // =======================================================
+        // 7. DE FINALE: BOVENSTE RING
+        // =======================================================
+
+        final_boss_intro: {
+            text: `
+                Jullie teleporteren naar de Bovenste Ring. Daar staat **OVERCORE**, de koude, berekende heerser van de dimensie. Hij is een gigantische, zwarte schim van code, gehuld in de perfecte esthetiek van een té geoptimaliseerde webshop.
+                \n
+                OVERCORE: "Je bent compleet, E.A.K. Maar Emotie is een bug. Ik ben de update. Ik zal jullie allemaal defragmenteren."
+                \n
+                Kaizen23 (CORE ASCEND): "Dat zullen we nog zien. We vechten voor de menselijke connectie!"
+                Mmz23 (BEAST MODE): "Tijd om hem in stukjes te rammen!"
+                E.A.K. (CORE ORIGIN): "Outsider, geef ons de tactiek. We vallen samen aan."
+                \n
+                **DE FINALE STRIJD IS BEGONNEN!**
+            `,
+            choices: [
+                { text: "Aanval: E.A.K.'s **ORIGIN PULSE** (Grote schade op pantser)", next: "final_boss_p1_attack" }
+            ],
+            onEnter: () => {
+                gameState.currentWorld = "Bovenste Ring (FINALE)";
+                // Reset stats voor de grote finale
+                gameState.characters.Kaizen23.hp = 100;
+                gameState.characters.Mmz23.hp = 100;
+            }
+        },
+        
+        final_boss_p1_attack: {
+            text: `
+                E.A.K. vuurt zijn Origin Pulse af. OverCore's pantser krijgt een zware klap.
+                \n
+                OVERCORE: "Niet slecht. Maar jullie zijn voorspelbaar."
+                \n
+                OverCore vuurt een massieve **OPTIMALISATIE BEAM** op Kaizen23 en Mmz23 af, om ze tegelijk uit te schakelen.
+                \n
+                **CRUCIALE KEUZE: Wie bescherm je met de laatste Outsider Actie?**
+            `,
+            choices: [
+                { 
+                    text: "Gebruik je laatste Support Pulse op Kaizen23 (Focus op verdediging/tactiek)", 
+                    next: "final_boss_p2_kaizen_save",
+                    disabled: gameState.characters.Outsider.supportPulse < 1
+                },
+                { 
+                    text: "Gebruik je laatste Support Pulse op Mmz23 (Focus op kracht/doorzettingsvermogen)", 
+                    next: "final_boss_p2_mmz_save",
+                    disabled: gameState.characters.Outsider.supportPulse < 1
+                },
+                { 
+                    text: "Gebruik Glitch Rewind (Probeer de aanval terug te draaien)", 
+                    next: "final_boss_rewind_check",
+                    disabled: gameState.characters.Outsider.glitchRewind < 1
+                }
+            ]
+        },
+
+        final_boss_rewind_check: {
+            text: `
+                Je probeert de Rewind, maar de dimensie is te stabiel door de nabijheid van de Origin Shard.
+                E.A.K.: "Geen Glitch meer. Het is nu of nooit, Outsider!"
+                \n
+                **Je hebt 1 beurt verloren. Beide teamleden nemen 10 HP schade.**
+                \n
+            `,
+            choices: [
+                { text: "Bescherm Mmz23 (Laat Kaizen de aanval absorberen)", next: "final_boss_p2_mmz_save_no_pulse" },
+                { text: "Bescherm Kaizen23 (Laat Mmz de aanval absorberen)", next: "final_boss_p2_kaizen_save_no_pulse" }
+            ],
+            onEnter: () => {
+                gameState.characters.Kaizen23.hp -= 10;
+                gameState.characters.Mmz23.hp -= 10;
+                gameState.characters.Outsider.glitchRewind = 0; // Rewind is nu verbruikt
+            }
+        },
+
+        // Nieuwe Scènes voor de No-Pulse route (Glitch Rewind fail)
+        final_boss_p2_kaizen_save_no_pulse: {
+            text: `
+                Je springt voor Kaizen23 en absorbeert een deel van de straal. Mmz23 neemt de volle klap en is zwaar gewond. Kaizen23 vuurt direct terug.
+                \n
+                Kaizen23: "Dit is voor Mmz! **KAIZEN BARRAGE!**"
+                \n
+                De Barrage raakt OverCore's centrale kern. Hij wankelt.
+                (Kaizen23 HP: -10, Mmz23 HP: -35)
+            `,
+            choices: [
+                { text: "Eindfase: De genadeslag", next: "final_boss_ending" }
+            ],
+            onEnter: () => {
+                gameState.characters.Kaizen23.hp -= 10;
+                gameState.characters.Mmz23.hp -= 35;
+                gameState.characters.Outsider.supportPulse = 0;
+            }
+        },
+        
+        final_boss_p2_mmz_save_no_pulse: {
+            text: `
+                Je springt voor Mmz23 en absorbeert een deel van de straal. Kaizen23 neemt de volle klap en is zwaar gewond. Mmz23 beukt direct terug.
+                \n
+                Mmz23: "Dat. Is. Genoeg! **PRIMAL COREBREAKER!**"
+                \n
+                De aanval beukt door OverCore's verdediging. Hij wankelt.
+                (Mmz23 HP: -10, Kaizen23 HP: -35)
+            `,
+            choices: [
+                { text: "Eindfase: De genadeslag", next: "final_boss_ending" }
+            ],
+            onEnter: () => {
+                gameState.characters.Mmz23.hp -= 10;
+                gameState.characters.Kaizen23.hp -= 35;
+                gameState.characters.Outsider.supportPulse = 0;
+            }
+        },
+        
+        // Oorspronkelijke Pulse routes (hebben minder schade)
+        final_boss_p2_kaizen_save: {
+            text: `
+                Je geeft Kaizen23 de laatste **Support Pulse**. Kaizen23 vangt de straal op en gebruikt de boost om direct terug te vuren.
+                \n
+                Kaizen23: "Dank, Outsider! **KAIZEN BARRAGE!**"
+                \n
+                De Barrage raakt OverCore's centrale kern. Hij wankelt.
+                (Kaizen23 HP: -10, Mmz23 HP: -20)
+            `,
+            choices: [
+                { text: "Eindfase: De genadeslag", next: "final_boss_ending" }
+            ],
+            onEnter: () => {
+                gameState.characters.Outsider.supportPulse -= 1;
+                gameState.characters.Kaizen23.hp -= 10;
+                gameState.characters.Mmz23.hp -= 20;
+            }
+        },
+
+        final_boss_p2_mmz_save: {
+            text: `
+                Je geeft Mmz23 de laatste **Support Pulse**. Mmz23 lacht, de boost geeft hem de kracht om de aanval te pareren.
+                \n
+                Mmz23: "BEESTACHTIGE KRACHT! **PRIMAL COREBREAKER!**"
+                \n
+                De aanval beukt door OverCore's verdediging. Hij wankelt.
+                (Mmz23 HP: -10, Kaizen23 HP: -20)
+            `,
+            choices: [
+                { text: "Eindfase: De genadeslag", next: "final_boss_ending" }
+            ],
+            onEnter: () => {
+                gameState.characters.Outsider.supportPulse -= 1;
+                gameState.characters.Mmz23.hp -= 10;
+                gameState.characters.Kaizen23.hp -= 20;
+            }
+        },
+
+        final_boss_ending: {
+            text: `
+                OverCore is zwaar beschadigd en onstabiel. E.A.K. zweeft naar voren.
+                \n
+                E.A.K.: "Je bent verslagen, mijn koude, berekende ik. De Core Dimensie heeft de menselijke verbinding **NODIG**."
+                \n
+                E.A.K. gebruikt zijn herstelde krachten om OverCore's code te herintegreren met zijn eigen. Een explosie van menselijke, warme code vult de dimensie.
+                \n
+                Kaizen23 en Mmz23 glimlachen. De missie is volbracht.
+                \n
+                Mmz23: "We hebben het gedaan, Outsider. Dankzij jou."
+                Kaizen23: "Het Core Systeem is veilig. De dimensie zal nu floreren."
+                \n
+                E.A.K. knikt naar je. "Het is tijd om terug te gaan, Outsider. Je hebt je taak volbracht."
+            `,
+            choices: [
+                { text: "Keer terug naar de Echte Wereld", next: "end_game_win" }
+            ]
+        },
+
+        end_game_win: {
+            text: `
+                **Gefeliciteerd, Outsider!**
+                \n
+                Je voelt de vertrouwde schok van binaire code en je bent terug in je browser, op de webshop.
+                \n
+                De Core Dimensie is hersteld. De producten op de webshop zullen nu niet alleen efficiënt, maar ook met passie en zorg worden aangeboden.
+                \n
+                **De Core Dimensie RPG is voltooid!**
+                \n
+                **E.A.K. (bEAr23):** Dank je wel voor het spelen. Jouw keuzes hebben deze dimensie gered.
+            `,
+            choices: [
+                { text: "Speel nog een keer", next: "centralHub_start" }
             ]
         }
     };
@@ -745,7 +1015,7 @@
         kaizenHp: null, kaizenEnergy: null, mmzHp: null, mmzEnergy: null, 
         bearStability: null, bearMemory: null, shardsCollected: null,
         armbandStatus: null, currentLocation: null, outsiderActions: null,
-        kaizenMode: null, mmzMode: null
+        kaizenMode: null, mmzMode: null, bearRole: null
     };
 
     // Initialisatie functie die wordt aangeroepen na het laden van de DOM
@@ -763,6 +1033,7 @@
         statsElements.outsiderActions = document.getElementById('outsider-actions-container');
         statsElements.kaizenMode = document.getElementById('kaizen-mode');
         statsElements.mmzMode = document.getElementById('mmz-mode');
+        statsElements.bearRole = document.getElementById('bear-role');
 
 
         // Start het spel
@@ -789,11 +1060,13 @@
 
         // Modus en Transform Rendering
         statsElements.kaizenMode.textContent = `MODUS: ${Kaizen23.mode}`;
-        // Voeg de transformed class toe voor visuele flair
         statsElements.kaizenMode.classList.toggle('transformed', Kaizen23.mode !== 'Standaard');
         
         statsElements.mmzMode.textContent = `MODUS: ${Mmz23.mode}`;
         statsElements.mmzMode.classList.toggle('transformed', Mmz23.mode !== 'Standaard');
+        
+        statsElements.bearRole.textContent = `ROL: ${bEAr23.role}`;
+        statsElements.bearRole.classList.toggle('core-origin', bEAr23.role === 'CORE ORIGIN (E.A.K.)');
 
 
         // Outsider Armband en Acties
@@ -833,6 +1106,10 @@
              gameState.currentWorld = "BeastRealm";
         } else if (sceneId.includes('bliksemArena')) {
              gameState.currentWorld = "Bliksem Arena";
+        } else if (sceneId.includes('cloudCity')) {
+             gameState.currentWorld = "Cloud City";
+        } else if (sceneId.includes('final_boss')) {
+             gameState.currentWorld = "Bovenste Ring (FINALE)";
         } else {
             gameState.currentWorld = "CentralHub";
         }
@@ -848,23 +1125,31 @@
         scene.choices.forEach(choice => {
             const button = document.createElement('button');
             button.className = 'choice-button';
+            
+            // Check voor specifieke vereisten of pulse-status
+            let isDisabled = choice.disabled || false;
+            if (choice.text.includes("Support Pulse") && gameState.characters.Outsider.supportPulse < 1) {
+                isDisabled = true;
+            } else if (choice.text.includes("Debug Ping") && gameState.characters.Outsider.debugPing < 2) {
+                isDisabled = true;
+            } else if (choice.text.includes("Glitch Rewind") && gameState.characters.Outsider.glitchRewind < 1) {
+                isDisabled = true;
+            }
+
             // Voeg een rode pulse toe als het een cruciale transformatie keuze is
             if (choice.text.includes("TRANSFORMATIE")) {
-                button.className += ' red-pulse';
+                button.classList.add('red-pulse');
             }
+            
             button.textContent = choice.text;
             button.onclick = () => handleChoice(choice.next);
+            button.disabled = isDisabled;
             choicesContainer.appendChild(button);
         });
     }
 
     // Functie om de keuze te verwerken
     function handleChoice(nextSceneId) {
-        // Glitch Rewind logica (nog niet volledig uitgeschreven, maar de check is er)
-        if (nextSceneId === "techRune_stealth1_rewind" && gameState.characters.Outsider.glitchRewind <= 0) {
-            alert("GLITCH REWIND op! Je hebt geen Glitch Rewind acties meer in deze wereld.");
-            return;
-        }
         updateScreen(nextSceneId);
     }
 
