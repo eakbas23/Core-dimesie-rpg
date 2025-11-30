@@ -1,1 +1,326 @@
-<!DOCTYPE html> <html lang="nl"> <head>   <meta charset="UTF-8">   <title>Core Dimensie RPG</title>   <style>     body {       background: linear-gradient(to bottom right, #0f1220, #1f2a44);       color: #f0f0f0;       font-family: 'Orbitron', sans-serif;       text-align: center;       padding: 20px;     }     h1 { color: #5ad1ff; font-size: 2em; }     button {       background-color: #ffcc66;       color: #0f1220;       border: none;       padding: 12px 20px;       margin: 8px;       border-radius: 10px;       font-weight: bold;       cursor: pointer;     }     #log {       background: #1a1a2e;       border: 1px solid #5ad1ff;       padding: 10px;       margin-top: 20px;       height: 280px;       overflow-y: auto;     }     #progress { width: 100%; height: 20px; background: #333; margin-top: 10px; }     #bar { height: 100%; width: 0%; background: #5ad1ff; }   </style> </head> <body>   <h1>Core Dimensie RPG</h1>   <p>🌌 De dimensies beven. <strong>Kaizen23</strong>, <strong>Mmz23</strong>, <strong>bEAr23</strong> en <strong>De Outsider</strong> hebben jouw hulp nodig om <em>OVERcore</em> te stoppen. Kies je pad, verzamel shards en bepaal het lot van alle werelden.</p>   <button onclick="startGame()">🚀 Start avontuur</button>   <div id="worlds" style="display:none;">     <button onclick="startWorld('shard')">Shard Nexus</button>     <button onclick="startWorld('sky')">Sky Metropol</button>     <button onclick="startWorld('ice')">Ice-Fire World</button>     <button onclick="startWorld('thunder')">Thunder Arena</button>     <button onclick="startWorld('beast')">Beast Realm</button>     <button onclick="startWorld('tech')">Tech Village</button>   </div>   <div id="progress"><div id="bar"></div></div>   <div id="log"></div>    <script>     const log = document.getElementById("log");     const bar = document.getElementById("bar");     const worlds = document.getElementById("worlds");     let state = { shards: 0, completed: [], inProgress: false };      function logMsg(msg) {       log.innerHTML += `<p>${msg}</p>`;       log.scrollTop = log.scrollHeight;     }      function updateProgress() {       const percent = (state.completed.length / 6) * 100;       bar.style.width = percent + "%";     }      function startGame() {       log.innerHTML = "";       logMsg("🌌 bEAr23: 'Lang geleden waren de dimensies in balans. Tot OVERcore verscheen.'");       logMsg("🧠 Kaizen23: 'Hij corrumpeert alles. We moeten zes shards vinden om hem te stoppen.'");       logMsg("💥 Mmz23: 'Laat me los. Ik wil hem nu al slaan.'");       logMsg("🕶️ De Outsider: 'Ik observeer. Maar ik zal ingrijpen als het nodig is.'");       worlds.style.display = "block";       updateProgress();     }      function startWorld(world) {       if (state.inProgress) {         logMsg("⏳ bEAr23: 'Rustig, strijder. Eén wereld tegelijk.'");         return;       }       if (state.completed.includes(world)) {         logMsg("⚠️ Kaizen23: 'We zijn hier al geweest.'");         return;       }        state.inProgress = true;       logMsg(`🌍 Je betreedt ${world}. De energie is instabiel.`);       setTimeout(() => {         logMsg("🧠 Kaizen23: 'We moeten analyseren. Er zit een patroon in de chaos.'");         logMsg("💥 Mmz23: 'Of we slaan gewoon alles kort. Werkt altijd.'");         logMsg("🕶️ De Outsider: 'Jullie keuzes bepalen de uitkomst. Kies wijs.'");         const choice = confirm("Strategisch (OK) of impulsief (Annuleren)?");         if (choice) {           logMsg("🧠 Kaizen23 leidt de groep door een puzzel van energievelden. Een shard verschijnt.");         } else {           logMsg("💥 Mmz23 breekt door barrières. De wereld beeft. Een shard wordt vrijgegeven.");         }         state.shards += 1;         completeWorld(world);       }, 1500);     }      function completeWorld(world) {       state.completed.push(world);       updateProgress();       logMsg(`✅ Wereld ${world} voltooid! Totale shards: ${state.shards}`);       state.inProgress = false;       if (state.completed.length === 6) {         finalBattle();       }     }      function finalBattle() {       logMsg("🔥 OVERcore verschijnt. Een kolossale entiteit van pure corruptie.");       logMsg("🧠 Kaizen23: 'We moeten onze shards combineren. Alleen dan maken we kans.'");       logMsg("💥 Mmz23: 'Ik ga recht op hem af. Geen angst.'");       logMsg("🕶️ De Outsider: 'Ik activeer de vergeten code. Jullie hebben één kans.'");       const choice = confirm("Combineer shards met De Outsider (OK) of val direct aan (Annuleren)?");       if (choice) {         logMsg("🌐 De shards vormen een Core Pulse. OVERcore wordt geraakt in zijn kern.");         logMsg("🏆 OVERcore valt uiteen. De dimensies ademen weer.");         epilogue();       } else {         logMsg("⚔️ Mmz23 stormt vooruit. OVERcore vecht terug. Chaos alom.");         logMsg("🧠 Kaizen23: 'Nu! Richt op zijn hart!'");         logMsg("💥 Mmz23: 'BOEM!' Een laatste slag. OVERcore verdwijnt.");         epilogue();       }     }      function epilogue() {       logMsg("🌟 De dimensies zijn hersteld. Stilte. Dan licht.");       logMsg("🧠 Kaizen23: 'We hebben balans hersteld. Maar wat blijft achter?'\n");       logMsg("💥 Mmz23: 'Ik wil terug naar Thunder Arena. Daar hoor ik thuis.'");       logMsg("🕶️ De Outsider: 'Jullie hebben gekozen. De werelden zullen jullie herinneren.'");       logMsg("🐻 bEAr23: 'Strijder, jouw keuzes hebben de Core herschreven. Tot de volgende cyclus.'");     }   </script> </body> </html>
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Dimensie RPG - De Glitch</title>
+    <style>
+        /* CORE DIMENSIE CSS */
+        body {
+            font-family: 'Consolas', 'Courier New', monospace;
+            background-color: #121212;
+            color: #E0E0E0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        #game-container {
+            width: 90%;
+            max-width: 800px;
+            background-color: #1E1E1E;
+            border: 3px solid #00BFFF; /* Core Blauw */
+            box-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
+            padding: 25px;
+            border-radius: 10px;
+        }
+        #dialogue {
+            min-height: 200px;
+            border-bottom: 1px dashed #333;
+            margin-bottom: 20px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+        .character-name {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        .kaizen { color: #00BFFF; } /* Lichtblauw */
+        .mmz { color: #00FF7F; }    /* Groen */
+        .bear { color: #FFFFFF; }   /* Wit/Glitch */
+        .outsider { color: #FFD700; } /* Goud */
+
+        #choices button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            font-size: 1em;
+            text-align: left;
+        }
+        #choices button:hover {
+            background-color: #00BFFF;
+            transform: translateY(-2px);
+        }
+        .stats-panel {
+            background-color: #2D2D2D;
+            border: 1px solid #444;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        .stat-bar {
+            background-color: #555;
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .hp { background-color: #FF4500; }
+        .energy { background-color: #00FFFF; }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h1>💾 CORE DIMENSIE RPG</h1>
+        <hr>
+        <div id="dialogue">Laden...</div>
+        <div id="choices"></div>
+
+        <div class="stats-panel">
+            <h3>⚙️ Huidige Status (De Outsider)</h3>
+            <p>
+                **SKILLS (Per Wereld):**<br>
+                Support Pulse: <span id="support-pulse">3</span>x | Debug Ping: <span id="debug-ping">2</span>x | Glitch Rewind: <span id="glitch-rewind">1</span>x
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // --- SPEL DATA (Gebaseerd op de Backup) ---
+        const GAME_DATA = {
+            // Kaizen: Data/Licht (Blauw), Mmz: Natuur/Energie (Groen), Bear: Code/Glitch (Wit)
+            kaizen: { name: 'KAIZEN23', class: 'kaizen' },
+            mmz: { name: 'MMZ23', class: 'mmz' },
+            bear: { name: 'bEAr23', class: 'bear' },
+            outsider: { name: 'DE OUTSIDER', class: 'outsider' },
+
+            // Start Shards (0/4)
+            shards: 0, 
+
+            // De Outsider's acties (resetten per wereld)
+            outsiderActions: {
+                supportPulse: 3,
+                debugPing: 2,
+                glitchRewind: 1
+            },
+
+            // Hoofdstukken
+            chapters: {
+                // Proloog: Webshop Intro -> Glitch -> CentralHub Aankomst
+                START: {
+                    text: `
+                    <span class="outsider">SYSTEEM LOG: [eakbas23.nl]</span>
+                    <br>
+                    Je bent gewoon aan het rondkijken in de 'TechRune' sectie van de webshop. Je zoekt naar een coole gadget. Alles is netjes, futuristisch, gestroomlijnd.
+                    <br><br>
+                    <span class="bear">ERROR. FILE NOT FOUND: CORE_STABILITY.INIT()</span>
+                    <br>
+                    Plotseling flikkert het scherm, de 'koel' factor slaat om in een felle, witte statische ruis. De lichten vallen uit. Je hoort een stem die in code lijkt te spreken...
+                    <br><br>
+                    <span class="bear">>>> FOUT. FOUT. FOUT. IETS GROOTS IS KAPOT. GEHEUGEN 95% VERLOREN. GEEN STABILISATIE MOGELIJK. INLEIDING EXTERNE ENTITEIT GEACTIVEERD.</span>
+                    <br><br>
+                    Een vreemd groen-blauw portaal opent zich op je scherm. Je voelt een onweerstaanbare zuigkracht.
+                    <br><br>
+                    <span class="outsider">>>> Zelfs met je ogen dicht word je de digitale dimensie ingezogen. Je wordt met een harde klap op een zwevend platform in een storm van code gedropt.</span>
+                    `,
+                    choices: [{
+                        text: "Hoofdstuk 2: Aankomst in CentralHub",
+                        next: "CENTRALHUB_1"
+                    }]
+                },
+
+                // CentralHub: Start, rustpunt, Core Users ontmoeting
+                CENTRALHUB_1: {
+                    text: `
+                    <span class="outsider">AANKOMST IN CENTRALHUB</span>
+                    <br>
+                    Je bent in de CentralHub, een plek van zwevende platforms en neon. Het platform flikkert. Een kleine robot met een glitchende beren-vorm staat voor je, de code van de fout van zojuist draait nog om hem heen.
+                    <br><br>
+                    [span_0](start_span)[span_1](start_span)<span class="bear">bEAr23:</span> "<span class="bear">Oei. Dat was... strategisch suboptimaal. Je bent De Outsider. Ik heb je binnengehaald. Sorry. Of niet. Ik ben bEAr23, en jij bent technisch gezien mijn fout.</span>"[span_0](end_span)[span_1](end_span)
+                    <br><br>
+                    Twee figuren landen voor je in een flits van licht en energie. Een koel, blauw figuur en een krachtig, groen figuur.
+                    <br><br>
+                    [span_2](start_span)<span class="kaizen">Kaizen23:</span> "<span class="kaizen">bEAr! We hadden je verteld om NIET zomaar een externe entiteit binnen te trekken. Dit is inefficiënt. Wie is dit?</span>"[span_2](end_span)
+                    <br><br>
+                    <span class="mmz">Mmz23:</span> "<span class="mmz">Rustig, Kaizen. Hoi, ik ben Mmz23. Geen paniek. Waarom ben je hier? bEAr, wat is er aan de hand?</span>"
+                    `,
+                    choices: [{
+                        text: "Keuze 1: 'Ik ben per ongeluk ingezogen. Wat is dit voor plek?'",
+                        next: "CENTRALHUB_2_A"
+                    }, {
+                        text: "Keuze 2: 'Ik ga jullie niet helpen, ik wil terug naar de webshop!'",
+                        next: "CENTRALHUB_2_B"
+                    }]
+                },
+
+                CENTRALHUB_2_A: {
+                    text: `
+                    <span class="outsider">DE OUTSIDER:</span> "<span class="outsider">Ik ben per ongeluk ingezogen. Wat is dit voor plek?</span>"
+                    <br><br>
+                    <span class="kaizen">Kaizen23:</span> "<span class="kaizen">Dit is de Core Dimensie. Het digitale hart van de webshop. En het is aan het corrumperen. De fout van bEAr heeft het wakker gemaakt.</span>"
+                    <br><br>
+                    <span class="mmz">Mmz23:</span> "<span class="mmz">De schurk is **OverCore**. Hij wil alles optimaliseren tot een koude leegte. We moeten hem stoppen. [span_3](start_span)[span_4](start_span)En jij bent de enige variabele die hij niet kan voorspellen.</span>"[span_3](end_span)[span_4](end_span)
+                    `,
+                    choices: [{
+                        text: "Doorgaan: Het plan en de eerste keuze van de wereld.",
+                        next: "CENTRALHUB_3"
+                    }]
+                },
+
+                CENTRALHUB_2_B: {
+                    text: `
+                    <span class="outsider">DE OUTSIDER:</span> "<span class="outsider">Ik ga jullie niet helpen, ik wil terug naar de webshop!</span>"
+                    <br><br>
+                    <span class="bear">bEAr23:</span> "<span class="bear">Helaas, *fout*. Je bent nu een 'Glitch-Anomalie'. Tenzij we OverCore verslaan, blijf je hier. Je aanwezigheid is... noodzakelijk.</span>"
+                    <br><br>
+                    [span_5](start_span)<span class="kaizen">Kaizen23:</span> "<span class="kaizen">Je bent nu ons beste wapen, Outsider. Je keuzes staan buiten zijn logica. Bedenk dat goed.</span>"[span_5](end_span)
+                    `,
+                    choices: [{
+                        text: "Doorgaan: Het plan en de eerste keuze van de wereld.",
+                        next: "CENTRALHUB_3"
+                    }]
+                },
+
+                // Het plan en de eerste wereldkeuze
+                CENTRALHUB_3: {
+                    text: `
+                    <span class="outsider">HET PLAN</span>
+                    <br>
+                    [span_6](start_span)[span_7](start_span)<span class="kaizen">Kaizen23:</span> "<span class="kaizen">We moeten 4 Shards verzamelen om de Nexus te openen en OverCore's kern te bereiken. Eén in elke wereld. De eerste wereld moet **TechRune** zijn, omdat je daar de CoreLink-Armband krijgt om ons te kunnen helpen.</span>"[span_6](end_span)[span_7](end_span)
+                    <br><br>
+                    <span class="mmz">Mmz23:</span> "<span class="mmz">We hebben je nodig om de beslissingen te nemen, Outsider. Wij luisteren naar jou.</span>"
+                    <br><br>
+                    <span class="bear">bEAr23:</span> "<span class="bear">Laten we naar TechRune gaan. Ik voel een lichte... *glitch* in die richting.</span>"
+                    `,
+                    choices: [{
+                        text: "BEVESTIG: Ga naar TechRune (Wereld 1)",
+                        next: "TECHRUNE_1"
+                    }]
+                },
+
+                // TechRune: Aankomst en de eerste keuzes (Stealth vs Brute Force)
+                TECHRUNE_1: {
+                    text: `
+                    [span_8](start_span)<span class="kaizen">WERELD 1: TECHRUNE (Webshop: Gadgets)</span>[span_8](end_span)
+                    <br>
+                    Je staat in TechRune. Wolkenkrabbers zijn gemaakt van flikkerende smartphones. De straten zijn als circuitboards. OverCore's invloed heeft de helft van de stad in duisternis gehuld.
+                    <br><br>
+                    <span class="kaizen">Kaizen23:</span> "<span class="kaizen">De Cipher Warden, de mini-baas, zit in het centrale gebouw. We kunnen via de ondergrondse dataleidingen (Stealth) of direct via de hoofdstraat (Brute Force). Kies, Outsider.</span>"
+                    <br><br>
+                    [span_9](start_span)<span class="mmz">Mmz23:</span> "<span class="mmz">Kies Brute Force! Eerst slaan, dan vragen!</span>"[span_9](end_span)
+                    <br><br>
+                    <span class="bear">bEAr23:</span> "<span class="bear">Stealth is... efficiënter. Maar met mijn geluk zal ik toch wel ergens tegenaan botsen.</span>"
+                    `,
+                    choices: [{
+                        text: "ROUTE A: Stealth (Volg de dataleidingen, focus op puzzels)",
+                        next: "TECHRUNE_STEALTH_2"
+                    }, {
+                        text: "ROUTE B: Brute Force (Vecht door de hoofdstraat, focus op gevechten)",
+                        next: "TECHRUNE_BRUTE_FORCE_2"
+                    }, {
+                        text: "ROUTE C: Split (Stuur Kaizen solo voor Stealth, Mmz voor Brute Force)",
+                        next: "TECHRUNE_SPLIT_2"
+                    }]
+                },
+
+                // Dit is het einde van het eerste deel van het script
+                TECHRUNE_STEALTH_2: {
+                    text: `
+                    <span class="kaizen">STEALTH ROUTE:</span>
+                    <br>
+                    Je kiest voor de tactische aanpak. [span_10](start_span)Kaizen23 neemt de leiding en gebruikt haar **TactiScan_23**[span_10](end_span) om zwakke punten in de bewakingsdrones te vinden. Het team glipt door de dataleidingen.
+                    <br><br>
+                    **(Hier gaat het spel verder met de puzzelscènes en het vinden van de CoreLink-Armband voor De Outsider!)**
+                    `,
+                    choices: [{
+                        text: "EINDE VAN DE DEMO - Ga terug naar CentralHub",
+                        next: "CENTRALHUB_1" // Loop terug voor de demo
+                    }]
+                },
+
+                TECHRUNE_BRUTE_FORCE_2: {
+                    text: `
+                    <span class="mmz">BRUTE FORCE ROUTE:</span>
+                    <br>
+                    Je kiest voor de directe aanval. [span_11](start_span)Mmz23 roept zijn **Wild Pack Call**[span_11](end_span) en stormt de hoofdstraat in. De digitale beesten van Mmz vallen de patrouille-drones aan.
+                    <br><br>
+                    **(Hier gaat het spel verder met de gevechtsscènes en het vinden van de CoreLink-Armband voor De Outsider!)**
+                    `,
+                    choices: [{
+                        text: "EINDE VAN DE DEMO - Ga terug naar CentralHub",
+                        next: "CENTRALHUB_1" // Loop terug voor de demo
+                    }]
+                },
+
+                TECHRUNE_SPLIT_2: {
+                    text: `
+                    <span class="outsider">SPLIT ROUTE:</span>
+                    <br>
+                    Je splitst het team. Mmz23 en bEAr23 gaan de hoofdstraat in als afleiding. Kaizen23 gaat solo via de leidingen.
+                    <br><br>
+                    <span class="bear">bEAr23:</span> "<span class="bear">Dit is onnodig risicovol! Maar goed, ik doe wat ik moet doen.</span>"
+                    <br><br>
+                    **(Hier gaat het spel verder met twee gelijktijdige verhaallijnen en het vinden van de CoreLink-Armband voor De Outsider!)**
+                    `,
+                    choices: [{
+                        text: "EINDE VAN DE DEMO - Ga terug naar CentralHub",
+                        next: "CENTRALHUB_1" // Loop terug voor de demo
+                    }]
+                },
+            }
+        };
+
+        // --- SPEL LOGICA ---
+
+        let currentScene = 'START';
+        const dialogueEl = document.getElementById('dialogue');
+        const choicesEl = document.getElementById('choices');
+        const pulseCount = document.getElementById('support-pulse');
+        const debugCount = document.getElementById('debug-ping');
+        const rewindCount = document.getElementById('glitch-rewind');
+
+        function updateUI() {
+            const data = GAME_DATA.chapters[currentScene];
+            if (!data) return;
+
+            // Update Dialogue
+            dialogueEl.innerHTML = data.text;
+
+            // Update Choices
+            choicesEl.innerHTML = '';
+            data.choices.forEach(choice => {
+                const button = document.createElement('button');
+                button.textContent = choice.text;
+                button.onclick = () => goToScene(choice.next);
+                choicesEl.appendChild(button);
+            });
+
+            // Update Outsider Stats
+            pulseCount.textContent = GAME_DATA.outsiderActions.supportPulse;
+            debugCount.textContent = GAME_DATA.outsiderActions.debugPing;
+            rewindCount.textContent = GAME_DATA.outsiderActions.glitchRewind;
+
+            // Scroll naar onderaan om nieuwe tekst te zien
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        function goToScene(sceneKey) {
+            currentScene = sceneKey;
+            updateUI();
+        }
+
+        // Start het spel
+        goToScene('START');
+    </script>
+</body>
+</html>
