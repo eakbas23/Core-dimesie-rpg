@@ -42,8 +42,46 @@
             box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
             padding: 20px;
             background-color: var(--color-mid-bg);
+            opacity: 0; /* Standaard onzichtbaar */
+            transition: opacity 1s ease-in-out;
+        }
+        
+        /* ---------------------------------- */
+        /* INTRO SCREEN STYLING (NIEUW) */
+        /* ---------------------------------- */
+        #intro-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--color-dark-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            flex-direction: column;
+            color: var(--color-core-blue);
+            font-size: 2em;
+            text-shadow: 0 0 10px var(--color-core-blue);
+            transition: opacity 1s ease-in-out;
+            z-index: 1000;
         }
 
+        .intro-line {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            margin: 10px 0;
+            padding: 5px 0;
+            border-bottom: 1px dashed rgba(0, 255, 255, 0.2);
+        }
+        
+        .intro-line.active {
+            opacity: 1;
+        }
+        
+        /* OVERIGE GAME STYLING */
+        
         /* Stats Panel */
         #stats-panel {
             background-color: #1a1a1a;
@@ -202,6 +240,20 @@
 </head>
 <body>
 
+<div id="intro-screen">
+    <div class="intro-line" id="line1">
+        INITIATING CORE DIMENSION ACCESS...
+    </div>
+    <div class="intro-line" id="line2">
+        <span style="color:var(--color-core-green);">WARNING: DATA CORRUPTION DETECTED.</span>
+    </div>
+    <div class="intro-line" id="line3">
+        FIREWALL BREACH IMMINENT. EXTERNAL ENTITY LOCK.
+    </div>
+    <div class="intro-line" id="line4" style="color:var(--color-accent-red); font-weight: bold;">
+        WELCOME, OUTSIDER. THE GLITCH IS REAL.
+    </div>
+</div>
 <div id="game-container">
     <div id="stats-panel">
         <div id="header">
@@ -511,7 +563,7 @@
             `,
             choices: [
                 { text: "Laat Mmz23 het wolfje met zijn lichaam beschermen (Krachtig emotioneel moment)", next: "beastRealm_mmz_transform" },
-                { text: "Gebruik Support Pulse op Mmz23 (1 Actie, +30% Verdediging)", next: "beastRealm_support_intervene" }
+                { text: "Gebruik Support Pulse op Mmz23 (1 Actie, +30% Verdediging)", next: "beastRealm_support_intervene", disabled: gameState.characters.Outsider.supportPulse < 1 }
             ]
         },
 
@@ -1017,6 +1069,35 @@
         armbandStatus: null, currentLocation: null, outsiderActions: null,
         kaizenMode: null, mmzMode: null, bearRole: null
     };
+    
+    // NIEUWE FUNCTIE: Start de intro animatie
+    function startIntro() {
+        const introScreen = document.getElementById('intro-screen');
+        const lines = [
+            document.getElementById('line1'),
+            document.getElementById('line2'),
+            document.getElementById('line3'),
+            document.getElementById('line4')
+        ];
+        const gameContainer = document.getElementById('game-container');
+        
+        let delay = 500;
+        
+        lines.forEach((line, index) => {
+            setTimeout(() => {
+                line.classList.add('active');
+            }, delay + (index * 1500)); 
+        });
+
+        // Start het spel na de intro
+        setTimeout(() => {
+            introScreen.style.opacity = '0';
+            gameContainer.style.opacity = '1';
+            // Start de daadwerkelijke game flow
+            updateScreen(gameState.currentScene);
+        }, delay + (lines.length * 1500) + 500); // Wacht tot alle lijnen zijn getoond + extra pauze
+    }
+
 
     // Initialisatie functie die wordt aangeroepen na het laden van de DOM
     function initializeGame() {
@@ -1036,8 +1117,8 @@
         statsElements.bearRole = document.getElementById('bear-role');
 
 
-        // Start het spel
-        updateScreen(gameState.currentScene);
+        // Start de intro, die op zijn beurt de game start
+        startIntro();
     }
 
     // Functie om de statistieken in de zijbalk bij te werken
@@ -1128,7 +1209,14 @@
             
             // Check voor specifieke vereisten of pulse-status
             let isDisabled = choice.disabled || false;
-            if (choice.text.includes("Support Pulse") && gameState.characters.Outsider.supportPulse < 1) {
+            // Aangepaste logica voor de finale (als geen pulse acties over zijn, wordt de keuze automatisch de no-pulse route)
+            if (sceneId === "final_boss_p1_attack") {
+                if (choice.text.includes("Support Pulse") && gameState.characters.Outsider.supportPulse < 1) {
+                    isDisabled = true;
+                } else if (choice.text.includes("Glitch Rewind") && gameState.characters.Outsider.glitchRewind < 1) {
+                    isDisabled = true;
+                }
+            } else if (choice.text.includes("Support Pulse") && gameState.characters.Outsider.supportPulse < 1) {
                 isDisabled = true;
             } else if (choice.text.includes("Debug Ping") && gameState.characters.Outsider.debugPing < 2) {
                 isDisabled = true;
