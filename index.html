@@ -275,11 +275,11 @@
                     choices: [{
                         text: "AANVAL 1: Kaizen's Precision Shot (15 Schade)",
                         next: "TECHRUNE_BAAS_2",
-                        action: () => dealDamage(15) // GEFIXED: Geen 'return'
+                        action: () => dealDamage(15)
                     }, {
                         text: "AANVAL 2: Mmz's Overload Kick (20 Schade)",
                         next: "TECHRUNE_BAAS_2",
-                        action: () => dealDamage(20) // GEFIXED: Geen 'return'
+                        action: () => dealDamage(20)
                     }, {
                         text: "SUPPORT: Gebruik **SUPPORT PULSE** op Mmz (Extra Schade in de volgende ronde)",
                         next: "TECHRUNE_BAAS_2",
@@ -367,11 +367,14 @@
                 data.onEnter();
             }
 
-            // Update Dialogue, inclusief dynamische HP (alleen in gevechtscènes)
+            // Update Dialogue, inclusief dynamische HP.
             let currentText = data.text;
-            // Dit zorgt ervoor dat de HP in de dialoog wordt bijgewerkt
-            currentText = currentText.replace('${GAME_DATA.warden.hp}', GAME_DATA.warden.hp);
+            if (currentScene.startsWith('TECHRUNE_BAAS_')) {
+                // Vervang de placeholder met de huidige HP-waarde van de warden
+                currentText = currentText.replace('${GAME_DATA.warden.hp}', GAME_DATA.warden.hp);
+            }
             dialogueEl.innerHTML = currentText;
+
 
             // Update Choices
             choicesEl.innerHTML = '';
@@ -383,6 +386,7 @@
                 
                 // Controleer op beschikbare skills (dit voorkomt dat de knop klikt als de skill op is)
                 if (choice.action) {
+                    // Gebruik de tekst om de benodigde skill te detecteren
                     if (choice.text.includes('SUPPORT PULSE') && GAME_DATA.outsiderActions.supportPulse <= 0) {
                         isDisabled = true;
                         button.textContent += ` (0x over)`;
@@ -402,7 +406,7 @@
                     if (choice.action) {
                         choice.action(); 
                     }
-                    // Ga naar de volgende scene (dit gebeurt nu na de actie en niet via een onnodige return)
+                    // Ga naar de volgende scene 
                     goToScene(choice.next);
                 };
                 
