@@ -3,415 +3,813 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Core Dimensie RPG - De Glitch</title>
+    <title>Core Dimensie RPG - eakbas23</title>
     <style>
-        /* CORE DIMENSIE CSS */
+        /* CORE DIMENSIE RPG STYLING */
+        :root {
+            --color-core-blue: #00ffff; /* Kaizen's Data/Licht */
+            --color-core-green: #00ff00; /* Mmz's Natuur/Energie */
+            --color-core-white: #ffffff; /* bEAr's Code/Glitch */
+            --color-dark-bg: #121212;
+            --color-mid-bg: #212121;
+            --color-text: #e0e0e0;
+            --color-accent-red: #ff4500;
+            --font-mono: 'Roboto Mono', monospace;
+            --font-sans: 'Arial', sans-serif;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+
         body {
-            font-family: 'Consolas', 'Courier New', monospace;
-            background-color: #121212;
-            color: #E0E0E0;
+            background-color: var(--color-dark-bg);
+            color: var(--color-text);
+            font-family: var(--font-mono);
             margin: 0;
             padding: 20px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
+            align-items: flex-start;
             min-height: 100vh;
         }
+
         #game-container {
-            width: 90%;
-            max-width: 800px;
-            background-color: #1E1E1E;
-            border: 3px solid #00BFFF; /* Core Blauw */
-            box-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
-            padding: 25px;
-            border-radius: 10px;
+            width: 100%;
+            max-width: 1000px;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            border: 2px solid var(--color-core-blue);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            padding: 20px;
+            background-color: var(--color-mid-bg);
         }
-        #dialogue {
-            min-height: 200px;
-            border-bottom: 1px dashed #333;
-            margin-bottom: 20px;
-            white-space: pre-wrap;
+
+        /* Stats Panel */
+        #stats-panel {
+            background-color: #1a1a1a;
+            border: 1px solid var(--color-core-blue);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .stats-block h3 {
+            border-bottom: 2px solid var(--color-core-green);
+            padding-bottom: 5px;
+            margin-top: 0;
+            color: var(--color-core-green);
+            font-size: 1.1em;
+        }
+
+        .stat-line {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+            margin-bottom: 3px;
+        }
+
+        .stat-value {
+            color: var(--color-core-white);
+            font-weight: bold;
+        }
+
+        /* Main Content Panel */
+        #main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        #narrative-text {
+            min-height: 250px;
+            border: 1px solid var(--color-core-white);
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 400px;
             line-height: 1.6;
         }
-        .character-name {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
+
+        #choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .choice-button {
+            background-color: var(--color-core-blue);
+            color: var(--color-dark-bg);
+            border: none;
+            padding: 12px 15px;
+            text-align: left;
+            font-family: var(--font-mono);
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
             text-transform: uppercase;
         }
-        .kaizen { color: #00BFFF; }
-        .mmz { color: #00FF7F; }
-        .bear { color: #FF4500; }
-        .outsider { color: #FFD700; }
-        .system { color: #FF00FF; }
-        .important { font-weight: bold; color: #FFA500; }
-        .damage { color: #FF4500; font-weight: bold;}
-        .heal { color: #00FF7F; font-weight: bold;}
 
-
-        #choices button {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            margin-top: 10px;
-            background-color: #008CBA;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.1s;
-            font-size: 1em;
-            text-align: left;
+        .choice-button:hover {
+            background-color: var(--color-core-green);
+            box-shadow: 0 0 10px var(--color-core-green);
+            color: var(--color-dark-bg);
         }
-        #choices button:disabled {
+
+        .choice-button:disabled {
             background-color: #555;
             cursor: not-allowed;
-            color: #aaa;
+            color: #ccc;
         }
-        #choices button:hover:not(:disabled) {
-            background-color: #00BFFF;
-            transform: translateY(-2px);
+
+        /* Outsider Special Actions */
+        #outsider-actions-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
         }
-        .stats-panel {
-            background-color: #2D2D2D;
-            border: 1px solid #444;
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 5px;
+        
+        .outsider-action-button {
+            padding: 10px;
+            background-color: var(--color-accent-red);
+            color: var(--color-dark-bg);
+            border: 1px solid var(--color-accent-red);
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-align: center;
+        }
+
+        .outsider-action-button:hover:not(:disabled) {
+            background-color: #ff8c66;
+        }
+
+        .outsider-action-button:disabled {
+            background-color: #444;
+            color: #888;
+            border-color: #444;
+            cursor: not-allowed;
+        }
+
+        #header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #0d0d0d;
+        }
+        
+        #header h1 {
+            color: var(--color-core-blue);
+            margin: 0;
+            font-size: 2em;
+            text-shadow: 0 0 5px var(--color-core-blue);
+        }
+
+        /* Responsiveness */
+        @media (max-width: 800px) {
+            #game-container {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+            #stats-panel {
+                order: 2;
+            }
+            #main-content {
+                order: 1;
+            }
         }
     </style>
 </head>
 <body>
-    <div id="game-container">
-        <h1>💾 CORE DIMENSIE RPG</h1>
-        <hr>
-        <div id="dialogue">Laden...</div>
-        <div id="choices"></div>
 
-        <div class="stats-panel">
-            <h3>⚙️ Huidige Status</h3>
-            <p>
-                **SKILLS (Per Wereld):**<br>
-                Support Pulse: <span id="support-pulse">3</span>x | Debug Ping: <span id="debug-ping">2</span>x | Glitch Rewind: <span id="glitch-rewind">1</span>x
-            </p>
-            <p>
-                **VIJAND:** Cipher Warden HP: <span id="warden-hp">100</span>
-            </p>
+<div id="game-container">
+    <div id="stats-panel">
+        <div id="header">
+            <h1>CORE DIMENSIE RPG</h1>
+            <p style="font-size: 0.8em; color: #aaa;">Locatie: <span id="current-location">CentralHub</span></p>
+        </div>
+        
+        <div class="stats-block">
+            <h3>💠 KAIZEN23 (HP / NRG)</h3>
+            <div class="stat-line">
+                <span>HP:</span>
+                <span id="kaizen-hp" class="stat-value"></span>
+            </div>
+            <div class="stat-line">
+                <span>ENERGIE:</span>
+                <span id="kaizen-energy" class="stat-value"></span>
+            </div>
+        </div>
+
+        <div class="stats-block">
+            <h3>💚 MMZ23 (HP / NRG)</h3>
+            <div class="stat-line">
+                <span>HP:</span>
+                <span id="mmz-hp" class="stat-value"></span>
+            </div>
+            <div class="stat-line">
+                <span>ENERGIE:</span>
+                <span id="mmz-energy" class="stat-value"></span>
+            </div>
+        </div>
+
+        <div class="stats-block">
+            <h3>🐻 bEAr23 (STATUS)</h3>
+            <div class="stat-line">
+                <span>STABILITEIT:</span>
+                <span id="bear-stability" class="stat-value"></span>
+            </div>
+            <div class="stat-line">
+                <span>GEHEUGEN:</span>
+                <span id="bear-memory" class="stat-value"></span>
+            </div>
+            <div class="stat-line">
+                <span>SHARDS:</span>
+                <span id="shards-collected" class="stat-value">0 / 4</span>
+            </div>
+        </div>
+
+        <div class="stats-block">
+            <h3>🎮 DE OUTSIDER (ACTIES)</h3>
+            <p id="armband-status" style="font-size:0.8em; color: #aaa;">Status: Geen CoreLink-Armband</p>
+            <div id="outsider-actions-container">
+                </div>
         </div>
     </div>
 
-    <script>
-        // --- SPEL DATA ---
-        const GAME_DATA = {
-            kaizen: { name: 'KAIZEN23', class: 'kaizen' },
-            mmz: { name: 'MMZ23', class: 'mmz' },
-            bear: { name: 'bEAr23', class: 'bear' },
-            outsider: { name: 'DE OUTSIDER', class: 'outsider' },
+    <div id="main-content">
+        <div id="narrative-text">
+            </div>
 
-            outsiderActions: {
-                supportPulse: 3,
-                debugPing: 2,
-                glitchRewind: 1,
-                hasArmband: false
-            },
-            
-            warden: { hp: 100 },
-            shards: 0, // Variabele voor shards
+        <div id="choices-container">
+            </div>
+    </div>
+</div>
 
-            // --- HOOFDSTUKKEN ---
-            chapters: {
-                // --- PROLOOG ---
-                START: {
-                    text: `
-                    <span class="outsider">SYSTEEM LOG: [eakbas23.nl] - 01:47 AM</span>
-                    <br>
-                    De nacht is gevallen. Je zoekt de <span class="important">ultieme powerbank</span>.
-                    <br><br>
-                    <span class="system">WEB ASSISTENT GEVONDEN:</span> bEAr23 (Glitch Support, Online).
-                    <br><br>
-                    <span class="outsider">Jij:</span> "Hé, bEAr23. Ik zoek de échte, verborgen krachtbron: OVERCORE_SHARD_CORE_POWER.dat."
-                    <br><br>
-                    <span class="bear">bEAr23:</span> "<span class="bear">Dit is verzegelde data. Waarom...?</span>"
-                    `,
-                    choices: [{
-                        text: "Zeg tegen bEAr23: 'Open dat bestand. Nu.'",
-                        next: "PROLOOG_2"
-                    }]
-                },
+<script>
+    // =======================================================
+    // 1. GAME STATE INITIALISATIE
+    // =======================================================
 
-                PROLOOG_2: {
-                    text: `
-                    <span class="bear">bEAr23:</span> "<span class="bear">FOUT! DIT IS GEEN DATA! HET IS EEN BEWUSTZIJN! INLEIDING EXTERNE ENTITEIT GEACTIVEERD! HET ZUIGT ME LEE-</span>"
-                    <br><br>
-                    Een groen-blauw portaal opent zich. Je wordt de digitale dimensie ingezogen.
-                    `,
-                    choices: [{
-                        text: "Hoofdstuk 2: Ontwaking in CentralHub",
-                        next: "CENTRALHUB_1"
-                    }]
-                },
+    let gameState = {
+        // Personage Stats
+        characters: {
+            Kaizen23: { hp: 80, energy: 100, attack: 60, defense: 80, name: "Kaizen23", role: "Tactical Tech Commander" },
+            Mmz23: { hp: 100, energy: 80, attack: 100, defense: 60, name: "Mmz23", role: "Beast Vanguard" },
+            bEAr23: { stability: 40, memory: 5, support: 80, name: "bEAr23", role: "Glitch Support" },
+            Outsider: {
+                supportPulse: 0,
+                debugPing: 0,
+                glitchRewind: 0,
+                maxActions: 6,
+                totalActions: 0,
+            }
+        },
 
-                // --- CENTRAL HUB (Placeholder) ---
-                CENTRALHUB_1: {
-                    text: `<span class="system">Central Hub inladen... (Placeholder)</span>`,
-                    choices: [{ text: "Ga verder naar Tech Rune", next: "TECHRUNE_1" }]
-                },
-                TECHRUNE_1: {
-                    text: `<span class="system">Tech Rune inladen... (Placeholder)</span>`,
-                    choices: [{ text: "Kies Stealth Route", next: "TECHRUNE_STEALTH_2" }]
-                },
+        // Inventaris & Upgrades
+        inventory: {
+            corelinkArmband: false, // Eerste upgrade van Outsider
+            techShard: false,
+            beastShard: false,
+            bliksemShard: false,
+            originShard: false,
+            shardsCollected: 0
+        },
 
-                // --- STEALTH ROUTE ---
-                TECHRUNE_STEALTH_2: {
-                    text: `
-                    <span class="kaizen">STEALTH ROUTE: DE DATALEIDINGEN</span>
-                    <br>
-                    Kaizen23 leidt jullie. We zoeken de CoreLink-Armband.
-                    `,
-                    choices: [{
-                        text: "Kruip verder door de duistere dataleiding.",
-                        next: "TECHRUNE_STEALTH_3_ARMBAK"
-                    }]
-                },
+        // Progressie
+        currentScene: "centralHub_start",
+        currentWorld: "CentralHub",
+        techRuneRoute: null, // 'stealth' or 'bruteForce'
+        
+        // Reset functie voor Outsider acties (per wereld)
+        resetOutsiderActions: function() {
+            if (this.inventory.corelinkArmband) {
+                this.characters.Outsider.supportPulse = 3;
+                this.characters.Outsider.debugPing = 2;
+                this.characters.Outsider.glitchRewind = 1;
+                this.characters.Outsider.totalActions = 6;
+            }
+        }
+    };
 
-                TECHRUNE_STEALTH_3_ARMBAK: {
-                    text: `
-                    <span class="outsider">HET VERBORGEN LAB</span>
-                    <br>
-                    Je pakt de gloeiende, minimalistische <span class="important">blauw-oranje Armband</span>.
-                    <br><br>
-                    <span class="system">SYSTEM:</span> Je hebt de <span class="important">CORELINK-ARMBAND</span> ontvangen! Jouw rol: <span class="important">Support</span>.
-                    `,
-                    choices: [{
-                        text: "Ga door: Een stroomstoring blokkeert de uitgang.",
-                        next: "TECHRUNE_STEALTH_4_PUZZEL"
-                    }],
-                    onEnter: () => GAME_DATA.outsiderActions.hasArmband = true 
-                },
-                
-                TECHRUNE_STEALTH_4_PUZZEL: {
-                    text: `
-                    <span class="kaizen">DE STROOMKABEL PUZZEL</span>
-                    <br>
-                    De deur vraagt om een exacte stroomfrequentie. We hebben hulp nodig om sneller te werken.
-                    <br><br>
-                    <span class="outsider">KEUZE:</span> Gebruik je Armband-skills?
-                    `,
-                    choices: [
-                        {
-                            text: "OPTIE 1: Gebruik **SUPPORT PULSE** op Kaizen23 (+30% Tactiek).",
-                            next: "TECHRUNE_STEALTH_5_SUCCES",
-                            action: () => useOutsiderAction('supportPulse')
-                        },
-                         {
-                            text: "OPTIE 2: Vertrouw op hun basisberekening (Risico: Hoog)",
-                            next: "TECHRUNE_STEALTH_5_SUCCES"
-                        },
-                        {
-                            text: "OPTIE 3: Gebruik **DEBUG PING** op de deur (Korte onderbreking van de beveiliging).",
-                            next: "TECHRUNE_STEALTH_5_SUCCES_DEBUG",
-                            action: () => useOutsiderAction('debugPing')
-                        }
-                    ]
-                },
-                
-                TECHRUNE_STEALTH_5_SUCCES: {
-                    text: `<span class="system">SUCCES!</span> De deur ontgrendelt. Kaizen23: "Tijd voor de confrontatie."`,
-                    choices: [{ text: "Ga door naar de Cipher Warden (Mini-Baas).", next: "TECHRUNE_BAAS_1" }]
-                },
-                
-                TECHRUNE_STEALTH_5_SUCCES_DEBUG: {
-                    text: `<span class="system">SUCCES DOOR DEBUG!</span> Je Ping veroorzaakte 'lag'. bEAr23: "Ha! Nu naar de baas!"`,
-                    choices: [{ text: "Ga door naar de Cipher Warden (Mini-Baas).", next: "TECHRUNE_BAAS_1" }]
-                },
-                
-                // --- MINI-BAAS GEVECHT (TURN 1) ---
-                TECHRUNE_BAAS_1: {
-                    text: `
-                    <span class="mmz">CONFRONTATIE: DE CIPHER WARDEN</span>
-                    <br>
-                    De Warden is een 3 meter hoge, gepantserde robot.
-                    <br><br>
-                    <span class="system">CIPHER WARDEN:</span> <span class="damage">Activeert Data Sweep aanval!</span>
-                    <br>
-                    <span class="mmz">Mmz23:</span> "Oef! Dat deed pijn! Nu is onze beurt!"
-                    `,
-                    choices: [{
-                        text: "AANVAL 1: Kaizen's Precision Shot (15 Schade)",
-                        next: "TECHRUNE_BAAS_2",
-                        action: () => { dealDamage(15); }
-                    }, {
-                        text: "AANVAL 2: Mmz's Overload Kick (20 Schade)",
-                        next: "TECHRUNE_BAAS_2",
-                        action: () => { dealDamage(20); }
-                    }, {
-                        text: "SUPPORT: Gebruik **SUPPORT PULSE** op Mmz (Extra Schade in de volgende ronde)",
-                        next: "TECHRUNE_BAAS_2",
-                        action: () => { useOutsiderAction('supportPulse'); }
-                    }]
-                },
-                
-                // --- MINI-BAAS GEVECHT (TURN 2) ---
-                TECHRUNE_BAAS_2: {
-                    text: `
-                    <span class="system">SYSTEM:</span> Je hebt de Cipher Warden geraakt. Zijn HP is nu <span id="warden-hp-dialogue">${GAME_DATA.warden.hp}</span>.
-                    <br><br>
-                    <span class="system">CIPHER WARDEN:</span> <span class="damage">Activeert Core Deflect!</span> (Verdedigt de komende aanval!)
-                    <br>
-                    <span class="outsider">KEUZE:</span> Wat is je volgende commando?
-                    `,
-                    choices: [{
-                        text: "AANVAL 1: Kaizen's Precision Shot (15 Schade) - Wordt geblokkeerd!",
-                        next: "TECHRUNE_BAAS_3",
-                        action: () => { dealDamage(0); }
-                    }, {
-                        text: "AANVAL 2: Mmz's Overload Kick (20 Schade) - Wordt geblokkeerd!",
-                        next: "TECHRUNE_BAAS_3",
-                        action: () => { dealDamage(0); }
-                    }, {
-                        text: "SUPPORT: Gebruik **DEBUG PING** op de Warden (Verwijdert de 'Core Deflect' Status)",
-                        next: "TECHRUNE_BAAS_3",
-                        action: () => { useOutsiderAction('debugPing'); }
-                    }]
-                },
-                
-                // --- MINI-BAAS GEVECHT (TURN 3 - Einde) ---
-                TECHRUNE_BAAS_3: {
-                    text: `
-                    <span class="system">SYSTEM:</span> De Warden is nu verdedigd... of is de verdediging door jou <span class="heal">ge-debugged</span>?
-                    <br><br>
-                    <span class="system">JULLIE AANVAL!</span> <span class="heal">40 SCHADE toegebracht!</span>
-                    <br>
-                    ${GAME_DATA.warden.hp > 0 ? `<span class="system">DE WARDEN OVERLEEFT!</span>` : `<span class="system">OVERCORE WARDEN VERSLAGEN! De bewaker stort neer en laat de eerste SHARD achter!</span>`}
-                    `,
-                    choices: [{
-                        text: "GEVECHT VOORBIJ: Eerste Shard verzameld! Ga terug naar CentralHub.",
-                        next: "CENTRALHUB_1",
-                        action: () => {
-                            GAME_DATA.warden.hp = 0;
-                            GAME_DATA.shards = 1;
-                        }
-                    }]
+    // =======================================================
+    // 2. NARRATIEVE INHOUD (SCENES)
+    // =======================================================
+
+    const scenes = {
+        centralHub_start: {
+            text: `
+                Je voelt een schok, een flits van witte code, en dan... stilte. Je bent niet meer in je browser.
+                Je staat op een zwevend platform in een ruimte die bestaat uit neon lijnen en perfecte geometrie. Dit is de **CentralHub**, het hart van de Core Dimensie.
+                Naast je staat **bEAr23**, een kleine digitale beer met flikkerende vacht, eruitzien alsof hij een flinke glitch heeft gehad.
+                <br><br>
+                bEAr23: "*error*... Outsider. Je bent... Binnen. Dat was niet de bedoeling. Ik heb je per ongeluk binnengetrokken bij de crash. Oeps. Welkom in de dimensie van eakbas23.nl."
+                <br><br>
+                Twee figuren landen voor je in een flits van blauw en groen licht. **Kaizen23** (blauw, tactisch) en haar broer **Mmz23** (groen, gespierd). Ze kijken je onderzoekend aan.
+                <br><br>
+                Kaizen23: "Een Anomalie. Geen Core User. bEAr23, verklaar je fout."
+                Mmz23: "Rustig, zus. Hij/zij is hier, we gaan ze niet straffen. Welkom, Outsider. Ik ben Mmz23."
+            `,
+            choices: [
+                { text: "Praat eerst met Kaizen23 (Tactische route)", next: "centralHub_talkKaizen" },
+                { text: "Praat eerst met Mmz23 (Actie route)", next: "centralHub_talkMmz" },
+                { text: "Vraag bEAr23 wat er aan de hand is", next: "centralHub_talkbEAr" }
+            ]
+        },
+
+        centralHub_talkKaizen: {
+            text: `
+                Kaizen23 analyseert je met haar intense blauwe ogen. "Je bent extern. Dat is goed. OverCore kan je niet voorspellen. Onze missie: 4 Shards verzamelen om bEAr23 te herstellen, dan OverCore, de corrupte kern, verslaan. De dimensie is in gevaar. **Efficiëntie** is de sleutel."
+            `,
+            choices: [
+                { text: "Begrepen. Wat is onze eerste stap?", next: "centralHub_choice1" }
+            ]
+        },
+
+        centralHub_talkMmz: {
+            text: `
+                Mmz23 geeft je een brede, geruststellende glimlach. "Geen zorgen, Outsider. We beschermen je. OverCore is een pestkop die alles 'optimale leegte' wil maken. Plan is simpel: Ga naar buiten, sla hard, haal de Shards. **Kracht** zal ons redden. Eerst slaan, dan vragen!"
+            `,
+            choices: [
+                { text: "Klaar om te rammen. Welke wereld kiezen we?", next: "centralHub_choice1" }
+            ]
+        },
+
+        centralHub_talkbEAr: {
+            text: `
+                bEAr23: "De fout was... noodzakelijk. Je bent de enige variabele die OverCore niet kan inlezen. Als mijn geheugen compleet was, zou ik weten waarom. Maar nu: 5% geheugen. Must... evolve. De Shards zijn upgrades en mijn geheugenfragmenten. We moeten beginnen."
+            `,
+            choices: [
+                { text: "Laten we bEAr23 helpen herstellen.", next: "centralHub_choice1" }
+            ]
+        },
+
+        centralHub_choice1: {
+            text: `
+                De CentralHub heeft vier actieve portalen (en één afgesloten Nexus-poort). Het eerste portaal, **TechRune**, licht op en is de verplichte startlocatie.
+                <br><br>
+                Kaizen23: "We beginnen in TechRune. De tech van de webshop wordt daar misbruikt. We halen de Tech-Memory Shard op en bevrijden die wereld. Laten we gaan."
+            `,
+            choices: [
+                { text: "Stap in het TechRune-portaal", next: "techRune_arrival" }
+            ]
+        },
+        
+        // ---------------------------------------------
+        // TECHRUNE WERELD
+        // ---------------------------------------------
+        
+        techRune_arrival: {
+            text: `
+                Je stapt door de blauwe data-ring en de sfeer verandert abrupt. Je bent in **TechRune**.
+                Wolkenkrabbers zijn gestapelde smartphones. De straten zijn circuitboards. De lucht knettert van corrupte code.
+                <br><br>
+                Kaizen23: "De ingang is zwaar bewaakt door de drones van de Cipher Warden. We hebben een strategie nodig."
+                <br><br>
+                Mmz23: "Ik zie een open plek links! Ik kan erdoorheen beuken en een opening creëren!"
+                <br><br>
+                bEAr23: "Ik detecteer een onstabiel Glitch-pad aan de rechterkant. Risicovol, maar het is een omweg."
+            `,
+            choices: [
+                { text: "Kies [Brute Force]: Volg Mmz23 en beuk door de verdediging heen (Snelle aanval, meer gevechten)", next: "techRune_bruteForce1" },
+                { text: "Kies [Stealth]: Volg bEAr23 en probeer de beveiliging te omzeilen (Puzzels, minder gevechten)", next: "techRune_stealth1" },
+                { text: "Kies [Splitsen]: Stuur Kaizen23 alleen op zoek naar info", next: "techRune_splitFailure" }
+            ]
+        },
+        
+        techRune_splitFailure: {
+            text: `
+                Kaizen23: "Splitsen? Onacceptabel in een onbekende omgeving! De kans op fouten is te groot. Ik ben het er niet mee eens."
+                <br><br>
+                Mmz23: "Ja, Outsider. Plan B is beter als Plan A faalt. Laten we samen blijven. Kies alsjeblieft opnieuw."
+            `,
+            choices: [
+                { text: "Kies [Brute Force] (Volg Mmz23)", next: "techRune_bruteForce1" },
+                { text: "Kies [Stealth] (Volg bEAr23)", next: "techRune_stealth1" }
+            ]
+        },
+
+        // --- BRUTE FORCE ROUTE ---
+        
+        techRune_bruteForce1: {
+            text: `
+                Mmz23 lacht. "Goed gekozen! RAMMEN!" Hij laadt zijn COREBREAKER PUNCH op en verbrijzelt een muur van oude telefoons. Een zwerm vijandige drones komt op jullie af. Tijd voor het eerste gevecht!
+                <br><br>
+                **GEVECHT START:** 3x Corrupte Drones (HP: 20 elk).
+                Kaizen23: "Tactisch advies: Ik kan ze scannen, Mmz23 kan ze breken."
+            `,
+            choices: [
+                { text: "Laat Kaizen23 de TACTISCAN_23 gebruiken op de Drones (10 NRG)", next: "techRune_bruteForce_scan" },
+                { text: "Laat Mmz23 direct een COREBREAKER PUNCH gebruiken (15 NRG)", next: "techRune_bruteForce_attack" },
+            ],
+            onEnter: () => { gameState.techRuneRoute = 'bruteForce'; }
+        },
+        
+        techRune_bruteForce_scan: {
+            text: `
+                Kaizen23: "Tactiscan compleet. Zwakte: Ze zijn niet gepatched tegen Data Edge Volley. Focus op de blauwe drone rechts!"
+                <br><br>
+                Mmz23: "Mooi! Data Edge Volley!"
+                Kaizen23 vuurt een reeks precieze projectielen af, waardoor de blauwe drone onmiddellijk explodeert.
+                <br><br>
+                Mmz23: "Eentje minder. De rest is van mij!"
+                <br><br>
+                (Kaizen23 Energie -10. 1 Drone verslagen.)
+            `,
+            choices: [
+                { text: "Ga verder: Mmz23 ruimt de rest op", next: "techRune_lab_access" }
+            ],
+            onEnter: () => {
+                gameState.characters.Kaizen23.energy -= 10;
+            }
+        },
+
+        techRune_bruteForce_attack: {
+            text: `
+                Mmz23: "Geen tijd voor scannen! COREBREAKER!"
+                Mmz23 beukt in op de drones. Eén wordt vernietigd, maar de twee andere slagen Mmz23's schouder. (Mmz23 HP -10. Mmz23 Energie -15. 1 Drone verslagen.)
+                <br><br>
+                Kaizen23: "Ondanks mijn analyse... efficiënt, broer. Snel doorlopen!"
+            `,
+            choices: [
+                { text: "Ga verder naar de Lab Toegang", next: "techRune_lab_access" }
+            ],
+            onEnter: () => {
+                gameState.characters.Mmz23.hp -= 10;
+                gameState.characters.Mmz23.energy -= 15;
+            }
+        },
+
+        // --- STEALTH ROUTE ---
+
+        techRune_stealth1: {
+            text: `
+                bEAr23: "Volg mijn coördinaten. Dit Glitch-pad is 74% stabiel. We moeten door een reeks onstabiele telefoon-schakelaars zonder de alarmdrones te activeren."
+                <br><br>
+                **PUZZEL START:** Er zijn drie schakelaars. De code moet zijn: rood-blauw-blauw.
+                <br><br>
+                Kaizen23: "Analyse. Rood is de stroomvoorziening. Groen is de datapoort. Blauw is de verbindingshub. De hub moet als laatste."
+                <br><br>
+                bEAr23: "Fout! De verbindingshub moet als EERSTE! Code-logica is omgekeerd. Maar het kan ook... rood-blauw-blauw zijn."
+            `,
+            choices: [
+                { text: "Kies 1: Rood - Blauw - Blauw (De juiste code)", next: "techRune_stealth_success" },
+                { text: "Kies 2: Blauw - Groen - Rood (Breekt de schakelaar)", next: "techRune_stealth_fail" },
+                { text: "Gebruik Glitch Rewind van De Outsider (1x per wereld)", next: "techRune_stealth1_rewind" }
+            ],
+            onEnter: () => { gameState.techRuneRoute = 'stealth'; }
+        },
+        
+        techRune_stealth1_rewind: {
+            text: `
+                Je gebruikt de **Glitch Rewind** (1 actie over). Je voelt de tijd terug glijden. De teamleden vergeten de mislukte keuze.
+                <br><br>
+                bEAr23: "Zelfs een ECHO van wat ik was... wacht. Die schakelaar... ik heb een vaag vermoeden dat het... rood-blauw-blauw moet zijn. Probeer die code."
+            `,
+            choices: [
+                { text: "Kies 1: Rood - Blauw - Blauw (De juiste code)", next: "techRune_stealth_success" },
+                { text: "Kies 2: Blauw - Groen - Rood (Foute keuze)", next: "techRune_stealth_fail" }
+            ],
+            onEnter: () => {
+                if (gameState.characters.Outsider.glitchRewind > 0) {
+                    gameState.characters.Outsider.glitchRewind -= 1;
+                    gameState.characters.Outsider.totalActions -= 1;
                 }
             }
-        };
+        },
 
-        // --- GLOBALE VARIABELEN ---
-        let currentScene = 'START';
-        let dialogueEl, choicesEl, pulseCount, debugCount, rewindCount, wardenHpEl;
+        techRune_stealth_success: {
+            text: `
+                De code Rood-Blauw-Blauw werkt. De drones in de omgeving vriezen even vast en de weg opent zich.
+                <br><br>
+                Kaizen23: "Perfectie. Geen onnodige energie verspild. bEAr23, je *error* geheugen is verrassend accuraat."
+                bEAr23: "Dank je, Kaizen. Dat was... de bedoeling. Waarschijnlijk."
+            `,
+            choices: [
+                { text: "Ga verder naar de Lab Toegang", next: "techRune_lab_access" }
+            ]
+        },
 
-        // --- SPEL LOGICA FUNCTIES ---
+        techRune_stealth_fail: {
+            text: `
+                Je kiest Blauw-Groen-Rood. Het alarmsysteem gaat af! Vier drones vallen jullie aan!
+                <br><br>
+                Mmz23: "Tijd om te beuken! Ik zei toch dat Brute Force beter was!"
+                <br><br>
+                Het team moet de aanval afweren. Jullie komen er doorheen, maar Mmz23 en Kaizen23 verliezen elk 5 HP en 10 Energie.
+            `,
+            choices: [
+                { text: "Ga verder naar de Lab Toegang", next: "techRune_lab_access" }
+            ],
+            onEnter: () => {
+                gameState.characters.Mmz23.hp -= 5;
+                gameState.characters.Mmz23.energy -= 10;
+                gameState.characters.Kaizen23.hp -= 5;
+                gameState.characters.Kaizen23.energy -= 10;
+            }
+        },
 
-        function dealDamage(amount) {
-            GAME_DATA.warden.hp -= amount;
-            if (GAME_DATA.warden.hp < 0) GAME_DATA.warden.hp = 0;
-            // updateUI wordt automatisch aangeroepen door goToScene
-        }
-
-        function useOutsiderAction(type) {
-             if (type === 'supportPulse' && GAME_DATA.outsiderActions.supportPulse > 0) {
-                 GAME_DATA.outsiderActions.supportPulse--;
-             } else if (type === 'debugPing' && GAME_DATA.outsiderActions.debugPing > 0) {
-                 GAME_DATA.outsiderActions.debugPing--;
-             } else if (type === 'glitchRewind' && GAME_DATA.outsiderActions.glitchRewind > 0) {
-                 GAME_DATA.outsiderActions.glitchRewind--;
-             }
-             // updateUI wordt automatisch aangeroepen door goToScene
-        }
+        // --- LAB UPGRADE SCENE (UNIFIED) ---
         
-        function goToScene(sceneKey) {
-            currentScene = sceneKey;
-            updateUI();
-        }
-
-        function updateUI() {
-            // Controleer of de elementen bestaan
-            if (!dialogueEl || !choicesEl) return; 
-
-            const data = GAME_DATA.chapters[currentScene];
-            if (!data) {
-                dialogueEl.innerHTML = `<span class="system">FOUT: SCENE ${currentScene} NIET GEVONDEN.</span>`;
-                choicesEl.innerHTML = '';
-                return;
+        techRune_lab_access: {
+            text: `
+                Jullie bereiken een verborgen lab, diep in de structuur van TechRune. Hier vinden jullie een flikkerend hologram van **Eakbas23**.
+                <br><br>
+                Eakbas23 Hologram: "*Gegroet, Core Users. En Outsider. Ik wist dat mijn fail-safes hier zouden leiden. Voor de Anomalie: neem deze. Het is de **CoreLink-Armband**. Het zal je keuzes versterken.*"
+                <br><br>
+                Je draagt nu de armband. Je krijgt 3x Support Pulse, 2x Debug Ping en 1x Glitch Rewind acties per wereld.
+                <br><br>
+                bEAr23 wijst naar een kristal op een console: "Daar! De **Tech-Memory Shard**! Dat is 25% van mijn kern!"
+            `,
+            choices: [
+                { text: "Neem de Tech-Memory Shard en ga door naar de baas", next: "techRune_boss_intro" }
+            ],
+            onEnter: () => {
+                gameState.inventory.corelinkArmband = true;
+                gameState.inventory.techShard = true;
+                gameState.inventory.shardsCollected = 1;
+                gameState.characters.bEAr23.memory = 25;
+                gameState.resetOutsiderActions();
             }
+        },
 
-            // Voer eenmalige actie uit bij betreden van scene
-            if (data.onEnter && typeof data.onEnter === 'function') {
-                data.onEnter();
-            }
-
-            // Update Dialogue
-            let currentText = data.text;
-            
-            // Vervang de dynamische HP-placeholder
-            if (currentText.includes('${GAME_DATA.warden.hp}')) {
-                currentText = currentText.replace('${GAME_DATA.warden.hp}', GAME_DATA.warden.hp);
-            }
-            
-            dialogueEl.innerHTML = currentText;
-
-
-            // Update Choices
-            choicesEl.innerHTML = '';
-            data.choices.forEach(choice => {
-                const button = document.createElement('button');
-                button.textContent = choice.text;
-                
-                let isDisabled = false;
-                
-                // Controleer op beschikbare skills (maakt knop disabled)
-                if (choice.action) {
-                    if (choice.text.includes('SUPPORT PULSE') && GAME_DATA.outsiderActions.supportPulse <= 0) {
-                        isDisabled = true;
-                        button.textContent += ` (0x over)`;
-                    } else if (choice.text.includes('DEBUG PING') && GAME_DATA.outsiderActions.debugPing <= 0) {
-                        isDisabled = true;
-                        button.textContent += ` (0x over)`;
-                    } else if (choice.text.includes('GLITCH REWIND') && GAME_DATA.outsiderActions.glitchRewind <= 0) {
-                        isDisabled = true;
-                        button.textContent += ` (0x over)`;
-                    }
-                }
-
-                button.disabled = isDisabled;
-                
-                // De klik-handler roept eerst de action() aan en gaat dan naar de scene
-                button.onclick = () => {
-                    if (choice.action) {
-                        choice.action(); 
-                    }
-                    goToScene(choice.next);
-                };
-                
-                choicesEl.appendChild(button);
-            });
-
-            // Update Outsider & Vijand Stats
-            if (pulseCount && debugCount && rewindCount && wardenHpEl) {
-                pulseCount.textContent = GAME_DATA.outsiderActions.supportPulse;
-                debugCount.textContent = GAME_DATA.outsiderActions.debugPing;
-                rewindCount.textContent = GAME_DATA.outsiderActions.glitchRewind;
-                wardenHpEl.textContent = GAME_DATA.warden.hp;
-            }
-
-            // Scroll naar onderaan
-            window.scrollTo(0, document.body.scrollHeight);
-        }
+        // --- BOSS FIGHT ---
         
-        // Zorg ervoor dat het spel pas start nadat de DOM volledig geladen is
-        document.addEventListener('DOMContentLoaded', () => {
-            // Wijs de elementen toe NADAT de DOM is geladen
-            dialogueEl = document.getElementById('dialogue');
-            choicesEl = document.getElementById('choices');
-            pulseCount = document.getElementById('support-pulse');
-            debugCount = document.getElementById('debug-ping');
-            rewindCount = document.getElementById('glitch-rewind');
-            wardenHpEl = document.getElementById('warden-hp');
+        techRune_boss_intro: {
+            text: `
+                Terwijl bEAr23 de Shard absorbeert, vult de hal zich met een dreunend geluid. Een 3 meter hoge figuur met pantser van smartphones en kabel-spieren verschijnt.
+                <br><br>
+                **VERSCHIJNING:** CIPHER WARDEN, Bewaker van TechRune.
+                <br><br>
+                Cipher Warden: "INTRUSIE GEDETECTEERD. OPTIMALE VERNIETIGING PROTOCOL START."
+                <br><br>
+                **GEVECHT: FASE 1 (100% HP)** - De Warden laadt een Data Beam op (3 seconden laadtijd).
+                Kaizen23: "Dit is onze kans. Aanvallen!"
+            `,
+            choices: [
+                { text: "Aanval: Mmz23's COREBREAKER PUNCH op het pantser (15 NRG)", next: "techRune_boss_p1_mmz_attack" },
+                { text: "Analyse: Kaizen23's TACTISCAN_23 (10 NRG)", next: "techRune_boss_p1_kaizen_scan" },
+                { text: "Actie Outsider: DEBUG PING op de oplading (1 actie)", next: "techRune_boss_p1_outsider_ping" }
+            ]
+        },
+
+        techRune_boss_p1_mmz_attack: {
+            text: `
+                Mmz23 stormt naar voren en beukt met volle kracht. De Warden's pantser deukt, maar houdt stand.
+                <br><br>
+                Cipher Warden: "INEFFICIËNT." De Warden vuurt de Data Beam af, die Mmz23 hard raakt. (-20 HP)
+                <br><br>
+                Mmz23: "Ouch. Dat was... hard."
+            `,
+            choices: [
+                { text: "Volgende beurt: Herstel en herpositioneer", next: "techRune_boss_p1_loop" }
+            ],
+            onEnter: () => {
+                gameState.characters.Mmz23.energy -= 15;
+                gameState.characters.Mmz23.hp -= 20;
+            }
+        },
+
+        techRune_boss_p1_kaizen_scan: {
+            text: `
+                Kaizen23 activeert TACTISCAN_23. Ze ontdekt de zwakte.
+                <br><br>
+                Kaizen23: "Zwak punt! Kern zit achter de derde pantserplaat, maar pas na de aanval. Gebruik nu HEXA-SHIELD MATRIX!"
+                Kaizen23 creëert een schild en de Warden's Data Beam ketst af. Het schild is 100% effectief!
+            `,
+            choices: [
+                { text: "Volgende beurt: Kaizen23 valt aan op het blootgestelde punt (Data Edge Volley)", next: "techRune_boss_p1_kaizen_attack" }
+            ],
+            onEnter: () => {
+                gameState.characters.Kaizen23.energy -= 10;
+                // Warden HP zou hier moeten dalen, maar we houden het simpel
+            }
+        },
+        
+        techRune_boss_p1_kaizen_attack: {
+            text: `
+                Kaizen23: "DATA EDGE VOLLEY!" Ze benut het blootgestelde punt. Grote schade aan de Warden.
+                <br><br>
+                Cipher Warden: "Fout in schildintegriteit... ONACCEPTABEL. Schakel over naar Adaptatie Fase."
+                <br><br>
+                **FASE 2 START BINNENKORT...**
+            `,
+            choices: [
+                { text: "Ga verder met de strijd (Verder bouwen in het volgende bestand/gesprek)", next: "techRune_cliffhanger" }
+            ],
+            onEnter: () => {
+                gameState.characters.Kaizen23.energy -= 20;
+            }
+        },
+
+        techRune_boss_p1_outsider_ping: {
+            text: `
+                Je gebruikt de **Debug Ping**. De Warden's laadproces flikkert en vertraagt. (1 Debug Ping gebruikt).
+                <br><br>
+                Cipher Warden: "LAG... INTERFACE... VREEMD."
+                <br><br>
+                Mmz23: "Mooi werk, Outsider! Nu een vrije aanval!" Mmz23 raakt het pantser met 50% meer kracht door de vertraging. Warden is aangeslagen.
+            `,
+            choices: [
+                { text: "Volgende beurt: De strijd gaat door", next: "techRune_boss_p1_loop" }
+            ],
+            onEnter: () => {
+                gameState.characters.Outsider.debugPing -= 1;
+                gameState.characters.Outsider.totalActions -= 1;
+            }
+        },
+
+        techRune_boss_p1_loop: {
+            text: `
+                De Cipher Warden herstelt zijn aanval. De strijd is nog niet voorbij! Jullie moeten zijn zwakte vinden en doorbreken!
+            `,
+            choices: [
+                { text: "Aanval: Mmz23's COREBREAKER PUNCH op het pantser (15 NRG)", next: "techRune_boss_p1_mmz_attack" },
+                { text: "Analyse: Kaizen23's TACTISCAN_23 (10 NRG)", next: "techRune_boss_p1_kaizen_scan" },
+                { text: "Actie Outsider: DEBUG PING op de oplading", next: "techRune_boss_p1_outsider_ping" }
+            ]
+        },
+
+        techRune_cliffhanger: {
+            text: `
+                **[Einde Huidige Content]**
+                <br><br>
+                De Cipher Warden trekt zich terug voor Fase 2. TechRune is bevrijd, de Shard is veilig.
+                <br><br>
+                bEAr23 is stabieler. Je hebt de CoreLink-Armband.
+                <br><br>
+                Kaizen23: "Goed gewerkt, team. Laten we teruggaan naar de CentralHub en hergroeperen. De keuze voor de volgende wereld wacht."
+                <br><br>
+                *Plak deze voortgang in de volgende chat en vraag om **BeastRealm** of **Bliksem Arena** te starten!*
+            `,
+            choices: [
+                { text: "Ga terug naar de CentralHub (End of Demo)", next: "centralHub_postTechRune" }
+            ]
+        },
+
+        centralHub_postTechRune: {
+            text: `
+                Terug in de CentralHub. Je team heeft TechRune bevrijd.
+                <br><br>
+                **STATUS UPDATE:**
+                - bEAr23 heeft de Tech-Memory Shard (25% geheugen).
+                - De Outsider heeft de CoreLink-Armband (Acties gereset).
+                <br><br>
+                Twee nieuwe portalen lichten op: **BeastRealm** en **Bliksem Arena**. Welke kies je?
+            `,
+            choices: [
+                { text: "Kies 1: 🦁 BEASTREALM (Focust op Mmz23's transformatie)", next: "end_of_game_wait" },
+                { text: "Kies 2: ⚡ BLIKSEM ARENA (Focust op Kaizen23's transformatie)", next: "end_of_game_wait" }
+            ],
+            onEnter: () => {
+                gameState.currentWorld = "CentralHub";
+                gameState.resetOutsiderActions();
+            }
+        },
+
+        end_of_game_wait: {
+            text: `
+                Dit is het einde van de ingebouwde demo. Kopieer de volledige tekst van dit spelvenster en plak deze in een nieuwe chat, samen met je gekozen wereld (**BeastRealm** of **Bliksem Arena**), om verder te gaan!
+            `,
+            choices: [
+                { text: "Start Nieuw Gesprek", next: "centralHub_postTechRune" }
+            ]
+        }
+    };
+
+    // =======================================================
+    // 3. LOGICA EN RENDERING
+    // =======================================================
+
+    const narrativeTextElement = document.getElementById('narrative-text');
+    const choicesContainer = document.getElementById('choices-container');
+    const statsElements = {
+        kaizenHp: document.getElementById('kaizen-hp'),
+        kaizenEnergy: document.getElementById('kaizen-energy'),
+        mmzHp: document.getElementById('mmz-hp'),
+        mmzEnergy: document.getElementById('mmz-energy'),
+        bearStability: document.getElementById('bear-stability'),
+        bearMemory: document.getElementById('bear-memory'),
+        shardsCollected: document.getElementById('shards-collected'),
+        armbandStatus: document.getElementById('armband-status'),
+        currentLocation: document.getElementById('current-location'),
+        outsiderActions: document.getElementById('outsider-actions-container')
+    };
+    
+    // Functie om de statistieken in de zijbalk bij te werken
+    function updateStatsDisplay() {
+        const { Kaizen23, Mmz23, bEAr23, Outsider } = gameState.characters;
+        
+        statsElements.kaizenHp.textContent = `${Kaizen23.hp}/100`;
+        statsElements.kaizenEnergy.textContent = `${Kaizen23.energy}/100`;
+        statsElements.mmzHp.textContent = `${Mmz23.hp}/100`;
+        statsElements.mmzEnergy.textContent = `${Mmz23.energy}/100`;
+        statsElements.bearStability.textContent = `${bEAr23.stability}/100`;
+        statsElements.bearMemory.textContent = `${bEAr23.memory}%`;
+        statsElements.shardsCollected.textContent = `${gameState.inventory.shardsCollected} / 4`;
+        statsElements.currentLocation.textContent = gameState.currentWorld;
+
+        // Outsider Armband en Acties
+        if (gameState.inventory.corelinkArmband) {
+            statsElements.armbandStatus.innerHTML = `Status: <span style="color:${getComputedStyle(document.documentElement).getPropertyValue('--color-core-blue')};">CoreLink-Armband Gevonden</span>`;
             
-            // Start het spel
-            goToScene('START');
+            statsElements.outsiderActions.innerHTML = `
+                <button class="outsider-action-button" onclick="handleOutsiderAction('supportPulse')" ${Outsider.supportPulse <= 0 ? 'disabled' : ''}>
+                    PULSE (${Outsider.supportPulse})
+                </button>
+                <button class="outsider-action-button" onclick="handleOutsiderAction('debugPing')" ${Outsider.debugPing <= 0 ? 'disabled' : ''}>
+                    PING (${Outsider.debugPing})
+                </button>
+                <button class="outsider-action-button" onclick="handleOutsiderAction('glitchRewind')" ${Outsider.glitchRewind <= 0 ? 'disabled' : ''}>
+                    REWIND (${Outsider.glitchRewind})
+                </button>
+            `;
+        } else {
+             statsElements.armbandStatus.innerHTML = `Status: Geen CoreLink-Armband`;
+             statsElements.outsiderActions.innerHTML = `<p style="text-align:center; font-size:0.8em; color:#666;">Zoek de Armband in TechRune om acties vrij te spelen.</p>`;
+        }
+    }
+
+    // Functie om naar de volgende scene te gaan
+    function updateScreen(sceneId) {
+        gameState.currentScene = sceneId;
+        const scene = scenes[sceneId];
+        
+        // Voer onEnter actie uit (zoals stat updates, resets)
+        if (scene.onEnter) {
+            scene.onEnter();
+        }
+
+        // Update stats voordat we renderen
+        updateStatsDisplay();
+
+        // Update tekst
+        narrativeTextElement.innerHTML = scene.text;
+        narrativeTextElement.scrollTop = 0; // Scroll naar boven voor nieuwe tekst
+
+        // Update keuzeknoppen
+        choicesContainer.innerHTML = '';
+        scene.choices.forEach(choice => {
+            const button = document.createElement('button');
+            button.className = 'choice-button';
+            button.textContent = choice.text;
+            button.onclick = () => handleChoice(choice.next);
+            choicesContainer.appendChild(button);
         });
 
-    </script>
+        // Bijwerken van de huidige wereld naam in de header
+        if (sceneId.includes('techRune')) {
+            gameState.currentWorld = "TechRune";
+        } else {
+            gameState.currentWorld = "CentralHub";
+        }
+    }
+
+    // Functie om de keuze te verwerken
+    function handleChoice(nextSceneId) {
+        if (nextSceneId === "techRune_stealth1_rewind" && gameState.characters.Outsider.glitchRewind <= 0) {
+            alert("GLITCH REWIND op! Je hebt geen Glitch Rewind acties meer in deze wereld.");
+            return;
+        }
+        updateScreen(nextSceneId);
+    }
+    
+    // Functie om Outsider acties te verwerken (nog niet volledig geïmplementeerd in logica, voornamelijk voor de UI)
+    function handleOutsiderAction(actionType) {
+        const { Outsider } = gameState.characters;
+
+        if (!gameState.inventory.corelinkArmband || Outsider[actionType] <= 0) {
+            alert(`Geen ${actionType} acties meer beschikbaar in deze wereld.`);
+            return;
+        }
+
+        // De acties zelf zijn complex, dus we maken ze nu alleen interactief
+        
+        if (actionType === 'supportPulse') {
+             // Moet teamlid kiezen: Kaizen23 (Aanval/Verdediging) of Mmz23 (Aanval/Verdediging) of Energie
+             // Voor nu doen we een simpele HP/NRG boost
+             gameState.characters.Kaizen23.energy += 15; // Simpele boost
+             gameState.characters.Mmz23.hp += 15; // Simpele boost
+             Outsider.supportPulse -= 1;
+             alert("SUPPORT PULSE GEBRUIKT: Teamleden hebben een kleine boost ontvangen.");
+        } else if (actionType === 'debugPing') {
+            // Dit is nuttig in boss fights, zoals Cipher Warden
+            alert("DEBUG PING GEBRUIKT: Wacht op het juiste moment in de gevechtslogica om dit te gebruiken!");
+        } else if (actionType === 'glitchRewind') {
+             // Glitch Rewind is al afgehandeld in de handleChoice-logica van de Stealth-route
+             alert("GLITCH REWIND: Gebruik deze knop NIET. Gebruik de keuze-knop in de narrative om een foute keuze terug te draaien.");
+             return;
+        }
+
+        Outsider.totalActions -= 1;
+        updateStatsDisplay(); // Update de UI na gebruik
+    }
+
+    // Start het spel wanneer de pagina volledig geladen is
+    window.onload = () => {
+        updateScreen(gameState.currentScene);
+    };
+
+</script>
+
 </body>
 </html>
