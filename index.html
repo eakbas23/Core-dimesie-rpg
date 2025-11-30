@@ -369,10 +369,13 @@
 
             // Update Dialogue, inclusief dynamische HP.
             let currentText = data.text;
-            if (currentScene.startsWith('TECHRUNE_BAAS_')) {
-                // Vervang de placeholder met de huidige HP-waarde van de warden
+            
+            // *** CRUCIALE FIX: Zorgt ervoor dat de HP-update alleen gebeurt als de variabele aanwezig is,
+            // *** waardoor crashen in START en PROLOOG_2 wordt voorkomen.
+            if (currentText.includes('${GAME_DATA.warden.hp}')) {
                 currentText = currentText.replace('${GAME_DATA.warden.hp}', GAME_DATA.warden.hp);
             }
+            
             dialogueEl.innerHTML = currentText;
 
 
@@ -384,7 +387,7 @@
                 
                 let isDisabled = false;
                 
-                // Controleer op beschikbare skills (dit voorkomt dat de knop klikt als de skill op is)
+                // Controleer op beschikbare skills
                 if (choice.action) {
                     // Gebruik de tekst om de benodigde skill te detecteren
                     if (choice.text.includes('SUPPORT PULSE') && GAME_DATA.outsiderActions.supportPulse <= 0) {
@@ -432,6 +435,7 @@
              } else if (type === 'glitchRewind' && GAME_DATA.outsiderActions.glitchRewind > 0) {
                  GAME_DATA.outsiderActions.glitchRewind--;
              }
+             updateUI(); // Zorgt ervoor dat de statistieken direct worden bijgewerkt
         }
         
         function goToScene(sceneKey) {
