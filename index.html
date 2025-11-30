@@ -43,6 +43,9 @@
         .mmz { color: #00FF7F; }    /* Groen */
         .bear { color: #FFFFFF; }   /* Wit/Glitch */
         .outsider { color: #FFD700; } /* Goud */
+        .system { color: #FF00FF; } /* Systeem melding */
+        .important { font-weight: bold; color: #FFA500; } /* Oranje nadruk */
+
 
         #choices button {
             display: block;
@@ -69,14 +72,6 @@
             margin-top: 20px;
             border-radius: 5px;
         }
-        .stat-bar {
-            background-color: #555;
-            height: 10px;
-            border-radius: 5px;
-            margin-bottom: 5px;
-        }
-        .hp { background-color: #FF4500; }
-        .energy { background-color: #00FFFF; }
     </style>
 </head>
 <body>
@@ -111,12 +106,13 @@
             outsiderActions: {
                 supportPulse: 3,
                 debugPing: 2,
-                glitchRewind: 1
+                glitchRewind: 1,
+                hasArmband: false // Nieuwe vlag voor de Armband
             },
 
             // Hoofdstukken
             chapters: {
-                // Proloog: Webshop Intro -> Glitch -> CentralHub Aankomst
+                // --- PROLOOG & CENTRAL HUB (Gecorrigeerd) ---
                 START: {
                     text: `
                     <span class="outsider">SYSTEEM LOG: [eakbas23.nl]</span>
@@ -127,7 +123,7 @@
                     <br>
                     Plotseling flikkert het scherm, de 'koel' factor slaat om in een felle, witte statische ruis. De lichten vallen uit. Je hoort een stem die in code lijkt te spreken...
                     <br><br>
-                    <span class="bear">>>> FOUT. FOUT. FOUT. IETS GROOTS IS KAPOT. GEHEUGEN 95% VERLOREN. GEEN STABILISATIE MOGELIJK. INLEIDING EXTERNE ENTITEIT GEACTIVEERD.</span>
+                    <span class="bear">bEAr23:</span> "<span class="bear">>>> FOUT. FOUT. FOUT. IETS GROOTS IS KAPOT. GEHEUGEN 95% VERLOREN. GEEN STABILISATIE MOGELIJK. INLEIDING EXTERNE ENTITEIT GEACTIVEERD.</span>"
                     <br><br>
                     Een vreemd groen-blauw portaal opent zich op je scherm. Je voelt een onweerstaanbare zuigkracht.
                     <br><br>
@@ -139,18 +135,17 @@
                     }]
                 },
 
-                // CentralHub: Start, rustpunt, Core Users ontmoeting
                 CENTRALHUB_1: {
                     text: `
                     <span class="outsider">AANKOMST IN CENTRALHUB</span>
                     <br>
                     Je bent in de CentralHub, een plek van zwevende platforms en neon. Het platform flikkert. Een kleine robot met een glitchende beren-vorm staat voor je, de code van de fout van zojuist draait nog om hem heen.
                     <br><br>
-                    [span_0](start_span)[span_1](start_span)<span class="bear">bEAr23:</span> "<span class="bear">Oei. Dat was... strategisch suboptimaal. Je bent De Outsider. Ik heb je binnengehaald. Sorry. Of niet. Ik ben bEAr23, en jij bent technisch gezien mijn fout.</span>"[span_0](end_span)[span_1](end_span)
+                    <span class="bear">bEAr23:</span> "<span class="bear">Oei. Dat was... strategisch suboptimaal. Je bent De Outsider. Ik heb je binnengehaald. Sorry. Of niet. Ik ben bEAr23, en jij bent technisch gezien mijn fout.</span>"
                     <br><br>
                     Twee figuren landen voor je in een flits van licht en energie. Een koel, blauw figuur en een krachtig, groen figuur.
                     <br><br>
-                    [span_2](start_span)<span class="kaizen">Kaizen23:</span> "<span class="kaizen">bEAr! We hadden je verteld om NIET zomaar een externe entiteit binnen te trekken. Dit is inefficiënt. Wie is dit?</span>"[span_2](end_span)
+                    <span class="kaizen">Kaizen23:</span> "<span class="kaizen">bEAr! We hadden je verteld om NIET zomaar een externe entiteit binnen te trekken. Dit is inefficiënt. Wie is dit?</span>"
                     <br><br>
                     <span class="mmz">Mmz23:</span> "<span class="mmz">Rustig, Kaizen. Hoi, ik ben Mmz23. Geen paniek. Waarom ben je hier? bEAr, wat is er aan de hand?</span>"
                     `,
@@ -169,7 +164,7 @@
                     <br><br>
                     <span class="kaizen">Kaizen23:</span> "<span class="kaizen">Dit is de Core Dimensie. Het digitale hart van de webshop. En het is aan het corrumperen. De fout van bEAr heeft het wakker gemaakt.</span>"
                     <br><br>
-                    <span class="mmz">Mmz23:</span> "<span class="mmz">De schurk is **OverCore**. Hij wil alles optimaliseren tot een koude leegte. We moeten hem stoppen. [span_3](start_span)[span_4](start_span)En jij bent de enige variabele die hij niet kan voorspellen.</span>"[span_3](end_span)[span_4](end_span)
+                    <span class="mmz">Mmz23:</span> "<span class="mmz">De schurk is <span class="important">OverCore</span>. Hij wil alles optimaliseren tot een koude leegte. We moeten hem stoppen. En jij bent de enige variabele die hij niet kan voorspellen.</span>"
                     `,
                     choices: [{
                         text: "Doorgaan: Het plan en de eerste keuze van de wereld.",
@@ -183,7 +178,7 @@
                     <br><br>
                     <span class="bear">bEAr23:</span> "<span class="bear">Helaas, *fout*. Je bent nu een 'Glitch-Anomalie'. Tenzij we OverCore verslaan, blijf je hier. Je aanwezigheid is... noodzakelijk.</span>"
                     <br><br>
-                    [span_5](start_span)<span class="kaizen">Kaizen23:</span> "<span class="kaizen">Je bent nu ons beste wapen, Outsider. Je keuzes staan buiten zijn logica. Bedenk dat goed.</span>"[span_5](end_span)
+                    <span class="kaizen">Kaizen23:</span> "<span class="kaizen">Je bent nu ons beste wapen, Outsider. Je keuzes staan buiten zijn logica. Bedenk dat goed.</span>"
                     `,
                     choices: [{
                         text: "Doorgaan: Het plan en de eerste keuze van de wereld.",
@@ -191,12 +186,11 @@
                     }]
                 },
 
-                // Het plan en de eerste wereldkeuze
                 CENTRALHUB_3: {
                     text: `
                     <span class="outsider">HET PLAN</span>
                     <br>
-                    [span_6](start_span)[span_7](start_span)<span class="kaizen">Kaizen23:</span> "<span class="kaizen">We moeten 4 Shards verzamelen om de Nexus te openen en OverCore's kern te bereiken. Eén in elke wereld. De eerste wereld moet **TechRune** zijn, omdat je daar de CoreLink-Armband krijgt om ons te kunnen helpen.</span>"[span_6](end_span)[span_7](end_span)
+                    <span class="kaizen">Kaizen23:</span> "<span class="kaizen">We moeten 4 Shards verzamelen om de Nexus te openen en OverCore's kern te bereiken. Eén in elke wereld. De eerste wereld moet **TechRune** zijn, omdat je daar de CoreLink-Armband krijgt om ons te kunnen helpen.</span>"
                     <br><br>
                     <span class="mmz">Mmz23:</span> "<span class="mmz">We hebben je nodig om de beslissingen te nemen, Outsider. Wij luisteren naar jou.</span>"
                     <br><br>
@@ -207,17 +201,17 @@
                         next: "TECHRUNE_1"
                     }]
                 },
-
-                // TechRune: Aankomst en de eerste keuzes (Stealth vs Brute Force)
+                
+                // --- TECHRUNE START ---
                 TECHRUNE_1: {
                     text: `
-                    [span_8](start_span)<span class="kaizen">WERELD 1: TECHRUNE (Webshop: Gadgets)</span>[span_8](end_span)
+                    <span class="kaizen">WERELD 1: TECHRUNE (Webshop: Gadgets)</span>
                     <br>
                     Je staat in TechRune. Wolkenkrabbers zijn gemaakt van flikkerende smartphones. De straten zijn als circuitboards. OverCore's invloed heeft de helft van de stad in duisternis gehuld.
                     <br><br>
                     <span class="kaizen">Kaizen23:</span> "<span class="kaizen">De Cipher Warden, de mini-baas, zit in het centrale gebouw. We kunnen via de ondergrondse dataleidingen (Stealth) of direct via de hoofdstraat (Brute Force). Kies, Outsider.</span>"
                     <br><br>
-                    [span_9](start_span)<span class="mmz">Mmz23:</span> "<span class="mmz">Kies Brute Force! Eerst slaan, dan vragen!</span>"[span_9](end_span)
+                    <span class="mmz">Mmz23:</span> "<span class="mmz">Kies Brute Force! Eerst slaan, dan vragen!</span>"
                     <br><br>
                     <span class="bear">bEAr23:</span> "<span class="bear">Stealth is... efficiënter. Maar met mijn geluk zal ik toch wel ergens tegenaan botsen.</span>"
                     `,
@@ -233,32 +227,127 @@
                     }]
                 },
 
-                // Dit is het einde van het eerste deel van het script
+                // --- TECHRUNE: STEALTH ROUTE UITWERKING ---
                 TECHRUNE_STEALTH_2: {
                     text: `
-                    <span class="kaizen">STEALTH ROUTE:</span>
+                    <span class="kaizen">STEALTH ROUTE: DE DATALEIDINGEN</span>
                     <br>
-                    Je kiest voor de tactische aanpak. [span_10](start_span)Kaizen23 neemt de leiding en gebruikt haar **TactiScan_23**[span_10](end_span) om zwakke punten in de bewakingsdrones te vinden. Het team glipt door de dataleidingen.
+                    Je kiest voor de tactische aanpak. Kaizen23 neemt de leiding en gebruikt haar **TactiScan_23** om de meest stabiele route te bepalen.
                     <br><br>
-                    **(Hier gaat het spel verder met de puzzelscènes en het vinden van de CoreLink-Armband voor De Outsider!)**
+                    <span class="kaizen">Kaizen23:</span> "<span class="kaizen">Ik heb een verborgen lab gescand. Onze data-signalen zijn daar gecodeerd, dus het is veilig voorlopig. Dat lab is onze beste kans om de Outsider's Armband te vinden.</span>"
+                    <br><br>
+                    <span class="system">STATUS:</span> <span class="bear">bEAr23's</span> aanwezigheid veroorzaakt lichte storingen in de bewakingscamera's, wat jullie een voordeel geeft.
                     `,
                     choices: [{
-                        text: "EINDE VAN DE DEMO - Ga terug naar CentralHub",
-                        next: "CENTRALHUB_1" // Loop terug voor de demo
+                        text: "Volg Kaizen door de dataleidingen.",
+                        next: "TECHRUNE_STEALTH_3_ARMBAK"
                     }]
                 },
 
+                TECHRUNE_STEALTH_3_ARMBAK: {
+                    text: `
+                    <span class="outsider">HET VERBORGEN LAB</span>
+                    <br>
+                    Jullie komen aan in een klein, stoffig (digitaal gezien) lab. In het midden staat een gloeiende blauwe armband op een voetstuk.
+                    <br><br>
+                    <span class="bear">bEAr23:</span> "<span class="bear">Ah, de CoreLink-Armband! Ontworpen door Eakbas23 voor externe gebruikers. Neem hem. Nu kun je ons direct ondersteunen in gevechten.</span>"
+                    <br><br>
+                    <span class="system">SYSTEM:</span> Je hebt de <span class="important">CORELINK-ARMBAND</span> ontvangen! De Outsider's actieve vaardigheden zijn nu ontgrendeld.
+                    `,
+                    choices: [{
+                        text: "Ga door: Eerste uitdaging (Datakabel Puzzel)",
+                        next: "TECHRUNE_STEALTH_4_PUZZEL"
+                    }],
+                    // Activeer de armband
+                    onEnter: () => GAME_DATA.outsiderActions.hasArmband = true 
+                },
+                
+                TECHRUNE_STEALTH_4_PUZZEL: {
+                    text: `
+                    <span class="kaizen">DE DATAKABEL PUZZEL</span>
+                    <br>
+                    De deur naar het centrale gebouw is geblokkeerd door een complex netwerk van datakabels die losgeraakt zijn. De deur vraagt om een specifieke stroomfrequentie.
+                    <br><br>
+                    <span class="mmz">Mmz23:</span> "<span class="mmz">Ik kan er gewoon doorheen beuken!</span>"
+                    <br><br>
+                    <span class="kaizen">Kaizen23:</span> "<span class="kaizen">Nee! Dat zal alarm slaan. De oplossing ligt in de volgorde. bEAr en ik hebben 5 seconden nodig om de juiste volgorde te berekenen.</span>"
+                    <br><br>
+                    <span class="outsider">KEUZE:</span> Gebruik je net ontgrendelde vaardigheden om ze te helpen of vertrouw op hun plan?
+                    `,
+                    choices: [
+                        {
+                            text: "OPTIE 1: Gebruik **SUPPORT PULSE** op Kaizen23 (+30% Tactiek).",
+                            next: "TECHRUNE_STEALTH_5_SUCCES",
+                            action: () => useOutsiderAction('supportPulse')
+                        },
+                         {
+                            text: "OPTIE 2: Vertrouw op hun basisberekening (Risico: 20% kans op mislukking).",
+                            next: "TECHRUNE_STEALTH_5_SUCCES" // Standaard succes voor nu
+                        },
+                        {
+                            text: "OPTIE 3: Gebruik **DEBUG PING** op de kabels (Onderbreekt de beveiligingscontrole kort).",
+                            next: "TECHRUNE_STEALTH_5_SUCCES_DEBUG",
+                            action: () => useOutsiderAction('debugPing')
+                        }
+                    ]
+                },
+                
+                TECHRUNE_STEALTH_5_SUCCES: {
+                    text: `
+                    <span class="system">SUCCES!</span>
+                    <br>
+                    Kaizen23 en bEAr23 synchroniseren hun berekeningen. Door jouw focus (of door hun pure tactiek) valt de code op zijn plaats.
+                    <br><br>
+                    <span class="kaizen">Kaizen23:</span> "<span class="kaizen">Efficiënt. We zijn binnen. De Cipher Warden is de volgende stap.</span>"
+                    `,
+                    choices: [{
+                        text: "Ga door naar de Cipher Warden (Mini-Baas).",
+                        next: "TECHRUNE_BAAS_1"
+                    }]
+                },
+                
+                TECHRUNE_STEALTH_5_SUCCES_DEBUG: {
+                    text: `
+                    <span class="system">SUCCES!</span>
+                    <br>
+                    Je Debug Ping veroorzaakte een fractie van een seconde 'lag' in het beveiligingssysteem, waardoor Kaizen de laatste code kon invoeren.
+                    <br><br>
+                    <span class="bear">bEAr23:</span> "<span class="bear">Ha! Perfecte timing. Ik wist dat mijn glitchy aard nuttig zou zijn. Bedankt, Outsider.</span>"
+                    `,
+                    choices: [{
+                        text: "Ga door naar de Cipher Warden (Mini-Baas).",
+                        next: "TECHRUNE_BAAS_1"
+                    }]
+                },
+                
+                TECHRUNE_BAAS_1: {
+                    text: `
+                    <span class="mmz">DE CIPHER WARDEN</span>
+                    <br>
+                    Jullie staan voor de mini-baas. Hij is 3 meter hoog, gepantserd met smartphones, en heeft een scherm-hoofd met een dreigend rood oog.
+                    <br><br>
+                    <span class="system">GEVECHT START!</span>
+                    <br>
+                    <span class="kaizen">Kaizen23:</span> "<span class="kaizen">Ik heb hem gescand. Hij is te zwaar. Richt op zijn kern achter de 3e pantserplaat na zijn aanval. Onze beurt, Outsider.</span>"
+                    `,
+                    choices: [{
+                        text: "EINDE VAN DE DEMO - Dit is het begin van het gevecht!",
+                        next: "CENTRALHUB_1" // Demo loop
+                    }]
+                },
+
+                // --- BRUTE FORCE & SPLIT ROUTES (Demo Einde) ---
                 TECHRUNE_BRUTE_FORCE_2: {
                     text: `
                     <span class="mmz">BRUTE FORCE ROUTE:</span>
                     <br>
-                    Je kiest voor de directe aanval. [span_11](start_span)Mmz23 roept zijn **Wild Pack Call**[span_11](end_span) en stormt de hoofdstraat in. De digitale beesten van Mmz vallen de patrouille-drones aan.
+                    Je kiest voor de directe aanval. Mmz23 roept zijn **Wild Pack Call** en stormt de hoofdstraat in. De digitale beesten van Mmz vallen de patrouille-drones aan.
                     <br><br>
-                    **(Hier gaat het spel verder met de gevechtsscènes en het vinden van de CoreLink-Armband voor De Outsider!)**
+                    **(Deze route wordt later uitgewerkt!)**
                     `,
                     choices: [{
                         text: "EINDE VAN DE DEMO - Ga terug naar CentralHub",
-                        next: "CENTRALHUB_1" // Loop terug voor de demo
+                        next: "CENTRALHUB_1" 
                     }]
                 },
 
@@ -270,11 +359,11 @@
                     <br><br>
                     <span class="bear">bEAr23:</span> "<span class="bear">Dit is onnodig risicovol! Maar goed, ik doe wat ik moet doen.</span>"
                     <br><br>
-                    **(Hier gaat het spel verder met twee gelijktijdige verhaallijnen en het vinden van de CoreLink-Armband voor De Outsider!)**
+                    **(Deze route wordt later uitgewerkt!)**
                     `,
                     choices: [{
                         text: "EINDE VAN DE DEMO - Ga terug naar CentralHub",
-                        next: "CENTRALHUB_1" // Loop terug voor de demo
+                        next: "CENTRALHUB_1" 
                     }]
                 },
             }
@@ -293,6 +382,11 @@
             const data = GAME_DATA.chapters[currentScene];
             if (!data) return;
 
+            // Voer eenmalige actie uit bij betreden van scene (zoals armband activeren)
+            if (data.onEnter && typeof data.onEnter === 'function') {
+                data.onEnter();
+            }
+
             // Update Dialogue
             dialogueEl.innerHTML = data.text;
 
@@ -301,7 +395,34 @@
             data.choices.forEach(choice => {
                 const button = document.createElement('button');
                 button.textContent = choice.text;
-                button.onclick = () => goToScene(choice.next);
+                
+                // Controleer of actie beschikbaar is, anders uitschakelen (alleen voor skills)
+                if (choice.action) {
+                    const actionName = choice.action.name.replace('bound ', '');
+                    let isDisabled = false;
+                    
+                    if (actionName === 'useSupportPulse' && GAME_DATA.outsiderActions.supportPulse <= 0) {
+                        isDisabled = true;
+                    } else if (actionName === 'useDebugPing' && GAME_DATA.outsiderActions.debugPing <= 0) {
+                        isDisabled = true;
+                    } else if (actionName === 'useGlitchRewind' && GAME_DATA.outsiderActions.glitchRewind <= 0) {
+                        isDisabled = true;
+                    }
+
+                    if (isDisabled) {
+                        button.disabled = true;
+                        button.textContent += " (0x over)";
+                    } else {
+                        button.onclick = () => {
+                            choice.action(); // Voer de skill actie uit
+                            goToScene(choice.next);
+                        };
+                    }
+                } else {
+                    // Standaard scene overgang
+                    button.onclick = () => goToScene(choice.next);
+                }
+                
                 choicesEl.appendChild(button);
             });
 
@@ -312,6 +433,30 @@
 
             // Scroll naar onderaan om nieuwe tekst te zien
             window.scrollTo(0, document.body.scrollHeight);
+        }
+
+        // FUNCTIES VOOR OUTSIDER SKILLS
+        function useSupportPulse() {
+            if (GAME_DATA.outsiderActions.supportPulse > 0) {
+                GAME_DATA.outsiderActions.supportPulse--;
+            }
+        }
+        function useDebugPing() {
+            if (GAME_DATA.outsiderActions.debugPing > 0) {
+                GAME_DATA.outsiderActions.debugPing--;
+            }
+        }
+        function useGlitchRewind() {
+            if (GAME_DATA.outsiderActions.glitchRewind > 0) {
+                GAME_DATA.outsiderActions.glitchRewind--;
+            }
+        }
+        
+        // Helper om de juiste actie te gebruiken
+        function useOutsiderAction(type) {
+             if (type === 'supportPulse') return useSupportPulse();
+             if (type === 'debugPing') return useDebugPing();
+             if (type === 'glitchRewind') return useGlitchRewind();
         }
 
         function goToScene(sceneKey) {
