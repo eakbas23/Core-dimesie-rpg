@@ -14,6 +14,7 @@
             --color-mid-bg: #212121;
             --color-text: #e0e0e0;
             --color-accent-red: #ff4500;
+            --color-accent-yellow: #ffff00; /* Nieuwe kleur voor Bliksem */
             --font-mono: 'Roboto Mono', monospace;
             --font-sans: 'Arial', sans-serif;
         }
@@ -323,12 +324,12 @@ let gameState = {
         corelinkArmband: false, 
         techShard: false,
         beastShard: false,
-        bliksemShard: false,
+        bliksemShard: false, // NIEUW
         originShard: false,
         shardsCollected: 0,
         // Nieuwe Upgrades
         mmzBeastAura: false,
-        kaizenBliksemForm: false,
+        kaizenBliksemForm: false, // NIEUW
     },
 
     // Progressie
@@ -640,17 +641,13 @@ const scenes = {
         }
     },
     
-    // ---------------------------------------------
-    // NIEUWE SCENES: BEASTREALM (WERELD 2)
-    // ---------------------------------------------
+    // --- WERELD 2: BEASTREALM ---
 
     beastRealm_start: {
         text: `
             Je stapt door het groene, organische portaal. Je landt in **BeastRealm**, een jungle van ruwe, onbewerkte code die lijkt op dichte lianen en bioluminescente bomen. Mmz23 ademt diep in en zijn groene Core-licht gloeit fel.
             <br><br>
-            Mmz23: "Hier voel ik me thuis. De natuurlijke, onvervalste energie van de Dimensie. Maar het is... overwoekerd. De Corruptie is hier rauw, ongetemd."
-            <br><br>
-            Kaizen23: "Analyse wijst op de aanwezigheid van de 'Jager'. Dit is zijn territorium. Mmz23, zijn we bereid om de ongetemde kant van je krachten te gebruiken? Er is een dichte muur van Corruptie voor ons."
+            Mmz23: "Hier voel ik me thuis. De natuurlijke, onvervalste energie van de Dimensie. Maar het is... overwoekerd. De Corruptie is hier rauw, ongetemd. Er is een dichte muur van Corruptie voor ons."
         `,
         choices: [
             { text: "Blijf op het pad en zoek naar een omweg (Tactische aanpak)", next: "beastRealm_path_kaizen" },
@@ -741,8 +738,8 @@ const scenes = {
                 gameState.characters.Outsider.totalActions -= 1;
                 gameState.characters.Kaizen23.hp = Math.min(gameState.characters.Kaizen23.maxHp, gameState.characters.Kaizen23.hp + 15);
                 gameState.characters.Kaizen23.energy = Math.min(gameState.characters.Kaizen23.maxEnergy, gameState.characters.Kaizen23.energy + 15);
-                gameState.characters.Mmz23.hp = Math.min(gameState.characters.Mmz23.maxHp, gameState.characters.Mmz23.hp + 15);
-                gameState.characters.Mmz23.energy = Math.min(gameState.characters.Mmz23.maxEnergy, gameState.characters.Mmz23.energy + 15);
+                gameState.characters.Mmz23.hp = Math.min(gameState.characters.Mmz23.maxHp, gameState.characters.Mmz23.maxHp + 15); // Gebruik maxHp hier
+                gameState.characters.Mmz23.energy = Math.min(gameState.characters.Mmz23.maxEnergy, gameState.characters.Mmz23.energy + 15); // Gebruik maxEnergy hier
             } else {
                  alert("Geen Support Pulse acties meer beschikbaar. De Hunter is er!");
                  updateScreen("beastRealm_boss_intro");
@@ -823,7 +820,7 @@ const scenes = {
             gameState.characters.Kaizen23.energy -= 20;
             gameState.characters.Kaizen23.hp -= 25;
             if (gameState.characters.Kaizen23.hp <= 0) {
-                 updateScreen("game_over"); // Tijd om Game Over in te bouwen
+                 updateScreen("game_over"); 
             }
         }
     },
@@ -884,9 +881,9 @@ const scenes = {
         onEnter: () => {
             gameState.currentWorld = "CentralHub";
             gameState.resetOutsiderActions();
-            // Updatet de knop als de Bliksem Arena al voltooid zou zijn
+            // Als alles voltooid is, spring naar de finale fase
             if (gameState.inventory.bliksemShard) {
-                 updateScreen("centralHub_postBliksemArena"); // Naar Deel 4
+                 updateScreen("centralHub_postBliksemArena"); 
                  return;
             }
         }
@@ -903,23 +900,254 @@ const scenes = {
          ]
     },
 
+    // ---------------------------------------------
+    // NIEUWE SCENES: BLIKSEM ARENA (WERELD 3)
+    // ---------------------------------------------
 
-    // ---------------------------------------------
-    // START PUNT VOOR DEEL 3: BLIKSEM ARENA
-    // ---------------------------------------------
-    
     bliksemArena_start: {
         text: `
-            **[DEEL 3: BLIKSEM ARENA]**
+            Je stapt door het flikkerende geel-blauwe portaal. Je landt in de **Bliksem Arena**, een uitgestrekte, witte vlakte van geoptimaliseerde code, waar alleen de snelste datastromen overleven. Bliksemschichten van pure energie slaan rondom in.
             <br><br>
-            Kaizen23: "Mijn beurt. Dit is de wereld waar ik mijn tactische en datakracht moet omarmen. Het is een test van snelheid en efficiëntie."
+            Kaizen23: "Dit is mijn domein. Alles hier is snelheid en efficiëntie. OverCore heeft de 'Bliksem'-data gekaapt. Mijn herinnering aan mijn focus op perfectie ligt hier. Het risico is overbelasting."
             <br><br>
-            *De code voor de Bliksem Arena volgt in het volgende antwoord.*
+            Mmz23: "Pas op, zus. Dit is te snel voor mijn kracht. Eén foute stap en je bent data-stof."
+            <br><br>
+            Kaizen23: "De Shard bevindt zich in de centrale toren, bewaakt door de **Apex Slicer**. We moeten een pad creëren met minimale weerstand."
         `,
         choices: [
-            { text: "Ga terug naar de CentralHub (wacht op Wereld 3)", next: "centralHub_postBeastRealm" }
+            { text: "Laat Kaizen23 een HYPER-SCAN uitvoeren (20 NRG)", next: "bliksemArena_hyperscan" },
+            { text: "Laat Mmz23 de energie absorberen om de bliksem te vertragen (20 NRG)", next: "bliksemArena_mmz_absorb" },
+            { text: "Gebruik een Debug Ping op de Slicer's pad", next: "bliksemArena_outsider_ping_pre" }
+        ],
+        onEnter: () => { gameState.currentWorld = "Bliksem Arena"; }
+    },
+
+    bliksemArena_hyperscan: {
+        text: `
+            Kaizen23 activeert een **HYPER-SCAN**. De wereld bevriest voor haar. Ze vindt de meest efficiënte route en de zwakke punten in de toren.
+            <br><br>
+            Kaizen23: "De kortste route is over het centrale veld. De Slicer weet dit. Klaar voor snelheid?"
+            <br><br>
+            *Kaizen23 verliest 20 Energie. Je bent op de snelste route.*
+        `,
+        choices: [
+            { text: "Begin de sprint naar de toren", next: "bliksemArena_sprint_start" }
+        ],
+        onEnter: () => {
+            gameState.characters.Kaizen23.energy -= 20;
+        }
+    },
+
+    bliksemArena_mmz_absorb: {
+        text: `
+            Mmz23 probeert de snelle energie van de bliksem te absorberen. Het is te veel.
+            <br><br>
+            Mmz23: "Au! Te snel! Ik verlies controle!"
+            <br><br>
+            *Mmz23 verliest 15 HP en 25 Energie. De route is niet efficiënt.*
+        `,
+        choices: [
+            { text: "Schakel terug naar Kaizen23's plan: HYPER-SCAN", next: "bliksemArena_hyperscan" }
+        ],
+        onEnter: () => {
+            gameState.characters.Mmz23.hp -= 15;
+            gameState.characters.Mmz23.energy -= 25;
+            if (gameState.characters.Mmz23.hp <= 0) updateScreen("game_over");
+        }
+    },
+    
+    bliksemArena_outsider_ping_pre: {
+        text: `
+            Je gebruikt de **Debug Ping**. De Apex Slicer's interne tracking wordt tijdelijk verstoord.
+            <br><br>
+            Kaizen23: "Mooi! Een 5 seconden venster. Ik gebruik de tijd om de ultieme, veilige route te plannen."
+            <br><br>
+            *1 Debug Ping gebruikt. De sprint begint met een voordeel.*
+        `,
+        choices: [
+            { text: "Sprint naar de toren met het strategische voordeel", next: "bliksemArena_sprint_start_advantage" }
+        ],
+        onEnter: () => {
+            if (gameState.characters.Outsider.debugPing > 0) {
+                gameState.characters.Outsider.debugPing -= 1;
+                gameState.characters.Outsider.totalActions -= 1;
+            } else {
+                 alert("Geen Debug Ping acties meer beschikbaar.");
+                 updateScreen("bliksemArena_start"); 
+                 return;
+            }
+        }
+    },
+
+    bliksemArena_sprint_start: {
+        text: `
+            Kaizen23 rent. De Apex Slicer, een werveling van flitsende databladen, verschijnt direct voor de toren. Er is geen tijd om te twijfelen.
+        `,
+        choices: [
+            { text: "Kaizen23: Val de Slicer aan met TACTISCAN-EDGES (25 NRG)", next: "bliksemArena_boss_attack" },
+            { text: "Mmz23: Probeer de Slicer te onderbreken met een BRUTE CORE-SLAM (25 NRG)", next: "bliksemArena_boss_mmz_distract" },
+            { text: "Outsider: Gebruik een Support Pulse om Kaizen's energie op te laden", next: "bliksemArena_outsider_pulse" }
         ]
     },
+
+    bliksemArena_sprint_start_advantage: {
+        text: `
+            Door de Ping is de Slicer vertraagd. Kaizen bereikt de toren en heeft tijd om de Shard te pakken terwijl de Slicer herstelt.
+            <br><br>
+            Kaizen23: "Dit is mijn kans!"
+        `,
+        choices: [
+            { text: "Pak de Bliksem-Memory Shard", next: "bliksemArena_shard_absorb" }
+        ]
+    },
+
+    bliksemArena_boss_attack: {
+        text: `
+            Kaizen's aanval is snel, maar de Slicer is sneller. Hij ontwijkt en raakt Kaizen met een Data-Cut.
+            <br><br>
+            *Kaizen23 verliest 20 HP en 25 Energie. De Slicer is nu voor de toren.*
+        `,
+        choices: [
+            { text: "Probeer Mmz23's afleidingsmanoeuvre", next: "bliksemArena_boss_mmz_distract" }
+        ],
+        onEnter: () => {
+            gameState.characters.Kaizen23.hp -= 20;
+            gameState.characters.Kaizen23.energy -= 25;
+            if (gameState.characters.Kaizen23.hp <= 0) updateScreen("game_over");
+        }
+    },
+
+    bliksemArena_boss_mmz_distract: {
+        text: `
+            Mmz23 gebruikt een krachtige Core-Slam om de grondcode te destabiliseren. De Slicer moet stoppen met aanvallen.
+            <br><br>
+            Mmz23: "Nu, zus! Pak die Shard!"
+            <br><br>
+            *Mmz23 verliest 25 Energie. Kaizen23 kan de Shard grijpen.*
+        `,
+        choices: [
+            { text: "Pak de Bliksem-Memory Shard", next: "bliksemArena_shard_absorb" }
+        ],
+        onEnter: () => {
+            gameState.characters.Mmz23.energy -= 25;
+            if (gameState.characters.Mmz23.energy <= 0) updateScreen("game_over");
+        }
+    },
+    
+    bliksemArena_outsider_pulse: {
+        text: `
+            Je gebruikt de **Support Pulse**. Kaizen's energie is opgeladen. Ze kan nog een keer aanvallen of een snelle maneuver uitvoeren.
+            <br><br>
+            *1 Support Pulse gebruikt. Kaizen23 (+15 NRG) en Mmz23 (+15 HP).*
+        `,
+        choices: [
+            { text: "Kaizen23: Val de Slicer aan met TACTISCAN-EDGES (25 NRG)", next: "bliksemArena_boss_attack" },
+            { text: "Mmz23: Probeer de Slicer te onderbreken met een BRUTE CORE-SLAM (25 NRG)", next: "bliksemArena_boss_mmz_distract" }
+        ],
+        onEnter: () => {
+            if (gameState.characters.Outsider.supportPulse > 0) {
+                gameState.characters.Outsider.supportPulse -= 1;
+                gameState.characters.Outsider.totalActions -= 1;
+                gameState.characters.Kaizen23.energy = Math.min(gameState.characters.Kaizen23.maxEnergy, gameState.characters.Kaizen23.energy + 15);
+                gameState.characters.Mmz23.hp = Math.min(gameState.characters.Mmz23.maxHp, gameState.characters.Mmz23.hp + 15);
+            } else {
+                 alert("Geen Support Pulse acties meer beschikbaar.");
+                 updateScreen("bliksemArena_sprint_start");
+            }
+        }
+    },
+
+    bliksemArena_shard_absorb: {
+        text: `
+            Kaizen23 absorbeert de **Bliksem-Memory Shard**. De herinnering aan haar perfecte datastroom en snelheid overweldigt haar. Ze flitst in een blauw-gele gloed.
+            <br><br>
+            Kaizen23: "**BLIKSEM FORM:** Alle onnodige variabelen zijn verwijderd. Ik ben de pure datastroom!"
+            <br><br>
+            *Kaizen23's Max HP en Max Energie gaan permanent omhoog met 10! Ze heelt volledig.*
+            <br><br>
+            De Apex Slicer kan de nieuwe, snellere data niet bijhouden en lost op.
+        `,
+        choices: [
+            { text: "Ga terug naar de CentralHub. Nog 1 Shard te gaan.", next: "centralHub_postBliksemArena" }
+        ],
+        onEnter: () => {
+            gameState.inventory.bliksemShard = true;
+            gameState.inventory.shardsCollected += 1;
+            gameState.characters.bEAr23.memory = 75; // 3 Shards = 75%
+            gameState.inventory.kaizenBliksemForm = true;
+            
+            // Permanente upgrade
+            gameState.characters.Kaizen23.maxHp += 10;
+            gameState.characters.Kaizen23.maxEnergy += 10;
+            gameState.characters.Kaizen23.hp = gameState.characters.Kaizen23.maxHp; 
+            gameState.characters.Kaizen23.energy = gameState.characters.Kaizen23.maxEnergy; 
+            
+            gameState.characters.Mmz23.hp = Math.min(gameState.characters.Mmz23.maxHp, gameState.characters.Mmz23.hp + 10);
+        }
+    },
+    
+    // --- CENTRAL HUB NA WERELD 3 (Klaar voor de finale) ---
+    
+    centralHub_postBliksemArena: {
+        text: `
+            Terug in de CentralHub. Het gele portaal is nu perfect geel.
+            <br><br>
+            **STATUS FINALE PREP:**
+            - Kaizen23 heeft de **Bliksem Form** (Max HP/NRG permanent +10).
+            - Mmz23 heeft de **Beast Aura** (Max HP/NRG permanent +10).
+            - bEAr23 heeft 3 Shards (75% geheugen).
+            - De Nexus-poort, naar de Origin Shard en OverCore, staat op 75% opening.
+            <br><br>
+            bEAr23: "Slechts één Shard mist nog: de **Origin Shard**. Die ligt in de Nexus zelf. OverCore weet dat we komen!"
+        `,
+        choices: [
+            { text: "Ga de Nexus-poort binnen voor de FINALE", next: "nexus_start" },
+            { text: "Gebruik de CoreLink Armband om het team volledig te herstellen (Laatste kans)", next: "nexus_final_heal" }
+        ]
+    },
+    
+    nexus_final_heal: {
+        text: `
+            Je activeert een krachtige, finale Support Pulse. De CoreLink-Armband leegt zijn reserve.
+            <br><br>
+            *Kaizen23 en Mmz23 zijn volledig geheeld. Alle Outsider acties zijn nu 0.*
+            <br><br>
+            bEAr23: "Dat was alles. Nu moeten we op hun krachten en jouw tactiek vertrouwen."
+        `,
+        choices: [
+            { text: "Ga de Nexus-poort binnen voor de FINALE", next: "nexus_start" }
+        ],
+        onEnter: () => {
+            gameState.characters.Kaizen23.hp = gameState.characters.Kaizen23.maxHp;
+            gameState.characters.Kaizen23.energy = gameState.characters.Kaizen23.maxEnergy;
+            gameState.characters.Mmz23.hp = gameState.characters.Mmz23.maxHp;
+            gameState.characters.Mmz23.energy = gameState.characters.Mmz23.maxEnergy;
+            
+            // Reset alle Outsider acties naar 0 (geen resets meer)
+            gameState.characters.Outsider.supportPulse = 0;
+            gameState.characters.Outsider.debugPing = 0;
+            gameState.characters.Outsider.glitchRewind = 0;
+            gameState.characters.Outsider.totalActions = 0;
+        }
+    },
+
+    // ---------------------------------------------
+    // START PUNT VOOR DEEL 4: DE FINALE
+    // ---------------------------------------------
+    
+    nexus_start: {
+        text: `
+            **[DEEL 4: DE NEXUS EN OVERCORE]**
+            <br><br>
+            De finale begint. De Nexus is een chaotische leegte van data-loops.
+            <br><br>
+            *De code voor de Nexus en de confrontatie met OverCore volgt in het volgende antwoord.*
+        `,
+        choices: [
+            { text: "Einde van de huidige code. Vraag om Deel 4.", next: "centralHub_postBliksemArena" }
+        ]
+    },
+    
 
     // --- FOUT-SCENES ---
     game_over: {
@@ -928,10 +1156,10 @@ const scenes = {
             <br><br>
             Een van je teamleden is overweldigd door de Corruptie. De missie faalt. De Core Dimensie valt.
             <br><br>
-            Begin opnieuw of gebruik de CoreLink-Armband om een Glitch Rewind naar het begin van de wereld te doen (als je nog een actie hebt).
+            Vraag om de laatste werkende scene opnieuw te laden. (Of ververs de pagina om bij het begin van de laatste voltooide wereld te beginnen.)
         `,
         choices: [
-            { text: "Herstart de laatste wereld (BeastRealm)", next: "beastRealm_start" }
+            { text: "Start de game opnieuw vanaf de CentralHub", next: "centralHub_start" }
         ]
     }
 };
@@ -976,7 +1204,9 @@ function startIntro() {
 
         // Bepaal de startscene op basis van progressie
         let startScene = gameState.currentScene;
-        if (gameState.inventory.beastShard) {
+        if (gameState.inventory.bliksemShard) {
+             startScene = "centralHub_postBliksemArena";
+        } else if (gameState.inventory.beastShard) {
              startScene = "centralHub_postBeastRealm";
         } else if (gameState.inventory.techShard) {
              startScene = "centralHub_postTechRune";
@@ -1005,23 +1235,33 @@ function initializeGame() {
 
     // **BELANGRIJKE PROGRESSIE INLADER**
     // Zorgt ervoor dat progressie behouden blijft, zelfs na het herladen van de code
-    if (gameState.inventory.beastShard) {
-        gameState.characters.bEAr23.memory = 50;
+    if (gameState.inventory.bliksemShard) {
+        gameState.inventory.shardsCollected = 3;
+        gameState.characters.bEAr23.memory = 75;
+        gameState.characters.Kaizen23.maxHp = 110;
+        gameState.characters.Kaizen23.maxEnergy = 110;
+        gameState.characters.Mmz23.maxHp = 110; // Zorg dat Mmz upgrade ook geladen wordt als de Bliksem upgrade al geladen is
+        gameState.characters.Mmz23.maxEnergy = 110;
+    } else if (gameState.inventory.beastShard) {
         gameState.inventory.shardsCollected = 2;
+        gameState.characters.bEAr23.memory = 50;
         // Laad permanente upgrades
         gameState.characters.Mmz23.maxHp = 110;
         gameState.characters.Mmz23.maxEnergy = 110;
-        // Zorg dat de huidige HP niet boven de nieuwe max komt
-        gameState.characters.Mmz23.hp = Math.min(gameState.characters.Mmz23.hp, gameState.characters.Mmz23.maxHp);
     } else if (gameState.inventory.techShard) {
         gameState.characters.bEAr23.memory = 25;
         gameState.inventory.shardsCollected = 1;
     }
     
     // Zorg ervoor dat de armband-status altijd correct is
-    if (gameState.inventory.techShard) {
+    if (gameState.inventory.techShard || gameState.inventory.beastShard || gameState.inventory.bliksemShard) {
         gameState.inventory.corelinkArmband = true;
     }
+    
+    // Zorg dat de huidige HP niet boven de nieuwe max komt
+    gameState.characters.Mmz23.hp = Math.min(gameState.characters.Mmz23.hp, gameState.characters.Mmz23.maxHp);
+    gameState.characters.Kaizen23.hp = Math.min(gameState.characters.Kaizen23.hp, gameState.characters.Kaizen23.maxHp);
+
 
     // Start het spel
     startIntro();
@@ -1080,6 +1320,8 @@ function updateScreen(sceneId) {
         gameState.currentWorld = "BeastRealm";
     } else if (sceneId.includes('bliksemArena')) {
         gameState.currentWorld = "Bliksem Arena";
+    } else if (sceneId.includes('nexus')) {
+        gameState.currentWorld = "Nexus (FINALE)";
     } else {
         gameState.currentWorld = "CentralHub";
     }
