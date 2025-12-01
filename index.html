@@ -121,6 +121,17 @@
             color: var(--color-core-white);
             font-weight: bold;
         }
+        
+        /* Custom HP kleur bij laag niveau */
+        .stat-value.low-hp {
+            color: var(--color-accent-red);
+            font-weight: bold;
+            animation: pulse-red 1s infinite alternate;
+        }
+        @keyframes pulse-red {
+            from { text-shadow: none; }
+            to { text-shadow: 0 0 5px var(--color-accent-red); }
+        }
 
         /* Main Content Panel */
         #main-content {
@@ -148,6 +159,7 @@
         .narrative-success {
             color: var(--color-core-green);
             font-weight: bold;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
         }
 
         #choices-container {
@@ -681,26 +693,27 @@ const scenes = {
             { text: "Mmz23: Gebruik de laatste energie voor een **COREBREAKER PUNCH** (25 NRG)", next: "techRune_cliffhanger" }
         ],
         onEnter: () => {
-            // Een aanval kost 25 NRG
-            const kaizenAvailable = gameState.characters.Kaizen23.energy >= 25;
-            const mmzAvailable = gameState.characters.Mmz23.energy >= 25;
+            const energyCost = 25;
+            const damageTaken = 25;
+            const kaizenAvailable = gameState.characters.Kaizen23.energy >= energyCost;
+            const mmzAvailable = gameState.characters.Mmz23.energy >= energyCost;
             
             // Logica om te checken wie de aanval uitvoert en energie aftrekken
             if (kaizenAvailable && mmzAvailable) {
-                // Beide kunnen, we nemen Kaizen's aanval
-                scenes.techRune_boss_p2_final.choices[0].onEnter = () => { gameState.characters.Kaizen23.energy -= 25; };
-                scenes.techRune_boss_p2_final.choices[1].onEnter = () => { gameState.characters.Mmz23.energy -= 25; };
+                // Beide kunnen, we laten ze allebei de energie aftrekken
+                scenes.techRune_boss_p2_final.choices[0].onEnter = () => { gameState.characters.Kaizen23.energy -= energyCost; };
+                scenes.techRune_boss_p2_final.choices[1].onEnter = () => { gameState.characters.Mmz23.energy -= energyCost; };
             } else if (kaizenAvailable) {
                  scenes.techRune_boss_p2_final.choices[1].disabled = true;
-                 scenes.techRune_boss_p2_final.choices[0].onEnter = () => { gameState.characters.Kaizen23.energy -= 25; };
+                 scenes.techRune_boss_p2_final.choices[0].onEnter = () => { gameState.characters.Kaizen23.energy -= energyCost; };
             } else if (mmzAvailable) {
                  scenes.techRune_boss_p2_final.choices[0].disabled = true;
-                 scenes.techRune_boss_p2_final.choices[1].onEnter = () => { gameState.characters.Mmz23.energy -= 25; };
+                 scenes.techRune_boss_p2_final.choices[1].onEnter = () => { gameState.characters.Mmz23.energy -= energyCost; };
             } else {
-                 // Beide geen energie, verlies 15 HP voor een basisaanval
-                 gameState.characters.Kaizen23.hp -= 15;
-                 gameState.characters.Mmz23.hp -= 15;
-                 alert("Te weinig energie! De aanval kost 15 HP.");
+                 // Beide geen energie, verlies 25 HP voor een basisaanval
+                 gameState.characters.Kaizen23.hp -= damageTaken;
+                 gameState.characters.Mmz23.hp -= damageTaken;
+                 alert(`Te weinig energie! De aanval kost ${damageTaken} HP voor iedereen.`);
                  if (gameState.characters.Mmz23.hp <= 0 || gameState.characters.Kaizen23.hp <= 0) updateScreen("game_over");
             }
         }
@@ -1025,22 +1038,28 @@ const scenes = {
             { text: "Gecoördineerde verdediging: Mmz23 **BRUTE STAND** (30 NRG)", next: "beastRealm_boss_p2_stand" }
         ],
         onEnter: () => {
-            // Check energie voor de finale verdediging
-            const kaizenAvailable = gameState.characters.Kaizen23.energy >= 30;
-            const mmzAvailable = gameState.characters.Mmz23.energy >= 30;
+            const energyCost = 30;
+            const damageTaken = 30;
+            const kaizenAvailable = gameState.characters.Kaizen23.energy >= energyCost;
+            const mmzAvailable = gameState.characters.Mmz23.energy >= energyCost;
             
-            if (!kaizenAvailable) {
-                 scenes.beastRealm_boss_p2_final.choices[0].disabled = true;
-            }
-            if (!mmzAvailable) {
+            // Logica om te checken wie de aanval uitvoert en energie aftrekken
+            if (kaizenAvailable && mmzAvailable) {
+                scenes.beastRealm_boss_p2_final.choices[0].onEnter = () => { gameState.characters.Kaizen23.energy -= energyCost; };
+                scenes.beastRealm_boss_p2_final.choices[1].onEnter = () => { gameState.characters.Mmz23.energy -= energyCost; };
+            } else if (kaizenAvailable) {
                  scenes.beastRealm_boss_p2_final.choices[1].disabled = true;
-            }
-            if (!kaizenAvailable && !mmzAvailable) {
-                 alert("Te weinig energie voor verdediging! Jullie nemen zware schade!");
-                 gameState.characters.Kaizen23.hp -= 30;
-                 gameState.characters.Mmz23.hp -= 30;
+                 scenes.beastRealm_boss_p2_final.choices[0].onEnter = () => { gameState.characters.Kaizen23.energy -= energyCost; };
+            } else if (mmzAvailable) {
+                 scenes.beastRealm_boss_p2_final.choices[0].disabled = true;
+                 scenes.beastRealm_boss_p2_final.choices[1].onEnter = () => { gameState.characters.Mmz23.energy -= energyCost; };
+            } else {
+                 // Beide geen energie, verlies 30 HP
+                 alert(`Te weinig energie voor verdediging! Jullie nemen zware schade! -${damageTaken} HP voor iedereen.`);
+                 gameState.characters.Kaizen23.hp -= damageTaken;
+                 gameState.characters.Mmz23.hp -= damageTaken;
                  if (gameState.characters.Mmz23.hp <= 0 || gameState.characters.Kaizen23.hp <= 0) updateScreen("game_over");
-                 updateScreen("beastRealm_success");
+                 updateScreen("beastRealm_success"); // Game gaat door, maar met kosten
                  return;
             }
         }
@@ -1325,23 +1344,27 @@ const scenes = {
             { text: "Coördinatie: Mmz23 **BRUTE TIMING** om de Slicer vast te zetten (30 NRG)", next: "bliksemArena_boss_p2_timing" }
         ],
         onEnter: () => {
-            // Check energie voor de finale aanval
-            const kaizenAvailable = gameState.characters.Kaizen23.energy >= 30;
-            const mmzAvailable = gameState.characters.Mmz23.energy >= 30;
+            const energyCost = 30;
+            const damageTaken = 30;
+            const kaizenAvailable = gameState.characters.Kaizen23.energy >= energyCost;
+            const mmzAvailable = gameState.characters.Mmz23.energy >= energyCost;
             
-            if (!kaizenAvailable) {
-                 scenes.bliksemArena_boss_p2_final.choices[0].disabled = true;
-            }
-            if (!mmzAvailable) {
+            if (kaizenAvailable && mmzAvailable) {
+                scenes.bliksemArena_boss_p2_final.choices[0].onEnter = () => { gameState.characters.Kaizen23.energy -= energyCost; };
+                scenes.bliksemArena_boss_p2_final.choices[1].onEnter = () => { gameState.characters.Mmz23.energy -= energyCost; };
+            } else if (kaizenAvailable) {
                  scenes.bliksemArena_boss_p2_final.choices[1].disabled = true;
-            }
-            if (!kaizenAvailable && !mmzAvailable) {
+                 scenes.bliksemArena_boss_p2_final.choices[0].onEnter = () => { gameState.characters.Kaizen23.energy -= energyCost; };
+            } else if (mmzAvailable) {
+                 scenes.bliksemArena_boss_p2_final.choices[0].disabled = true;
+                 scenes.bliksemArena_boss_p2_final.choices[1].onEnter = () => { gameState.characters.Mmz23.energy -= energyCost; };
+            } else {
                  // Beide geen energie, verlies 30 HP
-                 alert("Te weinig energie! De aanval raakt jullie allebei zwaar!");
-                 gameState.characters.Kaizen23.hp -= 30;
-                 gameState.characters.Mmz23.hp -= 30;
+                 alert(`Te weinig energie! De aanval raakt jullie allebei zwaar! -${damageTaken} HP voor iedereen.`);
+                 gameState.characters.Kaizen23.hp -= damageTaken;
+                 gameState.characters.Mmz23.hp -= damageTaken;
                  if (gameState.characters.Mmz23.hp <= 0 || gameState.characters.Kaizen23.hp <= 0) updateScreen("game_over");
-                 updateScreen("bliksemArena_success");
+                 updateScreen("bliksemArena_shard_absorb"); // Game gaat door, maar met kosten
                  return;
             }
         }
@@ -1492,7 +1515,7 @@ const scenes = {
             gameState.inventory.nexusRoute = 'Stealth';
             gameState.characters.Kaizen23.energy -= 30; 
             gameState.characters.Mmz23.energy = gameState.characters.Mmz23.maxEnergy;
-            if (gameState.characters.Kaizen23.energy < 0) { gameState.characters.Kaizen23.hp -= 20; if (gameState.characters.Kaizen23.hp <= 0) updateScreen("game_over"); }
+            if (gameState.characters.Kaizen23.energy < 0) { gameState.characters.Kaizen23.hp -= 20; alert("Kaizen verloor energie, -20 HP!"); if (gameState.characters.Kaizen23.hp <= 0) updateScreen("game_over"); }
         }
     },
     
@@ -1510,7 +1533,7 @@ const scenes = {
             gameState.characters.Mmz23.energy -= 30; 
             gameState.characters.Kaizen23.hp -= 15;
             gameState.characters.Kaizen23.energy = gameState.characters.Kaizen23.maxEnergy;
-            if (gameState.characters.Mmz23.energy < 0) { gameState.characters.Mmz23.hp -= 20; if (gameState.characters.Mmz23.hp <= 0) updateScreen("game_over"); }
+            if (gameState.characters.Mmz23.energy < 0) { gameState.characters.Mmz23.hp -= 20; alert("Mmz verloor energie, -20 HP!"); if (gameState.characters.Mmz23.hp <= 0) updateScreen("game_over"); }
         }
     },
     
@@ -1537,7 +1560,7 @@ const scenes = {
         text: `
             Mmz23 absorbeert de Origin Shard. Zijn Beast Aura wordt een ondoordringbare, vurige groene storm.
             <br><br>
-            <span class="narrative-success">[FINALE BOOST: MMZ23]</span> Zijn aanvalskracht is verdubbeld in het finale gevecht. Nu: **OVERCORE!**
+            <span class="narrative-success">[FINALE BOOST: MMZ23]</span> Zijn aanvalskracht is permanent verdubbeld (x2) voor het finale gevecht. Nu: **OVERCORE!**
         `,
         choices: [
             { text: "Betreed het gevecht met OverCore", next: "overcore_boss_intro" }
@@ -1549,7 +1572,7 @@ const scenes = {
         text: `
             Kaizen23 absorbeert de Origin Shard. Haar Bliksem Form versnelt tot een onzichtbare flits.
             <br><br>
-            <span class="narrative-success">[FINALE BOOST: KAIZEN23]</span> Haar verdediging en efficiëntie zijn verdubbeld in het finale gevecht. Nu: **OVERCORE!**
+            <span class="narrative-success">[FINALE BOOST: KAIZEN23]</span> Haar verdediging en efficiëntie zijn permanent verdubbeld (x2) voor het finale gevecht. Nu: **OVERCORE!**
         `,
         choices: [
             { text: "Betreed het gevecht met OverCore", next: "overcore_boss_intro" }
@@ -1563,20 +1586,20 @@ const scenes = {
     
     overcore_boss_intro: {
         text: `
-            <span class="narrative-warning">**[FINALE BOSS: OVERCORE]**</span>
+            <span class="narrative-warning">**[FINALE BOSS: OVERCORE - SCHILDFASE]**</span>
             <br><br>
             OverCore verschijnt als een gigantische, zwarte piramide van perfecte, dode code. Hij heeft een **ONDOORDRINGBAAR SCHILD** dat eerst moet worden afgebroken.
             <br><br>
             OverCore: "ANOMALIE. DE OPTIMALE LEEGTE IS ONVERMIJDELIJK. JULLIE ZIJN TE LAAT."
             <br><br>
-            bEAr23: "Zijn schild is 100%. We moeten dit afbreken. Gebruik alles wat je hebt!"
+            bEAr23: "Zijn schild is ${gameState.inventory.overCoreShield}%. We moeten dit afbreken. Gebruik alles wat je hebt!"
             <br><br>
-            *OverCore Schild: ${gameState.inventory.overCoreShield}%.*
+            *OverCore Schild: **${gameState.inventory.overCoreShield}%***
         `,
         choices: [
-            { text: "Mmz23: **CORE BREAKER** op het schild (30 NRG)", next: "overcore_boss_p1_mmz_attack" },
-            { text: "Kaizen23: **TACTICAL OVERLOAD** op het schild (30 NRG)", next: "overcore_boss_p1_kaizen_attack" },
-            { text: "Verdedigingspositie: Iedereen heelt 10 HP/NRG (Maar schild heelt 10%)", next: "overcore_boss_p1_defend" }
+            { text: "Mmz23: **CORE BREAKER** op het schild (30 NRG) (-20% Schild)", next: "overcore_boss_p1_mmz_attack" },
+            { text: "Kaizen23: **TACTICAL OVERLOAD** op het schild (30 NRG) (-35% Schild)", next: "overcore_boss_p1_kaizen_attack" },
+            { text: "Verdedigingspositie: Iedereen heelt 10 HP/NRG (Schild heelt +10%)", next: "overcore_boss_p1_defend" }
         ],
         onEnter: () => { gameState.currentWorld = "OverCore Finale"; }
     },
@@ -1594,6 +1617,7 @@ const scenes = {
             gameState.characters.Mmz23.energy -= 30;
             gameState.inventory.overCoreShield -= 20;
             if (gameState.inventory.overCoreShield <= 0) updateScreen("overcore_boss_p2");
+            else updateScreen("overcore_boss_intro"); // Herlaad om de geüpdatete schildwaarde te tonen
         }
     },
     
@@ -1610,6 +1634,7 @@ const scenes = {
             gameState.characters.Kaizen23.energy -= 30;
             gameState.inventory.overCoreShield -= 35;
             if (gameState.inventory.overCoreShield <= 0) updateScreen("overcore_boss_p2");
+            else updateScreen("overcore_boss_intro"); // Herlaad om de geüpdatete schildwaarde te tonen
         }
     },
     
@@ -1628,62 +1653,73 @@ const scenes = {
             gameState.characters.Mmz23.hp = Math.min(gameState.characters.Mmz23.maxHp, gameState.characters.Mmz23.hp + 10); 
             gameState.characters.Mmz23.energy = Math.min(gameState.characters.Mmz23.maxEnergy, gameState.characters.Mmz23.energy + 10);
             gameState.inventory.overCoreShield += 10;
+            updateScreen("overcore_boss_intro"); // Herlaad om de geüpdatete schildwaarde te tonen
         }
     },
     
     overcore_boss_p2: {
         text: `
-            <span class="narrative-warning">**[FINALE BOSS: OVERCORE FASE 2]**</span>
+            <span class="narrative-warning">**[FINALE BOSS: OVERCORE FASE 2 - VORTEX]**</span>
             <br><br>
             Het schild is gebroken! OverCore onthult zijn echte, chaotische vorm: een vortex van corrupte data.
             <br><br>
-            OverCore: "JULLIE BRUUTHEID EN ORDE WORDEN GEADSORBEERD."
+            OverCore: "JULLIE BRUUTHEID EN ORDE WORDEN GEADSORBEERD. GEEN RUST."
             <br><br>
-            *OverCore richt nu **Chaos Damage** aan (30 HP verlies per ronde) als je niet aanvalt.*
+            *Aanvallen kost 40 NRG. Je moet nu doorstoten of je incasseert schade.*
         `,
         choices: [
-            { text: "Mmz23: Activeer **BEAST AURA** en val aan (40 NRG)", next: "overcore_boss_p2_mmz" },
-            { text: "Kaizen23: Activeer **BLIKSEM FORM** en val aan (40 NRG)", next: "overcore_boss_p2_kaizen" },
+            { text: "Mmz23: Activeer **BEAST AURA** en val aan (40 NRG)", next: "overcore_boss_p2_mmz_attack_logic" },
+            { text: "Kaizen23: Activeer **BLIKSEM FORM** en val aan (40 NRG)", next: "overcore_boss_p2_kaizen_attack_logic" },
         ],
         onEnter: () => {
-            // HP/NRG check voor P2
-            const kaizenAvailable = gameState.characters.Kaizen23.energy >= 40;
-            const mmzAvailable = gameState.characters.Mmz23.energy >= 40;
-            
-            if (!kaizenAvailable && !mmzAvailable) {
-                 // Geen energie, neem schade
-                 gameState.characters.Kaizen23.hp -= 30;
-                 gameState.characters.Mmz23.hp -= 30;
-                 alert("Geen energie! Chaos Damage! -30 HP voor iedereen.");
-                 if (gameState.characters.Mmz23.hp <= 0 || gameState.characters.Kaizen23.hp <= 0) updateScreen("game_over");
-                 updateScreen("overcore_boss_p2");
-                 return;
-            }
+             // Geen actie hier. De logica zit in de next scene (attack_logic) om de popup correct te tonen.
         }
     },
     
-    overcore_boss_p2_mmz: {
-        text: `
+    overcore_boss_p2_mmz_attack_logic: {
+         text: `
             Mmz23's Beast Aura doorbreekt de vortex! Krachtige schade aan OverCore.
             <br><br>
             *Mmz23 verliest 40 NRG. OverCore is verzwakt en bereidt de finale aanval voor.*
-        `,
-        choices: [
+         `,
+         choices: [
             { text: "Ga naar FASE 3: De Finale Keuze", next: "overcore_boss_p3" }
-        ],
-        onEnter: () => { gameState.characters.Mmz23.energy -= 40; }
+         ],
+         onEnter: () => {
+            const energyCost = 40;
+            const damageTaken = 30;
+            if (gameState.characters.Mmz23.energy >= energyCost) {
+                gameState.characters.Mmz23.energy -= energyCost;
+            } else {
+                 gameState.characters.Mmz23.hp -= damageTaken;
+                 gameState.characters.Kaizen23.hp -= 5; // Kaizen krijgt een beetje schade van de terugslag
+                 alert(`Mmz23 had te weinig energie voor de Aura! -${damageTaken} HP voor Mmz23, -5 HP voor Kaizen23.`);
+                 if (gameState.characters.Mmz23.hp <= 0 || gameState.characters.Kaizen23.hp <= 0) { updateScreen("game_over"); return; }
+            }
+         }
     },
     
-    overcore_boss_p2_kaizen: {
-        text: `
+    overcore_boss_p2_kaizen_attack_logic: {
+         text: `
             Kaizen23's Bliksem Form ontwricht de vortex met precisie! Zeer effectief.
             <br><br>
             *Kaizen23 verliest 40 NRG. OverCore is verzwakt en bereidt de finale aanval voor.*
-        `,
-        choices: [
+         `,
+         choices: [
             { text: "Ga naar FASE 3: De Finale Keuze", next: "overcore_boss_p3" }
-        ],
-        onEnter: () => { gameState.characters.Kaizen23.energy -= 40; }
+         ],
+         onEnter: () => {
+            const energyCost = 40;
+            const damageTaken = 30;
+            if (gameState.characters.Kaizen23.energy >= energyCost) {
+                gameState.characters.Kaizen23.energy -= energyCost;
+            } else {
+                 gameState.characters.Kaizen23.hp -= damageTaken;
+                 gameState.characters.Mmz23.hp -= 5; // Mmz krijgt een beetje schade van de terugslag
+                 alert(`Kaizen23 had te weinig energie voor de Bliksem Form! -${damageTaken} HP voor Kaizen23, -5 HP voor Mmz23.`);
+                 if (gameState.characters.Mmz23.hp <= 0 || gameState.characters.Kaizen23.hp <= 0) { updateScreen("game_over"); return; }
+            }
+         }
     },
     
     overcore_boss_p3: {
@@ -1701,11 +1737,13 @@ const scenes = {
     
     overcore_final_attack: {
         text: `
-            **De Ultimatie van de Origin Shard!**
+            <span class="narrative-warning">**DE ULTIMATIE VAN DE ORIGIN SHARD!**</span>
             <br><br>
-            ${gameState.inventory.mmzBeastAura && gameState.characters.Mmz23.attack > 100 ? 
-                `<span class="narrative-success">**MMZ23's ULTIEME BRUTE FORCE**</span>: Mmz23's verdubbelde aanval snijdt door de Leegte heen en vernietigt OverCore's kern met pure, onbewerkte kracht!` : 
-                `<span class="narrative-success">**KAIZEN23's ULTIEME TACTIEK**</span>: Kaizen23's verdubbelde verdediging/snelheid overtreft de Leegte en herprogrammeert OverCore's kern om zichzelf te wissen!`}
+            ${gameState.characters.Mmz23.attack > 200 ? // Mmz's aanval is x2 van de basis 100
+                `<span class="narrative-success">**MMZ23's ULTIEME BRUTE FORCE: CORE MELTDOWN!**</span> 
+                Mmz23 brult. Zijn verdubbelde aanval snijdt door de Leegte heen en vernietigt OverCore's kern met pure, onbewerkte, massale kracht. De Nexus trilt en de corrupte data wordt omgezet in groen, puur licht!` : 
+                `<span class="narrative-success">**KAIZEN23's ULTIEME TACTIEK: DATA INVERSION!**</span> 
+                Kaizen23 flitst rond, haar verdubbelde snelheid overtreft de Leegte en ze injecteert een omgekeerde code. OverCore's kern wordt geherprogrammeerd om zichzelf te wissen. De Nexus trilt en de corrupte data wordt omgezet in blauw, perfect licht!`}
             <br><br>
             Het licht flitst. OverCore is voorgoed verdwenen.
         `,
@@ -1713,26 +1751,25 @@ const scenes = {
             { text: "EINDE: Keer terug naar de gecorrigeerde Core Dimensie", next: "game_ending" }
         ],
         onEnter: () => {
-             // Zorg dat de gekozen aanval in de narrative blijft hangen.
              // Geen verdere logica nodig, het spel is voltooid.
         }
     },
     
     game_ending: {
         text: `
-            **[CORE DIMENSIE: HERSTELD]**
+            <span class="narrative-success">**[FINALE OUTRO: CORE DIMENSIE IS HERSTELD]**</span>
             <br><br>
-            Je bent terug in de CentralHub. Het is nu rustig, gevuld met warme, stabiele kleuren. bEAr23 is 100% en zweeft vredig.
+            Je bent terug in de CentralHub. Het is nu rustig, gevuld met warme, stabiele kleuren. bEAr23 is 100% en zweeft vredig, zijn geheugen compleet.
             <br><br>
             bEAr23: "Voltooid. Dankjewel, Outsider. Door jouw externe variabele is de Dimensie gered. Ik herinner me nu alles. Mijn creatie, de Shards, Kaizen... Mmz. We zijn heel."
             <br><br>
-            Kaizen23: "Onze dank. De Bliksem en de Aura zijn nu stabiel. We zullen waken over de Core Dimensie."
+            Kaizen23: "Onze dank. De Bliksem en de Aura zijn nu stabiel. We zullen waken over de Core Dimensie. Je hebt ons geleerd dat een beetje Glitch onvoorspelbaarheid nodig is voor de perfecte code."
             <br><br>
-            Mmz23: "Je bent altijd welkom. Ga nu. Jouw wereld wacht. Tot de volgende keer, Outsider."
+            Mmz23: "Je bent altijd welkom. De poort naar je wereld staat open. Blijf Glitchen, Outsider."
             <br><br>
-            Je voelt een lichte ruk. Je bent terug. De Glitch is verdwenen.
+            Je voelt een lichte ruk. Je bent terug. Het scherm van je browser is weer normaal. De Glitch is verdwenen, maar je code-avontuur zal altijd in de Core Dimensie bestaan.
             <br><br>
-            **EINDE VAN HET AVONTUUR.**
+            **Gefeliciteerd! EINDE VAN HET AVONTUUR.**
         `,
         choices: [
             { text: "Start het spel opnieuw", next: "centralHub_start" }
@@ -1742,14 +1779,17 @@ const scenes = {
     // --- FOUT-SCENES ---
     game_over: {
         text: `
-            **[GAME OVER]**
+            <span class="narrative-warning">**[FATALE FOUT: CORE CRASH]**</span>
             <br><br>
-            Een van je teamleden is overweldigd door de Corruptie. De missie faalt. De Core Dimensie valt.
+            Een van je teamleden is overweldigd door de Corruptie. 
             <br><br>
-            Vraag om de laatste werkende scene opnieuw te laden. (Of ververs de pagina om bij het begin van de laatste voltooide wereld te beginnen.)
+            ${gameState.characters.Mmz23.hp <= 0 ? "Mmz23's Core-energie viel weg." : ""}
+            ${gameState.characters.Kaizen23.hp <= 0 ? "Kaizen23's datastroom viel weg." : ""}
+            <br><br>
+            De missie faalt. De Core Dimensie valt. De Glitch heeft gewonnen.
         `,
         choices: [
-            { text: "Start de game opnieuw vanaf de CentralHub", next: "centralHub_start" }
+            { text: "Start de game opnieuw vanaf het begin", next: "centralHub_start" }
         ]
     }
 };
@@ -1827,8 +1867,8 @@ function initializeGame() {
     statsElements.mmzBlock = document.getElementById('mmz-stats');
 
     // **BELANGRIJKE PROGRESSIE INLADER**
+    // Zorgt ervoor dat alle upgrades correct geladen worden als de code wordt bijgewerkt
     if (gameState.inventory.bliksemShard) {
-        // Zorg dat eerdere upgrades ook geladen worden als de speler de code vervangt na wereld 3.
         if (!gameState.inventory.beastShard) {
              gameState.inventory.shardsCollected = 3;
              gameState.characters.bEAr23.memory = 75;
@@ -1881,9 +1921,12 @@ function updateStatsDisplay() {
 
 
     // Gebruik Max HP/Energy voor de weergave
-    statsElements.kaizenHp.textContent = `${Kaizen23.hp}/${Kaizen23.maxHp}`;
+    const kaizenHpClass = (Kaizen23.hp / Kaizen23.maxHp) < 0.25 ? 'low-hp' : 'stat-value';
+    const mmzHpClass = (Mmz23.hp / Mmz23.maxHp) < 0.25 ? 'low-hp' : 'stat-value';
+
+    statsElements.kaizenHp.innerHTML = `<span class="${kaizenHpClass}">${Kaizen23.hp}/${Kaizen23.maxHp}</span>`;
     statsElements.kaizenEnergy.textContent = `${Kaizen23.energy}/${Kaizen23.maxEnergy}`;
-    statsElements.mmzHp.textContent = `${Mmz23.hp}/${Mmz23.maxHp}`;
+    statsElements.mmzHp.innerHTML = `<span class="${mmzHpClass}">${Mmz23.hp}/${Mmz23.maxHp}</span>`;
     statsElements.mmzEnergy.textContent = `${Mmz23.energy}/${Mmz23.maxEnergy}`;
     statsElements.bearStability.textContent = `${bEAr23.stability}/100`;
     statsElements.bearMemory.textContent = `${bEAr23.memory}%`;
@@ -1918,16 +1961,21 @@ function updateScreen(sceneId) {
     
     // Check voor game over (bijv. na het aftrekken van HP/NRG)
     if (gameState.characters.Mmz23.hp <= 0 || gameState.characters.Kaizen23.hp <= 0) {
-        sceneId = "game_over";
-        // Zorg ervoor dat de game-over scene de juiste tekst toont
-        scenes.game_over.text = `
-            **[GAME OVER]**
-            <br><br>
-            ${gameState.characters.Mmz23.hp <= 0 ? "Mmz23 is uitgeschakeld door te veel schade." : ""}
-            ${gameState.characters.Kaizen23.hp <= 0 ? "Kaizen23 is uitgeschakeld door te veel schade." : ""}
-            <br><br>
-            De missie faalt. De Core Dimensie valt.
-        `;
+        // Alleen naar game_over scene gaan als de huidige scene nog niet de game_over scene is.
+        if (sceneId !== "game_over") {
+             sceneId = "game_over";
+             // Bijwerken van de game_over tekst
+             scenes.game_over.text = `
+                <span class="narrative-warning">**[FATALE FOUT: CORE CRASH]**</span>
+                <br><br>
+                Een van je teamleden is overweldigd door de Corruptie. 
+                <br><br>
+                ${gameState.characters.Mmz23.hp <= 0 ? "Mmz23's Core-energie viel weg." : ""}
+                ${gameState.characters.Kaizen23.hp <= 0 ? "Kaizen23's datastroom viel weg." : ""}
+                <br><br>
+                De missie faalt. De Core Dimensie valt. De Glitch heeft gewonnen.
+            `;
+        }
     }
 
 
@@ -1947,6 +1995,8 @@ function updateScreen(sceneId) {
         gameState.currentWorld = "Bliksem Arena";
     } else if (sceneId.includes('nexus') || sceneId.includes('overcore')) {
         gameState.currentWorld = "Nexus (FINALE)";
+    } else if (sceneId.includes('game_ending')) {
+        gameState.currentWorld = "Core Dimensie (HERSTELD)";
     } else {
         gameState.currentWorld = "CentralHub";
     }
