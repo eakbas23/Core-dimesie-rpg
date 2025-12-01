@@ -700,7 +700,6 @@ const scenes = {
             
             // Logica om te checken wie de aanval uitvoert en energie aftrekken
             if (kaizenAvailable && mmzAvailable) {
-                // Beide kunnen, we laten ze allebei de energie aftrekken
                 scenes.techRune_boss_p2_final.choices[0].onEnter = () => { gameState.characters.Kaizen23.energy -= energyCost; };
                 scenes.techRune_boss_p2_final.choices[1].onEnter = () => { gameState.characters.Mmz23.energy -= energyCost; };
             } else if (kaizenAvailable) {
@@ -1597,11 +1596,42 @@ const scenes = {
             *OverCore Schild: **${gameState.inventory.overCoreShield}%***
         `,
         choices: [
-            { text: "Mmz23: **CORE BREAKER** op het schild (30 NRG) (-20% Schild)", next: "overcore_boss_p1_mmz_attack" },
-            { text: "Kaizen23: **TACTICAL OVERLOAD** op het schild (30 NRG) (-35% Schild)", next: "overcore_boss_p1_kaizen_attack" },
+            { 
+                text: `Mmz23: **CORE BREAKER** op het schild (30 NRG) (-20% Schild, Huidige aanval: ${gameState.characters.Mmz23.attack})`, 
+                next: "overcore_boss_p1_mmz_attack",
+                disabled: () => gameState.characters.Mmz23.energy < 30
+            },
+            { 
+                text: `Kaizen23: **TACTICAL OVERLOAD** op het schild (30 NRG) (-35% Schild, Huidige verdediging: ${gameState.characters.Kaizen23.defense})`, 
+                next: "overcore_boss_p1_kaizen_attack",
+                disabled: () => gameState.characters.Kaizen23.energy < 30
+            },
             { text: "Verdedigingspositie: Iedereen heelt 10 HP/NRG (Schild heelt +10%)", next: "overcore_boss_p1_defend" }
         ],
-        onEnter: () => { gameState.currentWorld = "OverCore Finale"; }
+        onEnter: () => { 
+            gameState.currentWorld = "OverCore Finale";
+            // Check voor Fase 2
+            if (gameState.inventory.overCoreShield <= 0) {
+                 updateScreen("overcore_boss_p2");
+                 return;
+            }
+        },
+        // Zorg dat de knoppen de juiste disabled status hebben bij het renderen
+        getChoices: function() {
+            return [
+                { 
+                    text: `Mmz23: **CORE BREAKER** op het schild (30 NRG) (-20% Schild, Huidige aanval: ${gameState.characters.Mmz23.attack})`, 
+                    next: "overcore_boss_p1_mmz_attack",
+                    disabled: gameState.characters.Mmz23.energy < 30
+                },
+                { 
+                    text: `Kaizen23: **TACTICAL OVERLOAD** op het schild (30 NRG) (-35% Schild, Huidige verdediging: ${gameState.characters.Kaizen23.defense})`, 
+                    next: "overcore_boss_p1_kaizen_attack",
+                    disabled: gameState.characters.Kaizen23.energy < 30
+                },
+                { text: "Verdedigingspositie: Iedereen heelt 10 HP/NRG (Schild heelt +10%)", next: "overcore_boss_p1_defend" }
+            ];
+        }
     },
 
     overcore_boss_p1_mmz_attack: {
@@ -1668,11 +1698,30 @@ const scenes = {
             *Aanvallen kost 40 NRG. Je moet nu doorstoten of je incasseert schade.*
         `,
         choices: [
-            { text: "Mmz23: Activeer **BEAST AURA** en val aan (40 NRG)", next: "overcore_boss_p2_mmz_attack_logic" },
-            { text: "Kaizen23: Activeer **BLIKSEM FORM** en val aan (40 NRG)", next: "overcore_boss_p2_kaizen_attack_logic" },
+            { 
+                text: "Mmz23: Activeer **BEAST AURA** en val aan (40 NRG)", 
+                next: "overcore_boss_p2_mmz_attack_logic",
+                disabled: () => gameState.characters.Mmz23.energy < 40
+            },
+            { 
+                text: "Kaizen23: Activeer **BLIKSEM FORM** en val aan (40 NRG)", 
+                next: "overcore_boss_p2_kaizen_attack_logic",
+                disabled: () => gameState.characters.Kaizen23.energy < 40
+            },
         ],
-        onEnter: () => {
-             // Geen actie hier. De logica zit in de next scene (attack_logic) om de popup correct te tonen.
+        getChoices: function() {
+             return [
+                { 
+                    text: "Mmz23: Activeer **BEAST AURA** en val aan (40 NRG)", 
+                    next: "overcore_boss_p2_mmz_attack_logic",
+                    disabled: gameState.characters.Mmz23.energy < 40
+                },
+                { 
+                    text: "Kaizen23: Activeer **BLIKSEM FORM** en val aan (40 NRG)", 
+                    next: "overcore_boss_p2_kaizen_attack_logic",
+                    disabled: gameState.characters.Kaizen23.energy < 40
+                },
+            ];
         }
     },
     
@@ -1739,7 +1788,7 @@ const scenes = {
         text: `
             <span class="narrative-warning">**DE ULTIMATIE VAN DE ORIGIN SHARD!**</span>
             <br><br>
-            ${gameState.characters.Mmz23.attack > 200 ? // Mmz's aanval is x2 van de basis 100
+            ${gameState.characters.Mmz23.attack > 100 ? // Mmz's aanval is 200 (basis 100 * 2)
                 `<span class="narrative-success">**MMZ23's ULTIEME BRUTE FORCE: CORE MELTDOWN!**</span> 
                 Mmz23 brult. Zijn verdubbelde aanval snijdt door de Leegte heen en vernietigt OverCore's kern met pure, onbewerkte, massale kracht. De Nexus trilt en de corrupte data wordt omgezet in groen, puur licht!` : 
                 `<span class="narrative-success">**KAIZEN23's ULTIEME TACTIEK: DATA INVERSION!**</span> 
@@ -1904,6 +1953,18 @@ function initializeGame() {
     gameState.characters.Mmz23.hp = Math.min(gameState.characters.Mmz23.hp, gameState.characters.Mmz23.maxHp);
     gameState.characters.Kaizen23.hp = Math.min(gameState.characters.Kaizen23.hp, gameState.characters.Kaizen23.maxHp);
 
+    // FINALE BOOSTS VOOR DE ORIGIN SHARD (moet hier gereset/geladen worden)
+    // De finale boosts zijn *na* de wereld upgades van +10 HP/NRG.
+    if (gameState.inventory.originShard) {
+        if (gameState.characters.Mmz23.attack > 100) { // Check of de boost al toegepast is
+             gameState.characters.Mmz23.attack = 200; // Base is 100, x2 is 200
+             gameState.characters.Kaizen23.defense = 80; // Base is 80, x2 is 160, maar we zetten hem terug naar base als mmz de boost heeft.
+        } else if (gameState.characters.Kaizen23.defense > 80) {
+             gameState.characters.Kaizen23.defense = 160; // Base is 80, x2 is 160
+             gameState.characters.Mmz23.attack = 100; // Base is 100, x2 is 200, maar we zetten hem terug naar base als kaizen de boost heeft.
+        }
+    }
+
 
     // Start het spel
     startIntro();
@@ -1984,18 +2045,18 @@ function updateScreen(sceneId) {
     }
     
     // Navigeer naar de definitieve scene als de onEnter deze heeft gewijzigd
-    const finalScene = scenes[sceneId];
-
+    const finalScene = scenes[gameState.currentScene]; // Gebruik gameState.currentScene, want onEnter kan het wijzigen
+    
     // Bijwerken van de huidige wereld naam
-    if (sceneId.includes('techRune')) {
+    if (gameState.currentScene.includes('techRune')) {
         gameState.currentWorld = "TechRune";
-    } else if (sceneId.includes('beastRealm')) {
+    } else if (gameState.currentScene.includes('beastRealm')) {
         gameState.currentWorld = "BeastRealm";
-    } else if (sceneId.includes('bliksemArena')) {
+    } else if (gameState.currentScene.includes('bliksemArena')) {
         gameState.currentWorld = "Bliksem Arena";
-    } else if (sceneId.includes('nexus') || sceneId.includes('overcore')) {
+    } else if (gameState.currentScene.includes('nexus') || gameState.currentScene.includes('overcore')) {
         gameState.currentWorld = "Nexus (FINALE)";
-    } else if (sceneId.includes('game_ending')) {
+    } else if (gameState.currentScene.includes('game_ending')) {
         gameState.currentWorld = "Core Dimensie (HERSTELD)";
     } else {
         gameState.currentWorld = "CentralHub";
@@ -2009,7 +2070,11 @@ function updateScreen(sceneId) {
 
     // Update keuzeknoppen
     choicesContainer.innerHTML = '';
-    finalScene.choices.forEach(choice => {
+    
+    // Gebruik .getChoices() als deze bestaat, anders de standaard array
+    const currentChoices = finalScene.getChoices ? finalScene.getChoices() : finalScene.choices;
+
+    currentChoices.forEach(choice => {
         const button = document.createElement('button');
         button.className = 'choice-button';
         button.textContent = choice.text;
@@ -2019,6 +2084,11 @@ function updateScreen(sceneId) {
         // Zorgt ervoor dat Rewind alleen beschikbaar is als er acties zijn
         if (choice.text.includes("Glitch Rewind") && gameState.characters.Outsider.glitchRewind < 1) {
             isDisabled = true;
+        }
+        
+        // Final check voor dynamic disabled status
+        if (typeof choice.disabled === 'function') {
+            isDisabled = choice.disabled();
         }
 
         button.onclick = () => handleChoice(choice.next);
